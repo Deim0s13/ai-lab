@@ -4,7 +4,7 @@ set -euo pipefail
 # ==============================================================================
 # ai-status
 # ------------------------------------------------------------------------------
-# Health check for the local AI workstation.
+# Health check and safe remediation tool for the local AI workstation.
 #
 # Checks:
 # - Ollama service/process
@@ -14,9 +14,24 @@ set -euo pipefail
 # - NVIDIA GPU visibility
 # - Open WebUI Podman container status
 #
-# Example:
+# Safe remediation with --fix:
+# - start Ollama service if stopped
+# - restart Ollama service if API is unreachable
+# - start Open WebUI container if stopped
+# - restart Open WebUI container if HTTP endpoint is unreachable
+#
+# It does NOT:
+# - change GPU drivers
+# - modify Ollama service files
+# - download models
+# - recreate containers
+# - change network configuration
+#
+# Examples:
 #   ai-status
 #   ai-status --probe
+#   ai-status --fix
+#   ai-status --fix --probe
 # ==============================================================================
 
 
@@ -24,7 +39,7 @@ set -euo pipefail
 # 1. BASIC SCRIPT CONFIGURATION
 # ==============================================================================
 
-VERSION="0.1.0"
+VERSION="0.2.0"
 SCRIPT_NAME="$(basename "$0")"
 
 CONFIG_FILE="$HOME/.config/ask-ollama/config"
@@ -32,7 +47,14 @@ CONFIG_FILE="$HOME/.config/ask-ollama/config"
 OLLAMA_URL="http://127.0.0.1:11434"
 DEFAULT_MODEL="qwen3:14b"
 
+OPEN_WEBUI_CONTAINER="open-webui"
+OPEN_WEBUI_URL="http://127.0.0.1:8080"
+
 RUN_PROBE=false
+RUN_FIX=false
+
+TAGS_FILE="$(mktemp)"
+trap 'rm -f "$TAGS_FILE"' EXIT
 
 
 # ==============================================================================
@@ -60,10 +82,13 @@ Options:
   -h, --help       Show this help message
   -v, --version    Display script version
   --probe          Run a lightweight model prompt before checking GPU usage
+  --fix            Apply safe remediation actions
 
 Examples:
   $SCRIPT_NAME
   $SCRIPT_NAME --probe
+  $SCRIPT_NAME --fix
+  $SCRIPT_NAME --fix --probe
 EOF
 }
 
@@ -77,6 +102,10 @@ warn() {
 
 fail() {
   echo "❌ $1"
+}
+
+action() {
+  echo "🔧 $1"
 }
 
 section() {
@@ -105,6 +134,10 @@ while [[ $# -gt 0 ]]; do
       RUN_PROBE=true
       ;;
 
+    --fix)
+      RUN_FIX=true
+      ;;
+
     *)
       fail "Unknown option: $1"
       show_help
@@ -117,7 +150,70 @@ done
 
 
 # ==============================================================================
-# 5. OLLAMA SERVICE / PROCESS CHECK
+# 5. UTILITY FUNCTIONS
+# ==============================================================================
+
+ollama_service_exists() {
+  systemctl list-unit-files --type=service 2>/dev/null | grep -q '^ollama.service'
+}
+
+ollama_service_running() {
+  systemctl is-active --quiet ollama 2>/dev/null
+}
+
+ollama_process_running() {
+  pgrep -x ollama >/dev/null 2>&1
+}
+
+ollama_api_reachable() {
+  curl -fsS --max-time 5 "$OLLAMA_URL/api/tags" -o "$TAGS_FILE" 2>/dev/null
+}
+
+start_ollama() {
+  if ollama_service_exists; then
+    action "Starting Ollama service"
+    sudo systemctl start ollama
+  else
+    warn "Ollama systemd service not found. Start Ollama manually with: ollama serve"
+    return 1
+  fi
+}
+
+restart_ollama() {
+  if ollama_service_exists; then
+    action "Restarting Ollama service"
+    sudo systemctl restart ollama
+  else
+    warn "Ollama systemd service not found. Restart Ollama manually."
+    return 1
+  fi
+}
+
+open_webui_container_exists() {
+  podman ps -a --format '{{.Names}}' 2>/dev/null | grep -Fxq "$OPEN_WEBUI_CONTAINER"
+}
+
+open_webui_container_running() {
+  podman ps --format '{{.Names}}' 2>/dev/null | grep -Fxq "$OPEN_WEBUI_CONTAINER"
+}
+
+open_webui_reachable() {
+  curl -fsS --max-time 5 "$OPEN_WEBUI_URL" >/dev/null 2>&1
+}
+
+start_open_webui() {
+  action "Starting Open WebUI container"
+  podman start "$OPEN_WEBUI_CONTAINER" >/dev/null
+}
+
+restart_open_webui() {
+  action "Restarting Open WebUI container"
+  podman restart "$OPEN_WEBUI_CONTAINER" >/dev/null
+}
+
+
+# ==============================================================================
+# 6. OLLAMA SERVICE / PROCESS CHECK
 # ==============================================================================
 
 section "Ollama Runtime"
@@ -129,42 +225,69 @@ else
   exit 1
 fi
 
-if command -v systemctl >/dev/null 2>&1 && systemctl list-units --type=service --all | grep -q "ollama.service"; then
-  if systemctl is-active --quiet ollama; then
+if ollama_service_exists; then
+  if ollama_service_running; then
     ok "Ollama service is running"
   else
     fail "Ollama service is not running"
+
+    if [[ "$RUN_FIX" == true ]]; then
+      start_ollama || true
+      sleep 3
+
+      if ollama_service_running; then
+        ok "Ollama service started successfully"
+      else
+        fail "Ollama service still not running after attempted fix"
+      fi
+    fi
   fi
 else
-  if pgrep -x ollama >/dev/null 2>&1; then
+  if ollama_process_running; then
     ok "Ollama process is running"
   else
     fail "Ollama process is not running"
+
+    if [[ "$RUN_FIX" == true ]]; then
+      warn "No systemd service found, so ai-status will not start Ollama automatically."
+      warn "Recommended: install/configure Ollama as a systemd service."
+    fi
   fi
 fi
 
 
 # ==============================================================================
-# 6. OLLAMA API CHECK
+# 7. OLLAMA API CHECK
 # ==============================================================================
 
 section "Ollama API"
 
-if curl -fsS "$OLLAMA_URL/api/tags" >/tmp/ai-status-ollama-tags.json 2>/dev/null; then
+if ollama_api_reachable; then
   ok "Ollama API reachable at $OLLAMA_URL"
 else
   fail "Ollama API not reachable at $OLLAMA_URL"
+
+  if [[ "$RUN_FIX" == true ]]; then
+    restart_ollama || true
+    sleep 5
+
+    if ollama_api_reachable; then
+      ok "Ollama API reachable after restart"
+    else
+      fail "Ollama API still unreachable after attempted fix"
+    fi
+  fi
 fi
 
 
 # ==============================================================================
-# 7. AVAILABLE MODELS
+# 8. AVAILABLE MODELS
 # ==============================================================================
 
 section "Available Models"
 
-if command -v jq >/dev/null 2>&1 && [[ -f /tmp/ai-status-ollama-tags.json ]]; then
-  MODELS="$(jq -r '.models[].name' /tmp/ai-status-ollama-tags.json 2>/dev/null || true)"
+if [[ -s "$TAGS_FILE" ]] && command -v jq >/dev/null 2>&1; then
+  MODELS="$(jq -r '.models[].name' "$TAGS_FILE" 2>/dev/null || true)"
 
   if [[ -n "$MODELS" ]]; then
     echo "$MODELS" | sed 's/^/- /'
@@ -177,7 +300,7 @@ fi
 
 
 # ==============================================================================
-# 8. GPU VISIBILITY CHECK
+# 9. GPU VISIBILITY CHECK
 # ==============================================================================
 
 section "GPU"
@@ -192,11 +315,16 @@ if command -v nvidia-smi >/dev/null 2>&1; then
   echo "Memory: $GPU_MEMORY"
 else
   fail "nvidia-smi not found. WSL2 may not have GPU visibility."
+
+  if [[ "$RUN_FIX" == true ]]; then
+    warn "GPU visibility requires Windows NVIDIA driver / WSL configuration."
+    warn "No automatic fix applied."
+  fi
 fi
 
 
 # ==============================================================================
-# 9. OPTIONAL INFERENCE PROBE
+# 10. OPTIONAL INFERENCE PROBE
 # ------------------------------------------------------------------------------
 # This loads the default model and runs a tiny prompt, making ollama ps useful.
 # ==============================================================================
@@ -206,16 +334,16 @@ if [[ "$RUN_PROBE" == true ]]; then
 
   echo "Running lightweight prompt with model: $DEFAULT_MODEL"
 
-  if timeout 90s ollama run "$DEFAULT_MODEL" "Reply with exactly: ok" >/dev/null 2>&1; then
+  if timeout 120s ollama run "$DEFAULT_MODEL" "Reply with exactly: ok" >/dev/null 2>&1; then
     ok "Inference probe completed"
   else
-    warn "Inference probe did not complete within 90 seconds"
+    warn "Inference probe did not complete within 120 seconds"
   fi
 fi
 
 
 # ==============================================================================
-# 10. ACTIVE MODEL / PROCESSOR CHECK
+# 11. ACTIVE MODEL / PROCESSOR CHECK
 # ==============================================================================
 
 section "Active Models"
@@ -230,6 +358,11 @@ if [[ -n "$ACTIVE_MODELS" ]]; then
     ok "Ollama reports GPU usage"
   elif echo "$OLLAMA_PS_OUTPUT" | grep -qi "CPU"; then
     warn "Ollama reports CPU usage"
+
+    if [[ "$RUN_FIX" == true ]]; then
+      warn "CPU-only execution is not auto-fixed."
+      warn "Check Ollama service environment, NVIDIA WSL support, and CUDA visibility."
+    fi
   else
     warn "Unable to determine processor usage from ollama ps"
   fi
@@ -239,37 +372,66 @@ fi
 
 
 # ==============================================================================
-# 11. OPEN WEBUI CONTAINER CHECK
+# 12. OPEN WEBUI CONTAINER CHECK
 # ==============================================================================
 
 section "Open WebUI"
 
 if command -v podman >/dev/null 2>&1; then
-  if podman ps --format '{{.Names}}' | grep -Fxq "open-webui"; then
+  if open_webui_container_running; then
     ok "Open WebUI container is running"
-  elif podman ps -a --format '{{.Names}}' | grep -Fxq "open-webui"; then
+  elif open_webui_container_exists; then
     warn "Open WebUI container exists but is not running"
+
+    if [[ "$RUN_FIX" == true ]]; then
+      start_open_webui || true
+      sleep 5
+
+      if open_webui_container_running; then
+        ok "Open WebUI container started successfully"
+      else
+        fail "Open WebUI container still not running after attempted fix"
+      fi
+    fi
   else
     warn "Open WebUI container not found"
+
+    if [[ "$RUN_FIX" == true ]]; then
+      warn "Container does not exist. No automatic creation performed."
+    fi
   fi
 else
   warn "Podman not found"
 fi
 
-if curl -fsS --max-time 3 "http://127.0.0.1:8080" >/dev/null 2>&1; then
-  ok "Open WebUI reachable at http://127.0.0.1:8080"
+if open_webui_reachable; then
+  ok "Open WebUI reachable at $OPEN_WEBUI_URL"
 else
-  warn "Open WebUI not reachable at http://127.0.0.1:8080"
+  warn "Open WebUI not reachable at $OPEN_WEBUI_URL"
+
+  if [[ "$RUN_FIX" == true ]] && command -v podman >/dev/null 2>&1 && open_webui_container_exists; then
+    restart_open_webui || true
+    sleep 8
+
+    if open_webui_reachable; then
+      ok "Open WebUI reachable after restart"
+    else
+      warn "Open WebUI still unreachable after attempted fix"
+    fi
+  fi
 fi
 
 
 # ==============================================================================
-# 12. SUMMARY
+# 13. SUMMARY
 # ==============================================================================
 
 section "Summary"
 
 echo "AI workstation status check complete."
 echo ""
-echo "Tip:"
-echo "  Use 'ai-status --probe' when you want to confirm that Ollama is actively using the GPU."
+echo "Useful commands:"
+echo "  ai-status"
+echo "  ai-status --probe"
+echo "  ai-status --fix"
+echo "  ai-status --fix --probe"
