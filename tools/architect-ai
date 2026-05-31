@@ -1,0 +1,318 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ==============================================================================
+# architect-ai
+# ------------------------------------------------------------------------------
+# Role-specific CLI wrapper for architecture-focused AI workflows.
+#
+# Uses ask-ollama as the core AI engine and automatically applies:
+# - architect persona
+# - writing style guidance
+# - optional domain context, such as banking
+#
+# Supports common architecture workflows:
+# - explain
+# - risks
+# - compare
+# - summary
+# - discovery
+# - talking-points
+#
+# Example:
+#   architect-ai explain "RAG"
+#   architect-ai banking explain "RAG"
+#   architect-ai banking compare "OpenShift AI vs SageMaker"
+# ==============================================================================
+
+
+# ==============================================================================
+# 1. BASIC SCRIPT CONFIGURATION
+# ==============================================================================
+
+VERSION="0.1.0"
+SCRIPT_NAME="$(basename "$0")"
+
+DEFAULT_PERSONA="architect"
+DEFAULT_STYLE="writing-style"
+
+
+# ==============================================================================
+# 2. RUNTIME DEFAULTS
+# ==============================================================================
+
+DOMAIN=""
+DOMAIN_ARGS=""
+
+COMMAND=""
+TOPIC=""
+PROMPT=""
+
+
+# ==============================================================================
+# 3. HELP AND ERROR HANDLING
+# ==============================================================================
+
+show_help() {
+  cat <<EOF
+Usage:
+  $SCRIPT_NAME [DOMAIN] COMMAND TOPIC
+
+Optional Domain:
+  banking              Add banking / financial services context
+
+Commands:
+  explain              Explain a concept for an architecture audience
+  risks                Identify likely risks, concerns, objections, and governance issues
+  compare              Compare technologies or approaches
+  summary              Create an executive-level summary
+  discovery            Generate customer discovery questions
+  talking-points       Create concise talking points
+  challenge            Challenge assumptions and identify blind spots
+  position             Create positioning guidance for a customer conversation
+
+Options:
+  -h, --help           Show this help message
+  -v, --version        Display script version
+
+Examples:
+  $SCRIPT_NAME explain "RAG"
+  $SCRIPT_NAME banking explain "RAG"
+  $SCRIPT_NAME risks "OpenShift AI"
+  $SCRIPT_NAME banking compare "OpenShift AI vs SageMaker"
+  $SCRIPT_NAME discovery "enterprise AI adoption"
+  $SCRIPT_NAME challenge "self-hosted AI platform"
+  $SCRIPT_NAME position "OpenShift AI for regulated enterprises"
+EOF
+}
+
+handle_error() {
+  echo "Error: $1" >&2
+  exit 1
+}
+
+
+# ==============================================================================
+# 4. VALIDATE DEPENDENCIES
+# ==============================================================================
+
+if ! command -v ask-ollama >/dev/null 2>&1; then
+  handle_error "ask-ollama not found in PATH. Ensure ~/projects/linux-ai-lab/tools is in your PATH."
+fi
+
+
+# ==============================================================================
+# 5. PROMPT TEMPLATE BUILDER
+# ------------------------------------------------------------------------------
+# Converts a high-level architecture workflow command into a structured prompt.
+#
+# Example:
+#   architect-ai risks "OpenShift AI"
+#
+# becomes a reusable prompt focused on risks, objections, governance,
+# operational considerations, and conversation prompts.
+# ==============================================================================
+
+build_workflow_prompt() {
+  local command="$1"
+  local topic="$2"
+
+  case "$command" in
+    explain)
+      cat <<EOF
+Explain '$topic' for an experienced enterprise/pre-sales architect.
+
+Focus on:
+- what it is
+- why it matters
+- where it fits architecturally
+- key trade-offs
+- risks and constraints
+- customer relevance
+- practical adoption considerations
+EOF
+      ;;
+
+    risks)
+      cat <<EOF
+For '$topic', identify likely customer risks, objections, governance concerns, operational considerations, adoption challenges, and decision-maker sensitivities.
+
+Structure the response around:
+- executive concerns
+- technology concerns
+- operating model impacts
+- security and governance issues
+- adoption risks
+- suggested conversation prompts
+EOF
+      ;;
+
+    compare)
+      cat <<EOF
+Compare '$topic' from an enterprise architecture and pre-sales perspective.
+
+Focus on:
+- business outcomes
+- architectural fit
+- operating model implications
+- governance and security
+- cost and commercial considerations
+- adoption risks
+- when each option is most appropriate
+EOF
+      ;;
+
+    summary)
+      cat <<EOF
+Create a concise executive-level summary on '$topic'.
+
+Include:
+- why it matters
+- business value
+- key risks
+- architectural implications
+- recommended next step
+EOF
+      ;;
+
+    discovery)
+      cat <<EOF
+Generate practical customer discovery questions for '$topic'.
+
+Group them by:
+- strategy
+- business outcomes
+- current state
+- technical constraints
+- governance and security
+- operating model
+- decision criteria
+EOF
+      ;;
+
+    talking-points)
+      cat <<EOF
+Create concise talking points for '$topic' suitable for a customer or leadership conversation.
+
+The talking points should be:
+- clear
+- credible
+- practical
+- outcome-focused
+- grounded in realistic enterprise considerations
+EOF
+      ;;
+
+    challenge)
+      cat <<EOF
+Challenge the assumptions behind '$topic'.
+
+Identify:
+- hidden assumptions
+- likely blind spots
+- risks that may be underestimated
+- questions that should be asked before proceeding
+- alternative perspectives
+- practical ways to test the thinking
+EOF
+      ;;
+
+    position)
+      cat <<EOF
+Create positioning guidance for '$topic' suitable for a customer conversation.
+
+Include:
+- simple positioning statement
+- why it matters to the customer
+- business and operating model relevance
+- likely objections
+- how to respond to those objections
+- suggested conversation openers
+EOF
+      ;;
+
+    *)
+      handle_error "Unknown command: $command"
+      ;;
+  esac
+}
+
+
+# ==============================================================================
+# 6. OPTIONS AND ARGUMENT PARSER
+# ------------------------------------------------------------------------------
+# This parser supports:
+# - optional domain first, e.g. banking
+# - command second, e.g. explain
+# - topic as all remaining arguments
+#
+# Example:
+#   architect-ai banking explain "RAG"
+# ==============================================================================
+
+[[ $# -lt 1 ]] && {
+  show_help
+  exit 1
+}
+
+case "$1" in
+  -h|--help)
+    show_help
+    exit 0
+    ;;
+
+  -v|--version)
+    echo "$SCRIPT_NAME version $VERSION"
+    exit 0
+    ;;
+esac
+
+if [[ "${1:-}" == "banking" ]]; then
+  DOMAIN="banking"
+  DOMAIN_ARGS="--domain banking"
+  shift
+fi
+
+COMMAND="${1:-}"
+shift || true
+TOPIC="$*"
+
+
+# ==============================================================================
+# 7. VALIDATION
+# ==============================================================================
+
+[[ -z "$COMMAND" ]] && {
+  show_help
+  exit 1
+}
+
+[[ -z "$TOPIC" ]] && {
+  handle_error "Missing topic. Example: $SCRIPT_NAME explain \"RAG\""
+}
+
+
+# ==============================================================================
+# 8. BUILD FINAL WORKFLOW PROMPT
+# ==============================================================================
+
+PROMPT="$(build_workflow_prompt "$COMMAND" "$TOPIC")"
+
+
+# ==============================================================================
+# 9. SEND PROMPT TO ASK-OLLAMA
+# ------------------------------------------------------------------------------
+# ask-ollama handles:
+# - model execution
+# - persona loading
+# - writing style loading
+# - optional domain context
+# - memory
+# - saving output
+# ==============================================================================
+
+ask-ollama \
+  --persona "$DEFAULT_PERSONA" \
+  --style "$DEFAULT_STYLE" \
+  $DOMAIN_ARGS \
+  "$PROMPT"

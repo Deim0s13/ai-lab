@@ -1,0 +1,275 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ==============================================================================
+# ai-status
+# ------------------------------------------------------------------------------
+# Health check for the local AI workstation.
+#
+# Checks:
+# - Ollama service/process
+# - Ollama API reachability
+# - available models
+# - active model processor usage
+# - NVIDIA GPU visibility
+# - Open WebUI Podman container status
+#
+# Example:
+#   ai-status
+#   ai-status --probe
+# ==============================================================================
+
+
+# ==============================================================================
+# 1. BASIC SCRIPT CONFIGURATION
+# ==============================================================================
+
+VERSION="0.1.0"
+SCRIPT_NAME="$(basename "$0")"
+
+CONFIG_FILE="$HOME/.config/ask-ollama/config"
+
+OLLAMA_URL="http://127.0.0.1:11434"
+DEFAULT_MODEL="qwen3:14b"
+
+RUN_PROBE=false
+
+
+# ==============================================================================
+# 2. LOAD OPTIONAL CONFIG
+# ------------------------------------------------------------------------------
+# Reuses ask-ollama configuration if present.
+# ==============================================================================
+
+if [[ -f "$CONFIG_FILE" ]]; then
+  # shellcheck source=/dev/null
+  source "$CONFIG_FILE" || true
+fi
+
+
+# ==============================================================================
+# 3. HELP AND OUTPUT FUNCTIONS
+# ==============================================================================
+
+show_help() {
+  cat <<EOF
+Usage:
+  $SCRIPT_NAME [OPTIONS]
+
+Options:
+  -h, --help       Show this help message
+  -v, --version    Display script version
+  --probe          Run a lightweight model prompt before checking GPU usage
+
+Examples:
+  $SCRIPT_NAME
+  $SCRIPT_NAME --probe
+EOF
+}
+
+ok() {
+  echo "✅ $1"
+}
+
+warn() {
+  echo "⚠️  $1"
+}
+
+fail() {
+  echo "❌ $1"
+}
+
+section() {
+  echo ""
+  echo "== $1 =="
+}
+
+
+# ==============================================================================
+# 4. OPTIONS PARSER
+# ==============================================================================
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      show_help
+      exit 0
+      ;;
+
+    -v|--version)
+      echo "$SCRIPT_NAME version $VERSION"
+      exit 0
+      ;;
+
+    --probe)
+      RUN_PROBE=true
+      ;;
+
+    *)
+      fail "Unknown option: $1"
+      show_help
+      exit 1
+      ;;
+  esac
+
+  shift
+done
+
+
+# ==============================================================================
+# 5. OLLAMA SERVICE / PROCESS CHECK
+# ==============================================================================
+
+section "Ollama Runtime"
+
+if command -v ollama >/dev/null 2>&1; then
+  ok "Ollama CLI found: $(command -v ollama)"
+else
+  fail "Ollama CLI not found"
+  exit 1
+fi
+
+if command -v systemctl >/dev/null 2>&1 && systemctl list-units --type=service --all | grep -q "ollama.service"; then
+  if systemctl is-active --quiet ollama; then
+    ok "Ollama service is running"
+  else
+    fail "Ollama service is not running"
+  fi
+else
+  if pgrep -x ollama >/dev/null 2>&1; then
+    ok "Ollama process is running"
+  else
+    fail "Ollama process is not running"
+  fi
+fi
+
+
+# ==============================================================================
+# 6. OLLAMA API CHECK
+# ==============================================================================
+
+section "Ollama API"
+
+if curl -fsS "$OLLAMA_URL/api/tags" >/tmp/ai-status-ollama-tags.json 2>/dev/null; then
+  ok "Ollama API reachable at $OLLAMA_URL"
+else
+  fail "Ollama API not reachable at $OLLAMA_URL"
+fi
+
+
+# ==============================================================================
+# 7. AVAILABLE MODELS
+# ==============================================================================
+
+section "Available Models"
+
+if command -v jq >/dev/null 2>&1 && [[ -f /tmp/ai-status-ollama-tags.json ]]; then
+  MODELS="$(jq -r '.models[].name' /tmp/ai-status-ollama-tags.json 2>/dev/null || true)"
+
+  if [[ -n "$MODELS" ]]; then
+    echo "$MODELS" | sed 's/^/- /'
+  else
+    warn "No models found via API"
+  fi
+else
+  ollama list || warn "Unable to list models"
+fi
+
+
+# ==============================================================================
+# 8. GPU VISIBILITY CHECK
+# ==============================================================================
+
+section "GPU"
+
+if command -v nvidia-smi >/dev/null 2>&1; then
+  GPU_NAME="$(nvidia-smi --query-gpu=name --format=csv,noheader | head -n 1)"
+  GPU_DRIVER="$(nvidia-smi --query-gpu=driver_version --format=csv,noheader | head -n 1)"
+  GPU_MEMORY="$(nvidia-smi --query-gpu=memory.total --format=csv,noheader | head -n 1)"
+
+  ok "GPU detected: $GPU_NAME"
+  echo "Driver: $GPU_DRIVER"
+  echo "Memory: $GPU_MEMORY"
+else
+  fail "nvidia-smi not found. WSL2 may not have GPU visibility."
+fi
+
+
+# ==============================================================================
+# 9. OPTIONAL INFERENCE PROBE
+# ------------------------------------------------------------------------------
+# This loads the default model and runs a tiny prompt, making ollama ps useful.
+# ==============================================================================
+
+if [[ "$RUN_PROBE" == true ]]; then
+  section "Inference Probe"
+
+  echo "Running lightweight prompt with model: $DEFAULT_MODEL"
+
+  if timeout 90s ollama run "$DEFAULT_MODEL" "Reply with exactly: ok" >/dev/null 2>&1; then
+    ok "Inference probe completed"
+  else
+    warn "Inference probe did not complete within 90 seconds"
+  fi
+fi
+
+
+# ==============================================================================
+# 10. ACTIVE MODEL / PROCESSOR CHECK
+# ==============================================================================
+
+section "Active Models"
+
+OLLAMA_PS_OUTPUT="$(ollama ps 2>/dev/null || true)"
+ACTIVE_MODELS="$(echo "$OLLAMA_PS_OUTPUT" | awk 'NR > 1')"
+
+if [[ -n "$ACTIVE_MODELS" ]]; then
+  echo "$OLLAMA_PS_OUTPUT"
+
+  if echo "$OLLAMA_PS_OUTPUT" | grep -qi "GPU"; then
+    ok "Ollama reports GPU usage"
+  elif echo "$OLLAMA_PS_OUTPUT" | grep -qi "CPU"; then
+    warn "Ollama reports CPU usage"
+  else
+    warn "Unable to determine processor usage from ollama ps"
+  fi
+else
+  warn "No active models loaded. Run 'ai-status --probe' to test processor usage."
+fi
+
+
+# ==============================================================================
+# 11. OPEN WEBUI CONTAINER CHECK
+# ==============================================================================
+
+section "Open WebUI"
+
+if command -v podman >/dev/null 2>&1; then
+  if podman ps --format '{{.Names}}' | grep -Fxq "open-webui"; then
+    ok "Open WebUI container is running"
+  elif podman ps -a --format '{{.Names}}' | grep -Fxq "open-webui"; then
+    warn "Open WebUI container exists but is not running"
+  else
+    warn "Open WebUI container not found"
+  fi
+else
+  warn "Podman not found"
+fi
+
+if curl -fsS --max-time 3 "http://127.0.0.1:8080" >/dev/null 2>&1; then
+  ok "Open WebUI reachable at http://127.0.0.1:8080"
+else
+  warn "Open WebUI not reachable at http://127.0.0.1:8080"
+fi
+
+
+# ==============================================================================
+# 12. SUMMARY
+# ==============================================================================
+
+section "Summary"
+
+echo "AI workstation status check complete."
+echo ""
+echo "Tip:"
+echo "  Use 'ai-status --probe' when you want to confirm that Ollama is actively using the GPU."

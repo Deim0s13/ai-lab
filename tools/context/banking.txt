@@ -1,0 +1,22 @@
+For financial services and banking scenarios, align responses where appropriate with:
+- BIAN principles and banking domain alignment
+- regulatory environments
+- operational resilience
+- security and risk management
+- integration complexity
+- banking domain capabilities
+- service domain alignment
+- data governance and privacy
+- enterprise operating model impacts
+
+Consider the perspectives of:
+- CIO
+- CTO
+- CISO
+- enterprise architecture
+- platform teams
+- risk and compliance
+- application owners
+- operations teams
+
+Prefer practical banking-relevant framing over generic enterprise examples.

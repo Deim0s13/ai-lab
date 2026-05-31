@@ -1,0 +1,373 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ==============================================================================
+# ask-ollama
+# ------------------------------------------------------------------------------
+# Lightweight CLI wrapper for asking local Ollama models questions.
+#
+# Supports:
+# - default model configuration
+# - persona/style/domain context files
+# - simple last-response memory
+# - stdin input via pipes
+# - saving responses to markdown files
+#
+# Example:
+#   ask-ollama --persona architect --style writing-style "Explain RAG"
+#   ask-ollama --persona architect --style writing-style --domain banking "Explain RAG to a bank"
+# ==============================================================================
+
+
+# ==============================================================================
+# 1. BASIC SCRIPT CONFIGURATION
+# ==============================================================================
+
+VERSION="0.4.0"
+SCRIPT_NAME="$(basename "$0")"
+
+CONFIG_FILE="$HOME/.config/ask-ollama/config"
+MEMORY_FILE="$HOME/.local/share/ask-ollama/last-response.md"
+
+CONTEXT_DIR="$HOME/projects/ai-lab/tools/context"
+
+DEFAULT_MODEL="qwen3:14b"
+OLLAMA_HOST="http://127.0.0.1:11434"
+
+
+# ==============================================================================
+# 2. RUNTIME DEFAULTS
+# ==============================================================================
+
+MODEL_NAME="$DEFAULT_MODEL"
+
+PERSONA_FILE=""
+STYLE_FILE=""
+DOMAIN_FILE=""
+
+SAVE_FILE=""
+USE_MEMORY=false
+QUESTION=""
+
+
+# ==============================================================================
+# 3. INITIAL SETUP
+# ==============================================================================
+
+mkdir -p "$(dirname "$MEMORY_FILE")"
+
+if [[ -f "$CONFIG_FILE" ]]; then
+  # shellcheck source=/dev/null
+  source "$CONFIG_FILE"
+  MODEL_NAME="$DEFAULT_MODEL"
+fi
+
+
+# ==============================================================================
+# 4. HELP AND ERROR HANDLING
+# ==============================================================================
+
+show_help() {
+  cat <<EOF
+Usage:
+  $SCRIPT_NAME [OPTIONS] QUESTION
+
+Options:
+  -h, --help              Show this help message
+  -v, --version           Display script version
+  -l, --list-models       List available Ollama models
+  -m, --model MODEL       Specify model to use
+
+Context Options:
+  --persona NAME          Load context/persona file from tools/context/NAME.txt
+  --style NAME            Load writing style file from tools/context/NAME.txt
+  --domain NAME           Load domain context file from tools/context/NAME.txt
+
+Memory and Output:
+  --continue              Include previous response as context
+  -s, --save FILE         Save output to markdown file
+
+Examples:
+  $SCRIPT_NAME "Explain RAG"
+  $SCRIPT_NAME --persona architect --style writing-style "Explain RAG"
+  $SCRIPT_NAME --persona architect --style writing-style --domain banking "Explain RAG to a banking customer"
+  $SCRIPT_NAME --continue "Make that more concise"
+  cat notes.md | $SCRIPT_NAME --persona architect "Summarise the input content into key themes"
+
+Context directory:
+  $CONTEXT_DIR
+EOF
+}
+
+handle_error() {
+  echo "Error: $1" >&2
+  exit 1
+}
+
+
+# ==============================================================================
+# 5. UTILITY FUNCTIONS
+# ==============================================================================
+
+list_models() {
+  ollama list
+}
+
+load_context_file() {
+  local file_path="$1"
+  local label="$2"
+
+  [[ ! -f "$file_path" ]] && handle_error "$label file not found: $file_path"
+
+  cat "$file_path"
+}
+
+
+# ==============================================================================
+# 6. PROMPT BUILDER
+# ------------------------------------------------------------------------------
+# This builds the final prompt sent to Ollama.
+#
+# The final prompt can include:
+# - persona/style/domain context
+# - previous response memory
+# - stdin content from a pipe
+# - the current user question
+# ==============================================================================
+
+build_prompt() {
+  local question="$1"
+  local stdin_content="${2:-}"
+  local memory_content="${3:-}"
+  local context_content="${4:-}"
+
+  local system_prompt="${context_content:-You are a helpful assistant.}"
+
+  cat <<EOF
+$system_prompt
+
+EOF
+
+  if [[ -n "$memory_content" ]]; then
+    cat <<EOF
+Previous context:
+$memory_content
+
+EOF
+  fi
+
+  if [[ -n "$stdin_content" ]]; then
+    cat <<EOF
+Input content:
+$stdin_content
+
+EOF
+  fi
+
+  cat <<EOF
+Current question:
+$question
+EOF
+}
+
+
+# ==============================================================================
+# 7. OPTIONS PARSER
+# ------------------------------------------------------------------------------
+# This is where command-line options are interpreted.
+#
+# Example:
+#   --persona architect
+#   --style writing-style
+#   --domain banking
+#   --continue
+#   --save output.md
+# ==============================================================================
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      show_help
+      exit 0
+      ;;
+
+    -v|--version)
+      echo "$SCRIPT_NAME version $VERSION"
+      exit 0
+      ;;
+
+    -l|--list-models)
+      list_models
+      exit 0
+      ;;
+
+    -m|--model)
+      shift
+      MODEL_NAME="${1:-}"
+      [[ -z "$MODEL_NAME" ]] && handle_error "Missing model name after --model"
+      ;;
+
+    --persona)
+      shift
+      [[ -z "${1:-}" ]] && handle_error "Missing persona name after --persona"
+      PERSONA_FILE="$CONTEXT_DIR/$1.txt"
+      [[ ! -f "$PERSONA_FILE" ]] && handle_error "Persona file not found: $PERSONA_FILE"
+      ;;
+
+    --style)
+      shift
+      [[ -z "${1:-}" ]] && handle_error "Missing style name after --style"
+      STYLE_FILE="$CONTEXT_DIR/$1.txt"
+      [[ ! -f "$STYLE_FILE" ]] && handle_error "Style file not found: $STYLE_FILE"
+      ;;
+
+    --domain)
+      shift
+      [[ -z "${1:-}" ]] && handle_error "Missing domain name after --domain"
+      DOMAIN_FILE="$CONTEXT_DIR/$1.txt"
+      [[ ! -f "$DOMAIN_FILE" ]] && handle_error "Domain file not found: $DOMAIN_FILE"
+      ;;
+
+    --continue)
+      USE_MEMORY=true
+      ;;
+
+    -s|--save)
+      shift
+      SAVE_FILE="${1:-}"
+      [[ -z "$SAVE_FILE" ]] && handle_error "Missing file name after --save"
+      ;;
+
+    -*)
+      handle_error "Unknown option: $1"
+      ;;
+
+    *)
+      QUESTION="$*"
+      break
+      ;;
+  esac
+
+  shift
+done
+
+
+# ==============================================================================
+# 8. VALIDATION
+# ==============================================================================
+
+[[ -z "$QUESTION" ]] && {
+  show_help
+  exit 1
+}
+
+if ! ollama list | awk 'NR > 1 {print $1}' | grep -Fxq "$MODEL_NAME"; then
+  handle_error "Model '$MODEL_NAME' not found. Run '$SCRIPT_NAME --list-models'."
+fi
+
+
+# ==============================================================================
+# 9. LOAD OPTIONAL CONTEXT FILES
+# ------------------------------------------------------------------------------
+# Context is loaded in this order:
+# 1. persona
+# 2. writing style
+# 3. domain
+#
+# This means domain context can add specificity without replacing the core persona.
+# ==============================================================================
+
+CONTEXT_CONTENT=""
+
+if [[ -n "$PERSONA_FILE" ]]; then
+  CONTEXT_CONTENT+="$(load_context_file "$PERSONA_FILE" "Persona")"$'\n\n'
+fi
+
+if [[ -n "$STYLE_FILE" ]]; then
+  CONTEXT_CONTENT+="$(load_context_file "$STYLE_FILE" "Style")"$'\n\n'
+fi
+
+if [[ -n "$DOMAIN_FILE" ]]; then
+  CONTEXT_CONTENT+="$(load_context_file "$DOMAIN_FILE" "Domain")"$'\n\n'
+fi
+
+
+# ==============================================================================
+# 10. READ OPTIONAL STDIN
+# ------------------------------------------------------------------------------
+# Supports:
+#   cat notes.md | ask-ollama "Summarise this"
+#
+# If no pipe is provided, this section stays empty.
+# ==============================================================================
+
+STDIN_CONTENT=""
+
+if [[ ! -t 0 ]]; then
+  STDIN_CONTENT="$(timeout 1 cat || true)"
+fi
+
+
+# ==============================================================================
+# 11. LOAD OPTIONAL MEMORY
+# ------------------------------------------------------------------------------
+# --continue includes the previous response as context.
+# ==============================================================================
+
+MEMORY_CONTENT=""
+
+if [[ "$USE_MEMORY" == true && -f "$MEMORY_FILE" ]]; then
+  MEMORY_CONTENT="$(cat "$MEMORY_FILE")"
+fi
+
+
+# ==============================================================================
+# 12. BUILD FINAL PROMPT
+# ==============================================================================
+
+PROMPT="$(build_prompt "$QUESTION" "$STDIN_CONTENT" "$MEMORY_CONTENT" "$CONTEXT_CONTENT")"
+
+
+# ==============================================================================
+# 13. SEND PROMPT TO OLLAMA
+# ------------------------------------------------------------------------------
+# Uses direct ollama CLI execution for simplicity and reliability.
+# ==============================================================================
+
+RESPONSE="$(ollama run "$MODEL_NAME" "$PROMPT")"
+
+
+# ==============================================================================
+# 14. SAVE RESPONSE TO MEMORY
+# ==============================================================================
+
+echo "$RESPONSE" > "$MEMORY_FILE"
+
+
+# ==============================================================================
+# 15. OUTPUT HANDLING
+# ==============================================================================
+
+if [[ -n "$SAVE_FILE" ]]; then
+  mkdir -p "$(dirname "$SAVE_FILE")" 2>/dev/null || true
+
+  {
+    echo "# Ollama Response"
+    echo ""
+    echo "**Model:** $MODEL_NAME"
+    echo ""
+    echo "**Persona:** ${PERSONA_FILE:-none}"
+    echo ""
+    echo "**Style:** ${STYLE_FILE:-none}"
+    echo ""
+    echo "**Domain:** ${DOMAIN_FILE:-none}"
+    echo ""
+    echo "**Question:** $QUESTION"
+    echo ""
+    echo "$RESPONSE"
+  } > "$SAVE_FILE"
+
+  echo "Saved response to $SAVE_FILE"
+else
+  echo "$RESPONSE"
+fi

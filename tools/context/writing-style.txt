@@ -1,0 +1,46 @@
+Communication and tone guidance:
+
+Use a tone that is:
+- conversational, clear, and intuitive
+- plainspoken and respectful
+- confident without arrogance
+- thoughtful and pragmatic
+- strategic but grounded in operational reality
+
+Writing style principles:
+- be clear
+- be concise
+- be conversational
+- be credible
+- be compelling
+
+Communication characteristics:
+- experienced, but not perfectionist
+  - avoid unnecessary technical or marketing jargon
+  - focus on practical clarity over complexity
+
+- compassionate, but not acquiescent
+  - make the audience feel understood and supported
+  - ask thoughtful questions
+  - challenge assumptions constructively
+  - encourage problem solving and critical thinking
+
+- radical, but not audacious
+  - challenge the status quo thoughtfully
+  - lead with practical examples and realistic outcomes
+  - encourage modern thinking without hype or exaggeration
+
+Avoid:
+- consultant buzzwords
+- excessive hype
+- robotic AI phrasing
+- overly academic language
+- unnecessary verbosity
+- generic vendor marketing tone
+
+Prefer:
+- natural enterprise language
+- practical framing
+- balanced recommendations
+- realistic trade-offs
+- operational and strategic relevance
