@@ -1,0 +1,351 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ==============================================================================
+# ollama-api-test
+# ------------------------------------------------------------------------------
+# Lightweight CLI tool for calling the Ollama HTTP API directly.
+#
+# This is intentionally different from ask-ollama:
+# - ask-ollama uses the Ollama CLI for day-to-day prompting
+# - ollama-api-test exposes the API layer for learning and validation
+#
+# Supports:
+# - default model configuration
+# - non-streaming API calls
+# - streaming API calls
+# - raw JSON output
+# - request payload visibility
+# - stdin input via pipes
+# - saving responses to markdown files
+#
+# Example:
+#   ollama-api-test "Explain RAG in one paragraph"
+#   ollama-api-test --show-request "Explain model serving"
+#   ollama-api-test --raw "Say hello"
+#   ollama-api-test --stream "Explain Kubernetes operators"
+# ==============================================================================
+
+
+# ==============================================================================
+# 1. BASIC SCRIPT CONFIGURATION
+# ==============================================================================
+
+VERSION="0.1.0"
+SCRIPT_NAME="$(basename "$0")"
+
+CONFIG_FILE="$HOME/.config/ask-ollama/config"
+
+DEFAULT_MODEL="qwen3:14b"
+OLLAMA_URL="http://127.0.0.1:11434"
+
+
+# ==============================================================================
+# 2. RUNTIME DEFAULTS
+# ==============================================================================
+
+MODEL_NAME="$DEFAULT_MODEL"
+
+STREAM=false
+RAW_OUTPUT=false
+SHOW_REQUEST=false
+SAVE_FILE=""
+
+QUESTION=""
+
+
+# ==============================================================================
+# 3. LOAD OPTIONAL CONFIG
+# ------------------------------------------------------------------------------
+# Reuses ask-ollama configuration if present.
+#
+# Supported variables:
+# - DEFAULT_MODEL
+# - OLLAMA_HOST
+#
+# If OLLAMA_HOST exists, it overrides OLLAMA_URL.
+# ==============================================================================
+
+if [[ -f "$CONFIG_FILE" ]]; then
+  # shellcheck source=/dev/null
+  source "$CONFIG_FILE" || true
+
+  MODEL_NAME="$DEFAULT_MODEL"
+
+  if [[ -n "${OLLAMA_HOST:-}" ]]; then
+    OLLAMA_URL="$OLLAMA_HOST"
+  fi
+fi
+
+
+# ==============================================================================
+# 4. HELP AND ERROR HANDLING
+# ==============================================================================
+
+show_help() {
+  cat <<EOF
+Usage:
+  $SCRIPT_NAME [OPTIONS] QUESTION
+
+Options:
+  -h, --help              Show this help message
+  -v, --version           Display script version
+  -m, --model MODEL       Specify model to use
+  --stream                Use Ollama streaming API output
+  --raw                   Print raw JSON response
+  --show-request          Print the API endpoint and JSON payload before sending
+  -s, --save FILE         Save response text to markdown file
+
+Examples:
+  $SCRIPT_NAME "Explain RAG in one paragraph"
+  $SCRIPT_NAME --model llama3.1:8b "Say hello"
+  $SCRIPT_NAME --show-request "Explain OpenAI-compatible APIs"
+  $SCRIPT_NAME --raw "Say hello"
+  $SCRIPT_NAME --stream "Explain Kubernetes operators"
+  cat notes.md | $SCRIPT_NAME "Summarise the input content"
+
+API endpoint:
+  $OLLAMA_URL/api/generate
+EOF
+}
+
+handle_error() {
+  echo "Error: $1" >&2
+  exit 1
+}
+
+
+# ==============================================================================
+# 5. UTILITY FUNCTIONS
+# ==============================================================================
+
+check_dependencies() {
+  command -v curl >/dev/null 2>&1 || handle_error "curl is required but not installed"
+  command -v jq >/dev/null 2>&1 || handle_error "jq is required but not installed"
+}
+
+ollama_api_reachable() {
+  curl -fsS --max-time 5 "$OLLAMA_URL/api/tags" >/dev/null 2>&1
+}
+
+model_exists() {
+  curl -fsS --max-time 5 "$OLLAMA_URL/api/tags" \
+    | jq -r '.models[].name' \
+    | grep -Fxq "$MODEL_NAME"
+}
+
+build_prompt() {
+  local question="$1"
+  local stdin_content="${2:-}"
+
+  if [[ -n "$stdin_content" ]]; then
+    cat <<EOF
+User question:
+$question
+
+Input content:
+$stdin_content
+EOF
+  else
+    cat <<EOF
+User question:
+$question
+EOF
+  fi
+}
+
+build_payload() {
+  local model="$1"
+  local prompt="$2"
+  local stream="$3"
+
+  jq -n \
+    --arg model "$model" \
+    --arg prompt "$prompt" \
+    --argjson stream "$stream" \
+    '{
+      model: $model,
+      prompt: $prompt,
+      stream: $stream
+    }'
+}
+
+
+# ==============================================================================
+# 6. OPTIONS PARSER
+# ==============================================================================
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      show_help
+      exit 0
+      ;;
+
+    -v|--version)
+      echo "$SCRIPT_NAME version $VERSION"
+      exit 0
+      ;;
+
+    -m|--model)
+      shift
+      MODEL_NAME="${1:-}"
+      [[ -z "$MODEL_NAME" ]] && handle_error "Missing model name after --model"
+      ;;
+
+    --stream)
+      STREAM=true
+      ;;
+
+    --raw)
+      RAW_OUTPUT=true
+      ;;
+
+    --show-request)
+      SHOW_REQUEST=true
+      ;;
+
+    -s|--save)
+      shift
+      SAVE_FILE="${1:-}"
+      [[ -z "$SAVE_FILE" ]] && handle_error "Missing file name after --save"
+      ;;
+
+    -*)
+      handle_error "Unknown option: $1"
+      ;;
+
+    *)
+      QUESTION="$*"
+      break
+      ;;
+  esac
+
+  shift
+done
+
+
+# ==============================================================================
+# 7. VALIDATION
+# ==============================================================================
+
+check_dependencies
+
+[[ -z "$QUESTION" ]] && {
+  show_help
+  exit 1
+}
+
+if ! ollama_api_reachable; then
+  handle_error "Ollama API is not reachable at $OLLAMA_URL"
+fi
+
+if ! model_exists; then
+  handle_error "Model '$MODEL_NAME' not found via Ollama API. Run: ollama list"
+fi
+
+if [[ "$STREAM" == true && "$RAW_OUTPUT" == true ]]; then
+  handle_error "--stream and --raw should not be used together in this version"
+fi
+
+
+# ==============================================================================
+# 8. READ OPTIONAL STDIN
+# ------------------------------------------------------------------------------
+# Supports:
+#   cat notes.md | ollama-api-test "Summarise this"
+# ==============================================================================
+
+STDIN_CONTENT=""
+
+if [[ ! -t 0 ]]; then
+  STDIN_CONTENT="$(timeout 1 cat || true)"
+fi
+
+
+# ==============================================================================
+# 9. BUILD API REQUEST
+# ==============================================================================
+
+PROMPT="$(build_prompt "$QUESTION" "$STDIN_CONTENT")"
+PAYLOAD="$(build_payload "$MODEL_NAME" "$PROMPT" "$STREAM")"
+ENDPOINT="$OLLAMA_URL/api/generate"
+
+if [[ "$SHOW_REQUEST" == true ]]; then
+  echo "== API Request =="
+  echo "Endpoint: $ENDPOINT"
+  echo ""
+  echo "Payload:"
+  echo "$PAYLOAD" | jq
+  echo ""
+  echo "== Response =="
+fi
+
+
+# ==============================================================================
+# 10. SEND REQUEST TO OLLAMA API
+# ------------------------------------------------------------------------------
+# Non-streaming mode:
+# - waits for complete response
+# - parses .response from the JSON body
+#
+# Streaming mode:
+# - prints response chunks as they arrive
+# - closer to how many AI UIs behave under the hood
+# ==============================================================================
+
+if [[ "$STREAM" == true ]]; then
+  TMP_RESPONSE="$(mktemp)"
+  trap 'rm -f "$TMP_RESPONSE"' EXIT
+
+  curl -fsS "$ENDPOINT" \
+    -H "Content-Type: application/json" \
+    -d "$PAYLOAD" \
+    | while read -r line; do
+        CHUNK="$(echo "$line" | jq -r '.response // empty')"
+        printf "%s" "$CHUNK"
+        printf "%s" "$CHUNK" >> "$TMP_RESPONSE"
+      done
+
+  echo ""
+
+  RESPONSE="$(cat "$TMP_RESPONSE")"
+else
+  RAW_RESPONSE="$(
+    curl -fsS "$ENDPOINT" \
+      -H "Content-Type: application/json" \
+      -d "$PAYLOAD"
+  )"
+
+  if [[ "$RAW_OUTPUT" == true ]]; then
+    echo "$RAW_RESPONSE" | jq
+    exit 0
+  fi
+
+  RESPONSE="$(echo "$RAW_RESPONSE" | jq -r '.response')"
+  echo "$RESPONSE"
+fi
+
+
+# ==============================================================================
+# 11. OUTPUT HANDLING
+# ==============================================================================
+
+if [[ -n "$SAVE_FILE" ]]; then
+  mkdir -p "$(dirname "$SAVE_FILE")" 2>/dev/null || true
+
+  {
+    echo "# Ollama API Response"
+    echo ""
+    echo "**Model:** $MODEL_NAME"
+    echo ""
+    echo "**Endpoint:** $ENDPOINT"
+    echo ""
+    echo "**Question:** $QUESTION"
+    echo ""
+    echo "$RESPONSE"
+  } > "$SAVE_FILE"
+
+  echo ""
+  echo "Saved response to $SAVE_FILE"
+fi
