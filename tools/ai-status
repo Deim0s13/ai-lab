@@ -12,13 +12,17 @@ set -euo pipefail
 # - available models
 # - active model processor usage
 # - NVIDIA GPU visibility
-# - Open WebUI Podman container status
+# - Open WebUI systemd user service
+# - Open WebUI Podman container
+# - Open WebUI HTTP endpoint
 #
 # Safe remediation with --fix:
 # - start Ollama service if stopped
 # - restart Ollama service if API is unreachable
-# - start Open WebUI container if stopped
-# - restart Open WebUI container if HTTP endpoint is unreachable
+# - reload user systemd if Open WebUI Quadlet exists but service is not generated
+# - start Open WebUI user service if stopped
+# - restart Open WebUI user service if HTTP endpoint is unreachable
+# - fall back to Podman start/restart only if systemd user service is unavailable
 #
 # It does NOT:
 # - change GPU drivers
@@ -39,7 +43,7 @@ set -euo pipefail
 # 1. BASIC SCRIPT CONFIGURATION
 # ==============================================================================
 
-VERSION="0.2.0"
+VERSION="0.3.0"
 SCRIPT_NAME="$(basename "$0")"
 
 CONFIG_FILE="$HOME/.config/ask-ollama/config"
@@ -47,8 +51,10 @@ CONFIG_FILE="$HOME/.config/ask-ollama/config"
 OLLAMA_URL="http://127.0.0.1:11434"
 DEFAULT_MODEL="qwen3:14b"
 
+OPEN_WEBUI_SERVICE="open-webui.service"
 OPEN_WEBUI_CONTAINER="open-webui"
 OPEN_WEBUI_URL="http://127.0.0.1:8080"
+OPEN_WEBUI_QUADLET="$HOME/.config/containers/systemd/open-webui.container"
 
 RUN_PROBE=false
 RUN_FIX=false
@@ -61,11 +67,19 @@ trap 'rm -f "$TAGS_FILE"' EXIT
 # 2. LOAD OPTIONAL CONFIG
 # ------------------------------------------------------------------------------
 # Reuses ask-ollama configuration if present.
+#
+# Supported variables:
+# - DEFAULT_MODEL
+# - OLLAMA_HOST
 # ==============================================================================
 
 if [[ -f "$CONFIG_FILE" ]]; then
   # shellcheck source=/dev/null
   source "$CONFIG_FILE" || true
+
+  if [[ -n "${OLLAMA_HOST:-}" ]]; then
+    OLLAMA_URL="$OLLAMA_HOST"
+  fi
 fi
 
 
@@ -150,7 +164,7 @@ done
 
 
 # ==============================================================================
-# 5. UTILITY FUNCTIONS
+# 5. UTILITY FUNCTIONS — OLLAMA
 # ==============================================================================
 
 ollama_service_exists() {
@@ -189,6 +203,38 @@ restart_ollama() {
   fi
 }
 
+
+# ==============================================================================
+# 6. UTILITY FUNCTIONS — OPEN WEBUI
+# ==============================================================================
+
+open_webui_quadlet_exists() {
+  [[ -f "$OPEN_WEBUI_QUADLET" ]]
+}
+
+open_webui_service_exists() {
+  systemctl --user cat "$OPEN_WEBUI_SERVICE" >/dev/null 2>&1
+}
+
+open_webui_service_running() {
+  systemctl --user is-active --quiet "$OPEN_WEBUI_SERVICE" 2>/dev/null
+}
+
+reload_user_systemd() {
+  action "Reloading user systemd units"
+  systemctl --user daemon-reload
+}
+
+start_open_webui_service() {
+  action "Starting Open WebUI user service"
+  systemctl --user start "$OPEN_WEBUI_SERVICE"
+}
+
+restart_open_webui_service() {
+  action "Restarting Open WebUI user service"
+  systemctl --user restart "$OPEN_WEBUI_SERVICE"
+}
+
 open_webui_container_exists() {
   podman ps -a --format '{{.Names}}' 2>/dev/null | grep -Fxq "$OPEN_WEBUI_CONTAINER"
 }
@@ -197,23 +243,23 @@ open_webui_container_running() {
   podman ps --format '{{.Names}}' 2>/dev/null | grep -Fxq "$OPEN_WEBUI_CONTAINER"
 }
 
+start_open_webui_container() {
+  action "Starting Open WebUI container with Podman"
+  podman start "$OPEN_WEBUI_CONTAINER" >/dev/null
+}
+
+restart_open_webui_container() {
+  action "Restarting Open WebUI container with Podman"
+  podman restart "$OPEN_WEBUI_CONTAINER" >/dev/null
+}
+
 open_webui_reachable() {
   curl -fsS --max-time 5 "$OPEN_WEBUI_URL" >/dev/null 2>&1
 }
 
-start_open_webui() {
-  action "Starting Open WebUI container"
-  podman start "$OPEN_WEBUI_CONTAINER" >/dev/null
-}
-
-restart_open_webui() {
-  action "Restarting Open WebUI container"
-  podman restart "$OPEN_WEBUI_CONTAINER" >/dev/null
-}
-
 
 # ==============================================================================
-# 6. OLLAMA SERVICE / PROCESS CHECK
+# 7. OLLAMA SERVICE / PROCESS CHECK
 # ==============================================================================
 
 section "Ollama Runtime"
@@ -257,7 +303,7 @@ fi
 
 
 # ==============================================================================
-# 7. OLLAMA API CHECK
+# 8. OLLAMA API CHECK
 # ==============================================================================
 
 section "Ollama API"
@@ -281,7 +327,7 @@ fi
 
 
 # ==============================================================================
-# 8. AVAILABLE MODELS
+# 9. AVAILABLE MODELS
 # ==============================================================================
 
 section "Available Models"
@@ -300,7 +346,7 @@ fi
 
 
 # ==============================================================================
-# 9. GPU VISIBILITY CHECK
+# 10. GPU VISIBILITY CHECK
 # ==============================================================================
 
 section "GPU"
@@ -324,7 +370,7 @@ fi
 
 
 # ==============================================================================
-# 10. OPTIONAL INFERENCE PROBE
+# 11. OPTIONAL INFERENCE PROBE
 # ------------------------------------------------------------------------------
 # This loads the default model and runs a tiny prompt, making ollama ps useful.
 # ==============================================================================
@@ -343,7 +389,7 @@ fi
 
 
 # ==============================================================================
-# 11. ACTIVE MODEL / PROCESSOR CHECK
+# 12. ACTIVE MODEL / PROCESSOR CHECK
 # ==============================================================================
 
 section "Active Models"
@@ -372,10 +418,57 @@ fi
 
 
 # ==============================================================================
-# 12. OPEN WEBUI CONTAINER CHECK
+# 13. OPEN WEBUI SERVICE CHECK
 # ==============================================================================
 
-section "Open WebUI"
+section "Open WebUI Service"
+
+if open_webui_quadlet_exists; then
+  ok "Open WebUI Quadlet found: $OPEN_WEBUI_QUADLET"
+else
+  warn "Open WebUI Quadlet not found at $OPEN_WEBUI_QUADLET"
+fi
+
+if open_webui_service_exists; then
+  if open_webui_service_running; then
+    ok "Open WebUI user service is running"
+  else
+    warn "Open WebUI user service exists but is not running"
+
+    if [[ "$RUN_FIX" == true ]]; then
+      start_open_webui_service || true
+      sleep 5
+
+      if open_webui_service_running; then
+        ok "Open WebUI user service started successfully"
+      else
+        fail "Open WebUI user service still not running after attempted fix"
+      fi
+    fi
+  fi
+else
+  warn "Open WebUI user service is not currently generated"
+
+  if [[ "$RUN_FIX" == true && -f "$OPEN_WEBUI_QUADLET" ]]; then
+    reload_user_systemd || true
+    sleep 2
+
+    if open_webui_service_exists; then
+      ok "Open WebUI user service generated after daemon reload"
+      start_open_webui_service || true
+      sleep 5
+    else
+      fail "Open WebUI user service still not generated after daemon reload"
+    fi
+  fi
+fi
+
+
+# ==============================================================================
+# 14. OPEN WEBUI CONTAINER CHECK
+# ==============================================================================
+
+section "Open WebUI Container"
 
 if command -v podman >/dev/null 2>&1; then
   if open_webui_container_running; then
@@ -383,8 +476,8 @@ if command -v podman >/dev/null 2>&1; then
   elif open_webui_container_exists; then
     warn "Open WebUI container exists but is not running"
 
-    if [[ "$RUN_FIX" == true ]]; then
-      start_open_webui || true
+    if [[ "$RUN_FIX" == true && ! open_webui_service_exists ]]; then
+      start_open_webui_container || true
       sleep 5
 
       if open_webui_container_running; then
@@ -404,26 +497,46 @@ else
   warn "Podman not found"
 fi
 
+
+# ==============================================================================
+# 15. OPEN WEBUI HTTP CHECK
+# ==============================================================================
+
+section "Open WebUI Endpoint"
+
 if open_webui_reachable; then
   ok "Open WebUI reachable at $OPEN_WEBUI_URL"
 else
   warn "Open WebUI not reachable at $OPEN_WEBUI_URL"
 
-  if [[ "$RUN_FIX" == true ]] && command -v podman >/dev/null 2>&1 && open_webui_container_exists; then
-    restart_open_webui || true
-    sleep 8
+  if [[ "$RUN_FIX" == true ]]; then
+    if open_webui_service_exists; then
+      restart_open_webui_service || true
+      sleep 8
 
-    if open_webui_reachable; then
-      ok "Open WebUI reachable after restart"
+      if open_webui_reachable; then
+        ok "Open WebUI reachable after service restart"
+      else
+        warn "Open WebUI still unreachable after service restart"
+      fi
+    elif command -v podman >/dev/null 2>&1 && open_webui_container_exists; then
+      restart_open_webui_container || true
+      sleep 8
+
+      if open_webui_reachable; then
+        ok "Open WebUI reachable after container restart"
+      else
+        warn "Open WebUI still unreachable after container restart"
+      fi
     else
-      warn "Open WebUI still unreachable after attempted fix"
+      warn "No Open WebUI service or container available for automatic restart."
     fi
   fi
 fi
 
 
 # ==============================================================================
-# 13. SUMMARY
+# 16. SUMMARY
 # ==============================================================================
 
 section "Summary"
@@ -435,3 +548,8 @@ echo "  ai-status"
 echo "  ai-status --probe"
 echo "  ai-status --fix"
 echo "  ai-status --fix --probe"
+echo ""
+echo "Open WebUI service commands:"
+echo "  systemctl --user status open-webui.service"
+echo "  systemctl --user restart open-webui.service"
+echo "  journalctl --user -u open-webui.service -f"
