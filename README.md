@@ -434,3 +434,15 @@ This project should remain:
 * interesting enough to keep using
 
 The goal is not to become a full-time AI engineer or developer. The goal is to become more fluent in AI systems, infrastructure patterns, and architecture-relevant workflows through hands-on experimentation.
+
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| [01-workstation-overview.md](docs/01-workstation-overview.md) | Architecture, purpose, and current capability |
+| [02-setup-and-prerequisites.md](docs/02-setup-and-prerequisites.md) | Rebuild and setup instructions |
+| [03-tools-reference.md](docs/03-tools-reference.md) | CLI tool usage and examples |
+| [04-open-webui-podman-quadlet.md](docs/04-open-webui-podman-quadlet.md) | Open WebUI container service setup |
+| [05-gpu-and-ollama-troubleshooting.md](docs/05-gpu-and-ollama-troubleshooting.md) | GPU, Ollama, and runtime troubleshooting |
+| [06-model-routing.md](docs/06-model-routing.md) | Current and future model routing |
+| [07-roadmap.md](docs/07-roadmap.md) | Planned future phases |
