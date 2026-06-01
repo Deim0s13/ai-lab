@@ -1,0 +1,292 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ==============================================================================
+# ai-gpu-check
+# ------------------------------------------------------------------------------
+# Focused GPU acceleration validation tool for the local AI workstation.
+#
+# Checks:
+# - NVIDIA GPU visibility inside WSL2
+# - NVIDIA driver and memory details
+# - CUDA library visibility
+# - Ollama service/process status
+# - active Ollama model processor usage
+#
+# Optional:
+# - --probe runs a lightweight inference request to load the default model
+#
+# This tool does NOT:
+# - benchmark models
+# - modify GPU drivers
+# - change Ollama configuration
+# - restart services
+#
+# Examples:
+#   ai-gpu-check
+#   ai-gpu-check --probe
+# ==============================================================================
+
+
+# ==============================================================================
+# 1. BASIC SCRIPT CONFIGURATION
+# ==============================================================================
+
+VERSION="0.1.0"
+SCRIPT_NAME="$(basename "$0")"
+
+CONFIG_FILE="$HOME/.config/ask-ollama/config"
+
+DEFAULT_MODEL="qwen3:14b"
+
+RUN_PROBE=false
+
+
+# ==============================================================================
+# 2. LOAD OPTIONAL CONFIG
+# ------------------------------------------------------------------------------
+# Reuses ask-ollama configuration if present.
+#
+# Supported variable:
+# - DEFAULT_MODEL
+# ==============================================================================
+
+if [[ -f "$CONFIG_FILE" ]]; then
+  # shellcheck source=/dev/null
+  source "$CONFIG_FILE" || true
+fi
+
+
+# ==============================================================================
+# 3. HELP AND OUTPUT FUNCTIONS
+# ==============================================================================
+
+show_help() {
+  cat <<EOF
+Usage:
+  $SCRIPT_NAME [OPTIONS]
+
+Options:
+  -h, --help       Show this help message
+  -v, --version    Display script version
+  --probe          Run a lightweight inference prompt before checking processor usage
+
+Examples:
+  $SCRIPT_NAME
+  $SCRIPT_NAME --probe
+EOF
+}
+
+ok() {
+  echo "✅ $1"
+}
+
+warn() {
+  echo "⚠️  $1"
+}
+
+fail() {
+  echo "❌ $1"
+}
+
+info() {
+  echo "ℹ️  $1"
+}
+
+section() {
+  echo ""
+  echo "== $1 =="
+}
+
+
+# ==============================================================================
+# 4. OPTIONS PARSER
+# ==============================================================================
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      show_help
+      exit 0
+      ;;
+
+    -v|--version)
+      echo "$SCRIPT_NAME version $VERSION"
+      exit 0
+      ;;
+
+    --probe)
+      RUN_PROBE=true
+      ;;
+
+    *)
+      fail "Unknown option: $1"
+      show_help
+      exit 1
+      ;;
+  esac
+
+  shift
+done
+
+
+# ==============================================================================
+# 5. NVIDIA GPU VISIBILITY
+# ==============================================================================
+
+section "NVIDIA GPU Visibility"
+
+if command -v nvidia-smi >/dev/null 2>&1; then
+  ok "nvidia-smi found"
+
+  GPU_NAME="$(nvidia-smi --query-gpu=name --format=csv,noheader | head -n 1)"
+  GPU_DRIVER="$(nvidia-smi --query-gpu=driver_version --format=csv,noheader | head -n 1)"
+  GPU_MEMORY="$(nvidia-smi --query-gpu=memory.total --format=csv,noheader | head -n 1)"
+
+  ok "GPU detected: $GPU_NAME"
+  echo "Driver: $GPU_DRIVER"
+  echo "Memory: $GPU_MEMORY"
+else
+  fail "nvidia-smi not found"
+  warn "WSL2 cannot see the NVIDIA GPU, or NVIDIA WSL support is not configured."
+  exit 1
+fi
+
+
+# ==============================================================================
+# 6. CUDA LIBRARY VISIBILITY
+# ------------------------------------------------------------------------------
+# In WSL2, NVIDIA CUDA libraries are usually exposed via /usr/lib/wsl/lib.
+# This check confirms that libcuda is visible to Linux processes.
+# ==============================================================================
+
+section "CUDA Library Visibility"
+
+if [[ -f /usr/lib/wsl/lib/libcuda.so.1 ]]; then
+  ok "CUDA library visible: /usr/lib/wsl/lib/libcuda.so.1"
+else
+  warn "CUDA library not found at /usr/lib/wsl/lib/libcuda.so.1"
+  warn "Ollama may not be able to use the GPU even if nvidia-smi works."
+fi
+
+if echo "${LD_LIBRARY_PATH:-}" | grep -q "/usr/lib/wsl/lib"; then
+  ok "LD_LIBRARY_PATH includes /usr/lib/wsl/lib"
+else
+  warn "LD_LIBRARY_PATH does not include /usr/lib/wsl/lib"
+  info "This is not always required, but adding it can help some tools find CUDA libraries."
+fi
+
+
+# ==============================================================================
+# 7. OLLAMA RUNTIME CHECK
+# ==============================================================================
+
+section "Ollama Runtime"
+
+if command -v ollama >/dev/null 2>&1; then
+  ok "Ollama CLI found: $(command -v ollama)"
+else
+  fail "Ollama CLI not found"
+  exit 1
+fi
+
+if systemctl list-unit-files --type=service 2>/dev/null | grep -q '^ollama.service'; then
+  if systemctl is-active --quiet ollama; then
+    ok "Ollama service is running"
+  else
+    warn "Ollama service exists but is not running"
+  fi
+else
+  if pgrep -x ollama >/dev/null 2>&1; then
+    ok "Ollama process is running"
+  else
+    warn "Ollama process not detected"
+  fi
+fi
+
+
+# ==============================================================================
+# 8. OPTIONAL INFERENCE PROBE
+# ------------------------------------------------------------------------------
+# Runs a tiny prompt to force the model to load, making ollama ps meaningful.
+# ==============================================================================
+
+if [[ "$RUN_PROBE" == true ]]; then
+  section "Inference Probe"
+
+  echo "Running lightweight prompt with model: $DEFAULT_MODEL"
+
+  if timeout 120s ollama run "$DEFAULT_MODEL" "Reply with exactly: ok" >/dev/null 2>&1; then
+    ok "Inference probe completed"
+  else
+    warn "Inference probe did not complete within 120 seconds"
+  fi
+fi
+
+
+# ==============================================================================
+# 9. OLLAMA PROCESSOR USAGE
+# ------------------------------------------------------------------------------
+# ollama ps is the most useful quick check.
+#
+# Desired result:
+#   PROCESSOR: 100% GPU
+#
+# CPU-only result means Ollama is not using the NVIDIA GPU for the active model.
+# ==============================================================================
+
+section "Ollama Processor Usage"
+
+OLLAMA_PS_OUTPUT="$(ollama ps 2>/dev/null || true)"
+ACTIVE_MODELS="$(echo "$OLLAMA_PS_OUTPUT" | awk 'NR > 1')"
+
+if [[ -z "$ACTIVE_MODELS" ]]; then
+  warn "No active models loaded"
+  info "Run: ai-gpu-check --probe"
+else
+  echo "$OLLAMA_PS_OUTPUT"
+
+  if echo "$OLLAMA_PS_OUTPUT" | grep -qi "100% GPU"; then
+    ok "Ollama reports 100% GPU usage"
+  elif echo "$OLLAMA_PS_OUTPUT" | grep -qi "GPU"; then
+    ok "Ollama reports GPU usage"
+    warn "Usage may be split between CPU and GPU depending on model size, VRAM, and offloading."
+  elif echo "$OLLAMA_PS_OUTPUT" | grep -qi "CPU"; then
+    fail "Ollama reports CPU usage"
+    warn "GPU is visible, but Ollama is not using it for the active model."
+  else
+    warn "Unable to determine processor usage from ollama ps"
+  fi
+fi
+
+
+# ==============================================================================
+# 10. NVIDIA PROCESS CHECK
+# ------------------------------------------------------------------------------
+# This shows whether any process is currently consuming GPU memory.
+# It is useful as a secondary validation alongside ollama ps.
+# ==============================================================================
+
+section "NVIDIA Process Snapshot"
+
+nvidia-smi
+
+
+# ==============================================================================
+# 11. SUMMARY
+# ==============================================================================
+
+section "Summary"
+
+echo "GPU acceleration check complete."
+echo ""
+echo "Useful commands:"
+echo "  ai-gpu-check"
+echo "  ai-gpu-check --probe"
+echo "  ollama ps"
+echo "  nvidia-smi"
+echo ""
+echo "Interpretation:"
+echo "  nvidia-smi visible + ollama ps shows GPU = GPU path is working"
+echo "  nvidia-smi visible + ollama ps shows CPU = Ollama is not using GPU"
+echo "  nvidia-smi missing = WSL2/NVIDIA driver path is not working"
