@@ -12,10 +12,12 @@ set -euo pipefail
 # - simple last-response memory
 # - stdin input via pipes
 # - saving responses to markdown files
+# - basic model routing with --auto
 #
 # Example:
 #   ask-ollama --persona architect --style writing-style "Explain RAG"
 #   ask-ollama --persona architect --style writing-style --domain banking "Explain RAG to a bank"
+#   ask-ollama --auto "Compare OpenShift AI and SageMaker"
 # ==============================================================================
 
 
@@ -23,7 +25,7 @@ set -euo pipefail
 # 1. BASIC SCRIPT CONFIGURATION
 # ==============================================================================
 
-VERSION="0.4.0"
+VERSION="0.5.0"
 SCRIPT_NAME="$(basename "$0")"
 
 CONFIG_FILE="$HOME/.config/ask-ollama/config"
@@ -34,12 +36,19 @@ CONTEXT_DIR="$HOME/projects/ai-lab/tools/context"
 DEFAULT_MODEL="qwen3:14b"
 OLLAMA_HOST="http://127.0.0.1:11434"
 
+AUTO_ROUTE=false
+
+ROUTER_EXPLAIN_MODEL="qwen3:14b"
+ROUTER_REASONING_MODEL="deepseek-r1:14b"
+ROUTER_FAST_MODEL="llama3.1:8b"
+
 
 # ==============================================================================
 # 2. RUNTIME DEFAULTS
 # ==============================================================================
 
 MODEL_NAME="$DEFAULT_MODEL"
+MODEL_EXPLICIT=false
 
 PERSONA_FILE=""
 STYLE_FILE=""
@@ -87,11 +96,17 @@ Memory and Output:
   --continue              Include previous response as context
   -s, --save FILE         Save output to markdown file
 
+Model Routing:
+  --auto                  Automatically select a model based on the prompt
+
 Examples:
   $SCRIPT_NAME "Explain RAG"
   $SCRIPT_NAME --persona architect --style writing-style "Explain RAG"
   $SCRIPT_NAME --persona architect --style writing-style --domain banking "Explain RAG to a banking customer"
   $SCRIPT_NAME --continue "Make that more concise"
+  $SCRIPT_NAME --auto "Explain RAG"
+  $SCRIPT_NAME --auto "Compare OpenShift AI and SageMaker"
+  $SCRIPT_NAME --auto "Rewrite this into concise talking points"
   cat notes.md | $SCRIPT_NAME --persona architect "Summarise the input content into key themes"
 
 Context directory:
@@ -120,6 +135,30 @@ load_context_file() {
   [[ ! -f "$file_path" ]] && handle_error "$label file not found: $file_path"
 
   cat "$file_path"
+}
+
+route_model() {
+  local prompt="$1"
+  local prompt_lower
+
+  prompt_lower="$(echo "$prompt" | tr '[:upper:]' '[:lower:]')"
+
+  # Reasoning / analysis / trade-off heavy tasks
+  if echo "$prompt_lower" | grep -Eq \
+    "compare|comparison|trade.?off|tradeoff|risk|risks|challenge|assumption|strategy|strategic|evaluate|assess|analyse|analyze|decision|option|pros and cons|objection|concern"; then
+    echo "$ROUTER_REASONING_MODEL"
+    return
+  fi
+
+  # Fast / writing / lightweight tasks
+  if echo "$prompt_lower" | grep -Eq \
+    "rewrite|reword|make.*concise|shorten|summari[sz]e briefly|talking points|bullet points|quick|simple|one paragraph|email|draft"; then
+    echo "$ROUTER_FAST_MODEL"
+    return
+  fi
+
+  # Default: strong general architecture model
+  echo "$ROUTER_EXPLAIN_MODEL"
 }
 
 
@@ -182,6 +221,7 @@ EOF
 #   --domain banking
 #   --continue
 #   --save output.md
+#   --auto
 # ==============================================================================
 
 while [[ $# -gt 0 ]]; do
@@ -204,7 +244,12 @@ while [[ $# -gt 0 ]]; do
     -m|--model)
       shift
       MODEL_NAME="${1:-}"
+      MODEL_EXPLICIT=true
       [[ -z "$MODEL_NAME" ]] && handle_error "Missing model name after --model"
+      ;;
+
+    --auto)
+      AUTO_ROUTE=true
       ;;
 
     --persona)
@@ -260,6 +305,15 @@ done
   show_help
   exit 1
 }
+
+if [[ "$AUTO_ROUTE" == true && "$MODEL_EXPLICIT" == true ]]; then
+  handle_error "Use either --auto or --model, not both."
+fi
+
+if [[ "$AUTO_ROUTE" == true ]]; then
+  ROUTED_MODEL="$(route_model "$QUESTION")"
+  MODEL_NAME="$ROUTED_MODEL"
+fi
 
 if ! ollama list | awk 'NR > 1 {print $1}' | grep -Fxq "$MODEL_NAME"; then
   handle_error "Model '$MODEL_NAME' not found. Run '$SCRIPT_NAME --list-models'."
@@ -334,6 +388,10 @@ PROMPT="$(build_prompt "$QUESTION" "$STDIN_CONTENT" "$MEMORY_CONTENT" "$CONTEXT_
 # Uses direct ollama CLI execution for simplicity and reliability.
 # ==============================================================================
 
+if [[ "$AUTO_ROUTE" == true ]]; then
+  echo "Routing selected model: $MODEL_NAME" >&2
+fi
+
 RESPONSE="$(ollama run "$MODEL_NAME" "$PROMPT")"
 
 
@@ -361,6 +419,8 @@ if [[ -n "$SAVE_FILE" ]]; then
     echo "**Style:** ${STYLE_FILE:-none}"
     echo ""
     echo "**Domain:** ${DOMAIN_FILE:-none}"
+    echo ""
+    echo "**Auto route:** $AUTO_ROUTE"
     echo ""
     echo "**Question:** $QUESTION"
     echo ""
