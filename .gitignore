@@ -1,0 +1,29 @@
+# Local runtime files
+*.log
+*.tmp
+*.cache
+
+# Python / tooling leftovers
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Local secrets/config
+.env
+.env.*
+*.key
+*.pem
+
+# OS/editor noise
+.DS_Store
+.vscode/
+.idea/
+
+# Large local model/runtime data
+models/
+data/
+
+# Runtime container data
+containers/**/data/
+~/containers/

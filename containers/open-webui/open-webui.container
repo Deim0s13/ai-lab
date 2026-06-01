@@ -1,0 +1,18 @@
+[Unit]
+Description=Open WebUI - Local AI Web Interface
+Wants=network-online.target
+After=network-online.target
+
+[Container]
+ContainerName=open-webui
+Image=ghcr.io/open-webui/open-webui:main
+Network=host
+Environment=OLLAMA_BASE_URL=http://127.0.0.1:11434
+Volume=%h/containers/open-webui:/app/backend/data
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=default.target
