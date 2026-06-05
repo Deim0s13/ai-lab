@@ -10,14 +10,17 @@ set -euo pipefail
 # - architect persona
 # - writing style guidance
 # - optional domain context, such as banking
+# - automatic model routing
 #
 # Supports common architecture workflows:
 # - explain
-# - risks
-# - compare
 # - summary
+# - compare
+# - risks
 # - discovery
 # - talking-points
+# - challenge
+# - position
 #
 # Example:
 #   architect-ai explain "RAG"
@@ -30,7 +33,7 @@ set -euo pipefail
 # 1. BASIC SCRIPT CONFIGURATION
 # ==============================================================================
 
-VERSION="0.1.0"
+VERSION="0.3.0"
 SCRIPT_NAME="$(basename "$0")"
 
 DEFAULT_PERSONA="architect"
@@ -63,9 +66,9 @@ Optional Domain:
 
 Commands:
   explain              Explain a concept for an architecture audience
-  risks                Identify likely risks, concerns, objections, and governance issues
-  compare              Compare technologies or approaches
   summary              Create an executive-level summary
+  compare              Compare technologies or approaches
+  risks                Identify risks, objections, and governance concerns
   discovery            Generate customer discovery questions
   talking-points       Create concise talking points
   challenge            Challenge assumptions and identify blind spots
@@ -77,12 +80,19 @@ Options:
 
 Examples:
   $SCRIPT_NAME explain "RAG"
-  $SCRIPT_NAME banking explain "RAG"
-  $SCRIPT_NAME risks "OpenShift AI"
-  $SCRIPT_NAME banking compare "OpenShift AI vs SageMaker"
+  $SCRIPT_NAME summary "platform engineering"
+  $SCRIPT_NAME compare "OpenShift AI vs SageMaker"
+  $SCRIPT_NAME risks "self-hosted AI platform"
   $SCRIPT_NAME discovery "enterprise AI adoption"
-  $SCRIPT_NAME challenge "self-hosted AI platform"
+  $SCRIPT_NAME talking-points "OpenShift AI for platform teams"
+  $SCRIPT_NAME challenge "AI platform operating model"
   $SCRIPT_NAME position "OpenShift AI for regulated enterprises"
+
+Banking examples:
+  $SCRIPT_NAME banking explain "RAG"
+  $SCRIPT_NAME banking compare "OpenShift AI vs SageMaker"
+  $SCRIPT_NAME banking risks "self-hosted AI platform"
+  $SCRIPT_NAME banking discovery "enterprise AI adoption"
 EOF
 }
 
@@ -97,7 +107,7 @@ handle_error() {
 # ==============================================================================
 
 if ! command -v ask-ollama >/dev/null 2>&1; then
-  handle_error "ask-ollama not found in PATH. Ensure ~/projects/linux-ai-lab/tools is in your PATH."
+  handle_error "ask-ollama not found in PATH. Ensure ~/projects/ai-lab/tools is in your PATH."
 fi
 
 
@@ -106,11 +116,9 @@ fi
 # ------------------------------------------------------------------------------
 # Converts a high-level architecture workflow command into a structured prompt.
 #
-# Example:
-#   architect-ai risks "OpenShift AI"
-#
-# becomes a reusable prompt focused on risks, objections, governance,
-# operational considerations, and conversation prompts.
+# The goal is not to create generic AI responses. The goal is to produce useful
+# architecture-oriented material that supports customer conversations, decision
+# framing, discovery, and practical enterprise technology thinking.
 # ==============================================================================
 
 build_workflow_prompt() {
@@ -120,45 +128,18 @@ build_workflow_prompt() {
   case "$command" in
     explain)
       cat <<EOF
-Explain '$topic' for an experienced enterprise/pre-sales architect.
+Explain '$topic' for an experienced enterprise and pre-sales architect.
 
-Focus on:
-- what it is
-- why it matters
-- where it fits architecturally
-- key trade-offs
-- risks and constraints
-- customer relevance
-- practical adoption considerations
-EOF
-      ;;
+Use this structure:
+1. Plain-English explanation
+2. Why it matters
+3. Where it fits architecturally
+4. Key trade-offs
+5. Risks or constraints
+6. Customer relevance
+7. Practical adoption considerations
 
-    risks)
-      cat <<EOF
-For '$topic', identify likely customer risks, objections, governance concerns, operational considerations, adoption challenges, and decision-maker sensitivities.
-
-Structure the response around:
-- executive concerns
-- technology concerns
-- operating model impacts
-- security and governance issues
-- adoption risks
-- suggested conversation prompts
-EOF
-      ;;
-
-    compare)
-      cat <<EOF
-Compare '$topic' from an enterprise architecture and pre-sales perspective.
-
-Focus on:
-- business outcomes
-- architectural fit
-- operating model implications
-- governance and security
-- cost and commercial considerations
-- adoption risks
-- when each option is most appropriate
+Avoid unnecessary low-level implementation detail unless it affects architecture, risk, governance, or operating model decisions.
 EOF
       ;;
 
@@ -166,12 +147,51 @@ EOF
       cat <<EOF
 Create a concise executive-level summary on '$topic'.
 
-Include:
-- why it matters
-- business value
-- key risks
-- architectural implications
-- recommended next step
+Use this structure:
+1. Executive summary
+2. Why this matters now
+3. Business value
+4. Key risks or considerations
+5. Architecture and operating model implications
+6. Recommended next step
+
+Keep the language clear, credible, and suitable for senior technology leadership.
+EOF
+      ;;
+
+    compare)
+      cat <<EOF
+Compare '$topic' from an enterprise architecture and pre-sales perspective.
+
+Use this structure:
+1. Summary view
+2. Option or approach comparison
+3. Key architecture trade-offs
+4. Operating model implications
+5. Security, governance, and risk considerations
+6. Integration and adoption considerations
+7. Best-fit scenarios
+8. Recommendation framing
+
+Avoid a generic feature-by-feature comparison. Focus on practical decision-making, customer outcomes, and enterprise adoption realities.
+EOF
+      ;;
+
+    risks)
+      cat <<EOF
+Identify the likely risks, objections, governance concerns, operational considerations, and adoption challenges for '$topic'.
+
+Use this structure:
+1. Executive concerns
+2. Architecture and technology risks
+3. Security and governance risks
+4. Operating model impacts
+5. Adoption and change risks
+6. Likely customer objections
+7. Questions to ask
+8. Practical next steps
+
+Focus on realistic enterprise concerns rather than theoretical risks.
 EOF
       ;;
 
@@ -179,14 +199,17 @@ EOF
       cat <<EOF
 Generate practical customer discovery questions for '$topic'.
 
-Group them by:
-- strategy
-- business outcomes
-- current state
-- technical constraints
-- governance and security
-- operating model
-- decision criteria
+Use this structure:
+1. Strategy and business outcome questions
+2. Current-state questions
+3. Architecture and integration questions
+4. Security, governance, and risk questions
+5. Operating model and ownership questions
+6. Platform and delivery questions
+7. Decision criteria questions
+8. Useful follow-up prompts
+
+The questions should help an architect understand context, constraints, motivation, risks, and decision drivers.
 EOF
       ;;
 
@@ -194,12 +217,16 @@ EOF
       cat <<EOF
 Create concise talking points for '$topic' suitable for a customer or leadership conversation.
 
-The talking points should be:
-- clear
-- credible
-- practical
-- outcome-focused
-- grounded in realistic enterprise considerations
+Use this structure:
+1. Opening framing
+2. Key messages
+3. Business outcome angle
+4. Architecture angle
+5. Risk and governance angle
+6. Practical adoption angle
+7. Suggested closing point
+
+Keep the talking points clear, credible, and easy to use in conversation.
 EOF
       ;;
 
@@ -207,13 +234,16 @@ EOF
       cat <<EOF
 Challenge the assumptions behind '$topic'.
 
-Identify:
-- hidden assumptions
-- likely blind spots
-- risks that may be underestimated
-- questions that should be asked before proceeding
-- alternative perspectives
-- practical ways to test the thinking
+Use this structure:
+1. Likely assumptions being made
+2. Hidden risks or blind spots
+3. Questions that should be asked before proceeding
+4. Alternative perspectives
+5. Signals that the approach may not be suitable
+6. Practical ways to test or validate the thinking
+7. Balanced conclusion
+
+Be constructive. The aim is to improve the quality of thinking, not to be negative for the sake of it.
 EOF
       ;;
 
@@ -221,13 +251,18 @@ EOF
       cat <<EOF
 Create positioning guidance for '$topic' suitable for a customer conversation.
 
-Include:
-- simple positioning statement
-- why it matters to the customer
-- business and operating model relevance
-- likely objections
-- how to respond to those objections
-- suggested conversation openers
+Use this structure:
+1. Simple positioning statement
+2. Customer problem or opportunity
+3. Why it matters
+4. Business and architecture relevance
+5. Operating model relevance
+6. Likely objections
+7. How to respond to those objections
+8. Suggested conversation openers
+9. Practical next step
+
+Avoid marketing-heavy language. Focus on credible, outcome-oriented positioning.
 EOF
       ;;
 
@@ -304,6 +339,7 @@ PROMPT="$(build_workflow_prompt "$COMMAND" "$TOPIC")"
 # ------------------------------------------------------------------------------
 # ask-ollama handles:
 # - model execution
+# - automatic model routing
 # - persona loading
 # - writing style loading
 # - optional domain context
@@ -312,6 +348,7 @@ PROMPT="$(build_workflow_prompt "$COMMAND" "$TOPIC")"
 # ==============================================================================
 
 ask-ollama \
+  --auto \
   --persona "$DEFAULT_PERSONA" \
   --style "$DEFAULT_STYLE" \
   $DOMAIN_ARGS \
