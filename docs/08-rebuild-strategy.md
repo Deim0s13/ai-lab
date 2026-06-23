@@ -335,31 +335,50 @@ systemd/
 
 Secrets must never be committed to the repository.
 
-Initial approach:
+The preferred secrets approach is Bitwarden.
+
+Bitwarden fits this project because it is already in use, supports CLI-based workflows, and avoids introducing an unnecessarily heavy secrets platform for a personal workstation.
+
+Initial strategy:
 
 ```text
-.env.example committed
-.env.local ignored
+
+Bitwarden
+
+= preferred source for secrets
+
+.env.example
+
+= committed template
+
+.env.local
+
+= ignored local fallback only
 ```
 
-Initial expected secrets:
+Expected secrets may include
 
 ```text
 ANTHROPIC_API_KEY=
 OPENAI_API_KEY=
 GEMINI_API_KEY=
 ```
+Possible implementation options:
 
-Possible future options:
+- Bitwarden CLI
+- Bitwarden Secrets Manager CLI
+- temporary .env.local fallback for early development
 
-```text
-1Password CLI
-pass
-sops + age
-OS keychain
-```
+The project should not store secrets directly in:
 
-The first implementation can remain simple, but the project should avoid spreading secrets across machine state.
+- committed files
+- shell profiles
+- bootstrap scripts
+- container compose files
+- model routing configuration
+
+Future validation should check whether required secrets can be resolved through the selected secrets method.
+
 
 ---
 

@@ -115,11 +115,15 @@ Expected local runtimes:
 - oMLX / MLX-compatible runtime
 - Ollama fallback
 
-Expected frontier providers:
+Approved / first-use AI tools:
+
+- Gemini
+- Cursor
+
+Additional frontier providers, depending on the use case and approval context:
 
 - Anthropic
 - OpenAI
-- Gemini, if useful
 
 ---
 

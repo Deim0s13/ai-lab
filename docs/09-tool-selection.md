@@ -376,6 +376,40 @@ It is important because model choices should be based on fit, not hype.
 
 Candidate / Planned
 
+## 6.8 Secrets Management
+
+### Capability
+
+Secrets Management
+
+### Candidate
+
+Bitwarden
+
+### Why it is being considered
+
+Bitwarden is already in use and fits the project’s open-source-first approach. It provides a practical way to manage API keys and sensitive values without introducing a heavier secrets platform such as HashiCorp Vault.
+
+The project may use either the Bitwarden CLI or Bitwarden Secrets Manager CLI, depending on what proves most appropriate for local workstation use.
+
+### Selection questions
+
+- Can secrets be retrieved reliably from the CLI?
+
+- Does the workflow work on macOS, Windows and future Linux profiles?
+
+- Can it support rebuildable setup without committing secrets?
+
+- Is the developer experience simple enough for daily use?
+
+- Can `.env.local` remain a fallback rather than the default?
+
+- Can validation scripts check for required secrets without exposing them?
+
+### Initial status
+
+Candidate / Preferred direction
+
 ---
 
 ## 7. When to build custom
