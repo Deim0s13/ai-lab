@@ -155,6 +155,18 @@ Expected environment:
 - local GPU where available
 - container runtime
 
+Primary frontier providers:
+
+- OpenAI
+- Anthropic
+
+
+Additional frontier proviers, depending on use case:
+
+- Gemini
+
+The `windows-personal` profile can take a more experimental posture than the work profile. It should still default to local models where appropriate, but OpenAI and Anthropic are expected to be the main frontier escalation paths for personal development, coding and experimentation workflows.
+
 ---
 
 ### Future Atomic Linux Workstation
@@ -349,11 +361,21 @@ Manual machine state should be avoided or documented.
 
 Secrets must not be committed to the repository.
 
-The initial approach is:
+The preferred secrets approach is Bitwarden.
+
+I already use Bitwarden, so this project should leverage it rather than introduce a heavier secrets platform such as HashiCorp Vault. Bitwarden keeps the setup aligned with the project’s open-source-first and rebuildable principles without adding unnecessary operational complexity.
+
+The intended approach is:
 
 ```text
-.env.example   committed
-.env.local     ignored
+Bitwarden
+= preferred source for API keys and sensitive values
+
+.env.local
+= local fallback only, ignored by git
+
+.env.example
+= committed template showing required variable names
 ```
 
 Expected secrets may include:
@@ -363,8 +385,6 @@ ANTHROPIC_API_KEY=
 OPENAI_API_KEY=
 GEMINI_API_KEY=
 ```
-
-Future options may include 1Password CLI, `pass`, `sops` with `age`, or OS keychain integration.
 
 ---
 
