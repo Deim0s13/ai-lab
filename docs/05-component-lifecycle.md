@@ -1,392 +1,444 @@
 # Component Lifecycle
 
-This document defines how tools, runtimes, providers and components move through the AI Dev Workstation as Code project.
-
-The AI tooling space moves quickly. New tools will appear, existing tools will change direction, and some tools will become obsolete.
-
-This project should make it easy to trial new tools without turning the workstation into a messy collection of experiments.
-
----
-
 ## 1. Purpose
 
-The component lifecycle provides a simple way to manage change.
+This document defines how tools, runtimes, providers, services and custom scripts move through the **AI Dev Workstation as Code** lifecycle.
 
-It helps answer:
+I want the workstation to stay useful and maintainable as AI tooling changes. That means I need a clear way to trial tools, adopt them, replace them and remove them without letting the repo turn into a pile of abandoned experiments.
 
-- Is this tool just being researched?
-- Is it being trialled?
-- Is it part of the standard build?
-- Is it the preferred implementation?
-- Is it being replaced?
-- Has it been removed?
+The lifecycle is intended to support three things:
 
-This avoids confusion and keeps the workstation maintainable.
+```text id="8f5mt3"
+Experiment safely.
+Adopt deliberately.
+Remove cleanly.
+```
 
 ---
 
-## 2. Lifecycle states
+## 2. What counts as a component
 
-Components move through the following states:
+A component is any tool, service, runtime, provider or project-specific script that implements part of the workstation.
 
-```text
+Examples include:
+
+| Component type | Examples |
+|---|---|
+| Model gateway | LiteLLM or equivalent |
+| Local runtime | Ollama, oMLX / MLX-compatible runtime |
+| Frontier / approved provider | Gemini, Cursor, OpenAI, Anthropic |
+| Chat UI | Open WebUI |
+| CLI coding assistant | Aider, OpenCode |
+| Agent runner | Goose |
+| Model fitness tool | llmfit |
+| Secrets tool | Bitwarden CLI / Secrets Manager CLI |
+| Custom command | `ask-ai`, `ai-route`, `ai-status`, `ai-bootstrap-check` |
+| Containerised service | Gateway, Open WebUI, future vector database |
+| Configuration model | Routing config, provider config, profile config |
+
+Components are different from capabilities.
+
+A capability describes what the workstation needs to do.  
+A component is the current implementation of that capability.
+
+---
+
+## 3. Lifecycle model
+
+```mermaid id="f4cnfv"
+stateDiagram-v2
+    [*] --> Candidate
+    Candidate --> Trial
+    Trial --> Adopted
+    Adopted --> Preferred
+    Candidate --> Rejected
+    Trial --> Rejected
+    Adopted --> Deprecated
+    Preferred --> Deprecated
+    Deprecated --> Removed
+    Rejected --> [*]
+    Removed --> [*]
+```
+
+The standard lifecycle is:
+
+```text id="f8frrq"
 Candidate → Trial → Adopted → Preferred → Deprecated → Removed
 ```
 
-Not every component needs to reach every state.
-
-Some candidates may never be trialled.
-
-Some trials may be removed.
-
-Some adopted tools may never become preferred.
+`Rejected` is used when a tool is assessed but not taken forward.
 
 ---
 
-## 3. Candidate
+## 4. Lifecycle states
 
-A candidate is a tool or component worth considering.
+| State | Meaning |
+|---|---|
+| Candidate | A tool or component looks relevant and may be assessed. |
+| Trial | I am actively testing it against a real workflow. |
+| Adopted | It is part of the workstation build or regular workflow. |
+| Preferred | It is the default implementation for a capability or profile. |
+| Deprecated | It is still present but should be replaced or removed. |
+| Removed | It has been removed from the active workstation. |
+| Rejected | It was considered but not taken forward. |
 
-It has not yet been tested enough to become part of the workstation.
+---
 
-A candidate should have:
+## 5. Lifecycle criteria
 
-- a clear capability it may satisfy
-- a reason for consideration
-- a link to the project or documentation
-- initial notes about fit
-- any obvious risks
+### Candidate
 
-Example:
+A component can be marked as **Candidate** when it appears to satisfy a capability or may solve a known problem.
 
-```yaml
-name: OpenCode
-capability: CLI Coding Assistant
-status: Candidate
-reason: Possible open-source coding agent for terminal and IDE workflows.
+Typical evidence:
+
+- it maps to a defined capability
+- it appears actively maintained
+- it has useful documentation
+- it supports CLI, API or config-driven usage
+- it looks compatible with the target profiles
+- it does not obviously conflict with security or rebuildability principles
+
+Candidate components should not be treated as standard parts of the workstation yet.
+
+---
+
+### Trial
+
+A component moves to **Trial** when I am testing it against a real workflow.
+
+A trial should have:
+
+- a defined capability
+- a specific use case
+- an expected outcome
+- clear install steps
+- basic configuration
+- notes on what worked and what did not
+- a decision point
+
+Examples:
+
+| Component | Trial workflow |
+|---|---|
+| LiteLLM | Can CLI and Open WebUI route through a common gateway? |
+| Open WebUI | Can the chat UI use the same gateway as the CLI? |
+| Aider | Can it support local-first coding workflows? |
+| llmfit | Can it produce useful model shortlists per device? |
+| Goose | Can it run constrained agent workflows safely? |
+
+A trial should not become permanent just because it was installed.
+
+---
+
+### Adopted
+
+A component becomes **Adopted** when it is useful enough to become part of the standard workstation.
+
+Adoption requires:
+
+- it supports a real recurring workflow
+- it can be installed or configured repeatably
+- it has a documented role
+- it fits the relevant capability contract
+- it does not create unacceptable security or privacy issues
+- it can be validated or checked in some way
+- it has a clear removal path
+
+Adopted components should appear in the relevant docs, config or bootstrap process.
+
+---
+
+### Preferred
+
+A component becomes **Preferred** when it is the default implementation for a capability or profile.
+
+Preferred status means:
+
+- it is the current recommended choice
+- it is part of the normal workstation build
+- other components are compared against it
+- replacement requires a deliberate decision
+- it should have clear documentation and validation
+
+Examples might become:
+
+| Capability | Preferred component |
+|---|---|
+| Windows local runtime | Ollama |
+| Secrets management | Bitwarden |
+| Model gateway | LiteLLM, if trial succeeds |
+| Chat UI | Open WebUI, if trial succeeds |
+
+Preferred does not mean permanent. It means this is the best current fit.
+
+---
+
+### Deprecated
+
+A component becomes **Deprecated** when it is still present but should no longer be used for new workflows.
+
+Reasons include:
+
+- better replacement selected
+- poor maintenance
+- weak profile support
+- poor gateway compatibility
+- security or privacy concern
+- too much operational overhead
+- no longer supports a recurring workflow
+- no longer aligns with the architecture principles
+
+Deprecated components should have:
+
+- a reason for deprecation
+- a replacement path if applicable
+- a removal target or trigger
+- any migration notes needed
+
+---
+
+### Removed
+
+A component becomes **Removed** when it is no longer part of the active workstation.
+
+Before removal, I should check:
+
+- whether any profile still references it
+- whether any CLI command depends on it
+- whether any docs still describe it as active
+- whether any config, container, package or bootstrap file still includes it
+- whether any archived notes should be retained
+
+Removal should be clean, but historical context can stay in the archive or ADRs.
+
+---
+
+### Rejected
+
+A component is **Rejected** when it has been considered but not taken forward.
+
+Reasons may include:
+
+- poor fit to the capability
+- inactive project
+- too much complexity
+- poor CLI support
+- weak gateway integration
+- security concern
+- conflicts with work profile posture
+- not useful enough for a recurring workflow
+
+Rejected components do not need long documentation, but a short note can prevent revisiting the same option later.
+
+---
+
+## 6. Component record
+
+When a component becomes more than a casual idea, it should have a simple record.
+
+The record can live in:
+
+```text id="pjvrd1"
+docs/components/
 ```
 
----
+or inside the relevant capability, ADR or tool selection document until a separate directory is needed.
 
-## 4. Trial
+Suggested format:
 
-A trial component is being actively tested.
-
-It may be installed on one profile or used in one workflow, but it is not yet considered standard.
-
-A trial should define:
-
-- test scope
-- target profile
-- success criteria
-- failure criteria
-- install method
-- rollback or removal approach
-
-Example:
-
-```yaml
-name: Aider
-capability: CLI Coding Assistant
-status: Trial
-profile: windows-personal
-success_criteria:
-  - Can use local model through gateway
-  - Can edit a small repo safely
-  - Can escalate to frontier model when needed
-```
-
----
-
-## 5. Adopted
-
-An adopted component is part of the workstation.
-
-It is considered useful enough to keep and maintain.
-
-An adopted component should have:
-
-- documented install process
-- configuration in the repo
-- known role
-- validation checks where practical
-- replacement criteria
-
-Example:
-
-```yaml
-name: Ollama
-capability: Local Runtime
-status: Adopted
-profiles:
-  - windows-personal
-  - macos-work
-```
-
----
-
-## 6. Preferred
-
-A preferred component is the default implementation for a capability.
-
-There should usually be only one preferred component per capability per profile.
-
-Example:
-
-```yaml
+```yaml id="v16noe"
+name: LiteLLM
 capability: Model Gateway
-preferred: LiteLLM
-status: Preferred
+status: Candidate
+profiles:
+  - macos-work
+  - windows-personal
+current_role: Common model gateway and provider abstraction
+why_considered:
+  - Multi-provider gateway
+  - OpenAI-compatible endpoint
+  - Works with local and frontier providers
+selection_criteria:
+  - Open WebUI compatibility
+  - CLI compatibility
+  - Local runtime support
+  - Gemini/OpenAI/Anthropic support
+  - Simple local deployment
+risks:
+  - Additional moving part
+  - Configuration complexity
+replacement_trigger:
+  - Better gateway emerges
+  - Poor local runtime support
+  - Too much operational overhead
+review_date: 2026-09-30
 ```
 
-Preferred does not mean permanent. It means default for now.
-
-A preferred component can be replaced if a better option emerges.
+This does not need to become heavy. The goal is to avoid losing track of why a component exists.
 
 ---
 
-## 7. Deprecated
+## 7. Lifecycle decision flow
 
-A deprecated component is still present but should no longer be used for new work.
+```mermaid id="r1xdtd"
+flowchart TD
+    Need[New need or interesting tool]
+    Capability{Maps to a capability?}
+    Existing{Existing component?}
+    Assess[Assess against capability contract]
+    Candidate[Mark Candidate]
+    Trial[Run Trial]
+    Decision{Useful for recurring workflow?}
+    Adopt[Adopt]
+    Prefer{Default for capability/profile?}
+    Preferred[Mark Preferred]
+    Reject[Reject]
+    Deprecate[Deprecate older component]
+    Remove[Remove when safe]
 
-Deprecation should include:
-
-- reason for deprecation
-- replacement path
-- expected removal timing
-- migration notes
-
-Example:
-
-```yaml
-name: Old ask-ollama script
-status: Deprecated
-replacement: ask-ai
-reason: Hard-coded to Ollama and does not support gateway routing.
-```
-
----
-
-## 8. Removed
-
-A removed component is no longer part of the workstation.
-
-Before removal, consider whether the component should be archived.
-
-Removed components should be noted if they were previously adopted or preferred.
-
-Example:
-
-```yaml
-name: old-local-only-routing-script
-status: Removed
-reason: Replaced by gateway routing policy.
-removed_in: v0.3
-```
-
----
-
-## 9. Component record
-
-Each significant component should have a record.
-
-This can start in a simple YAML file such as:
-
-```text
-config/capabilities/components.yaml
-```
-
-Example structure:
-
-```yaml
-components:
-  litellm:
-    name: LiteLLM
-    capability: Model Gateway
-    status: Trial
-    profiles:
-      - macos-work
-      - windows-personal
-    install_method: container
-    replacement_criteria:
-      - multiple provider support
-      - OpenAI-compatible endpoint
-      - local and frontier model support
-      - active maintenance
-
-  ollama:
-    name: Ollama
-    capability: Local Runtime
-    status: Adopted
-    profiles:
-      - windows-personal
-      - macos-work
-    install_method: host
-```
-
-This can evolve over time.
-
----
-
-## 10. Trial criteria
-
-A component should only move from Candidate to Trial when it has a clear test purpose.
-
-Questions to ask:
-
-- What capability does it satisfy?
-- Which profile will trial it?
-- What workflow will test it?
-- What does success look like?
-- What does failure look like?
-- How do we remove it cleanly?
-
-Avoid trialling tools only because they are interesting.
-
----
-
-## 11. Adoption criteria
-
-A component should only move from Trial to Adopted when it has proven value.
-
-Adoption criteria may include:
-
-- supports a real recurring workflow
-- works with the gateway or profile model
-- can be installed reproducibly
-- has clear documentation
-- is actively maintained
-- does not create unacceptable lock-in
-- is easier to keep than remove
-
----
-
-## 12. Preferred criteria
-
-A component should only become Preferred when it is the default choice for a capability.
-
-Preferred components should be:
-
-- reliable
-- documented
-- rebuildable
-- validated
-- actively used
-- aligned to project principles
-
-Preferred components should still be replaceable.
-
----
-
-## 13. Deprecation criteria
-
-A component may be deprecated when:
-
-- it no longer fits the architecture
-- it has been replaced by a better tool
-- it is no longer actively maintained
-- it creates too much manual setup
-- it bypasses the gateway unnecessarily
-- it duplicates another preferred component
-- it is not being used
-
-Deprecation should be explicit, not silent.
-
----
-
-## 14. Archive before delete
-
-The project should generally archive before deleting.
-
-This is especially true for:
-
-- old scripts
-- old setup notes
-- previous routing approaches
-- troubleshooting notes
-- model notes
-- legacy architecture notes
-
-Archiving keeps history without confusing the current structure.
-
-Suggested archive structure:
-
-```text
-archive/
-├── 2026-v0-workstation-docs/
-├── old-scripts/
-├── old-docs/
-├── experiments/
-└── repo-inventory/
+    Need --> Capability
+    Capability -->|No| Reject
+    Capability -->|Yes| Existing
+    Existing -->|Yes| Assess
+    Existing -->|No| Assess
+    Assess --> Candidate
+    Candidate --> Trial
+    Trial --> Decision
+    Decision -->|No| Reject
+    Decision -->|Yes| Adopt
+    Adopt --> Prefer
+    Prefer -->|Yes| Preferred
+    Prefer -->|No| Adopt
+    Preferred --> Deprecate
+    Deprecate --> Remove
 ```
 
 ---
 
-## 15. Review rhythm
+## 8. Adoption checklist
 
-The component lifecycle should be reviewed regularly.
+Before marking a component as **Adopted**, I should be able to answer:
 
-Early project rhythm:
+| Question | Required? |
+|---|---:|
+| What capability does it implement? | Yes |
+| What workflow does it support? | Yes |
+| Which profiles use it? | Yes |
+| Can it be installed repeatably? | Yes |
+| Can it be configured from the repo? | Yes |
+| Does it need secrets? | Yes |
+| If it needs secrets, are they managed securely? | Yes |
+| Can it be validated? | Yes |
+| Can it be removed cleanly? | Yes |
+| Does it align to the architecture principles? | Yes |
+| Is it useful enough for regular use? | Yes |
 
-```text
-Review components weekly while the workstation is being actively shaped.
-```
-
-Stable project rhythm:
-
-```text
-Review components monthly or when introducing a new major tool.
-```
-
-The review should check:
-
-- what is adopted
-- what is preferred
-- what is still only a trial
-- what should be deprecated
-- what should be removed
-- what needs documentation
+A tool should not be adopted simply because it is interesting.
 
 ---
 
-## 16. Relationship to tool selection
+## 9. Deprecation checklist
 
-Tool selection is covered in `docs/09-tool-selection.md`.
+Before deprecating a component, I should capture:
 
-The lifecycle answers:
+| Question | Notes |
+|---|---|
+| Why is it being deprecated? | Better tool, poor fit, unused, security concern, etc. |
+| What replaces it? | Replacement component or none. |
+| Which profiles are affected? | Work, personal, future Linux. |
+| What needs to change? | Config, docs, scripts, containers, packages, tests. |
+| What is the removal trigger? | Date, milestone, successful migration, no remaining references. |
+| What should be archived? | Notes, ADRs, previous config, lessons learned. |
 
-```text
-Where is this component in its journey?
-```
-
-Tool selection answers:
-
-```text
-Should this component be considered at all?
-```
-
-Capability contracts answer:
-
-```text
-What must this component be able to do?
-```
-
-Together, these keep the workstation coherent.
+Deprecation should be explicit so the repo does not accumulate stale components.
 
 ---
 
-## 17. Summary
+## 10. Relationship to ADRs
 
-The component lifecycle protects the workstation from tool sprawl.
+Not every component lifecycle change needs an ADR.
 
-It allows experimentation without losing control.
+An ADR is useful when the decision:
 
-The guiding rule is:
+- changes the architecture direction
+- selects a major default tool
+- changes the gateway, routing or profile strategy
+- changes security or secrets handling
+- introduces a meaningful trade-off
+- could be questioned later
+- replaces a previously preferred component
 
-```text
-Trial deliberately.
-Adopt carefully.
-Prefer explicitly.
-Deprecate honestly.
-Remove cleanly.
+Examples that likely need ADRs:
+
+| Decision | ADR? |
+|---|---:|
+| Gateway-first architecture | Yes |
+| Bitwarden as preferred secrets source | Yes |
+| LiteLLM as preferred gateway | Yes, if adopted/preferred |
+| Open WebUI as chat UI | Maybe |
+| Trying Aider for a week | No |
+| Replacing Ollama with another runtime | Yes |
+| Removing an unused experiment | No |
+
+ADRs preserve decision history. Component records track implementation status.
+
+---
+
+## 11. Review rhythm
+
+The component lifecycle should be reviewed periodically.
+
+A lightweight review is enough.
+
+Suggested review points:
+
+| Review point | What to check |
+|---|---|
+| After each milestone | Did any candidates become adopted or rejected? |
+| Before adding a new tool | Does it map to a capability? |
+| Before changing profiles | Are profile-specific components still correct? |
+| After model fitness review | Should model or runtime choices change? |
+| When a tool becomes painful | Should it be deprecated or replaced? |
+| Quarterly or ad hoc | Is the workstation accumulating unused components? |
+
+---
+
+## 12. Initial lifecycle view
+
+Current expected lifecycle view:
+
+| Component | Capability | Initial status |
+|---|---|---:|
+| Ollama | Local Runtime — Windows | Adopted |
+| oMLX / MLX-compatible runtime | Local Runtime — macOS | Candidate |
+| Ollama on macOS | Local Runtime fallback | Candidate |
+| LiteLLM | Model Gateway | Candidate / Trial |
+| Open WebUI | Chat UI | Candidate / Trial |
+| Bitwarden | Secrets Management | Preferred direction |
+| llmfit | Model Fitness | Candidate / Planned |
+| Aider | CLI Coding Assistant | Candidate |
+| OpenCode | CLI Coding Assistant | Candidate |
+| Goose | Agent Runner | Future candidate |
+| `ask-ai` | CLI General Assistant | Planned |
+| `ai-route` | Routing Explanation | Planned |
+| `ai-status` | Validation | Planned |
+| `ai-bootstrap-check` | Validation | Planned |
+
+This table should evolve as the project moves from design into implementation.
+
+---
+
+## 13. Summary
+
+The lifecycle keeps the workstation from becoming cluttered.
+
+The rule is:
+
+```text id="07k5uo"
+Do not just add tools.
+Trial them against a capability.
+Adopt them deliberately.
+Replace them cleanly.
+Remove them when they no longer earn their place.
 ```
