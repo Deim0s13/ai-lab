@@ -1,520 +1,457 @@
 # Tool Selection
 
-This document defines how tools, runtimes, providers and frameworks are selected for AI Dev Workstation as Code.
-
-The project is open-source-first, but not open-source-only. The workstation should adopt active open-source tools where they make sense, while still allowing frontier providers such as Anthropic, OpenAI and Gemini where justified.
-
-The goal is to avoid unnecessary custom development and avoid tool sprawl.
-
----
-
 ## 1. Purpose
 
-The AI tooling space changes quickly.
+This document defines how I select tools for **AI Dev Workstation as Code**.
 
-New tools will appear. Existing tools will change direction. Some projects will become less active. Some tools will be useful for a short time and then be replaced.
+The workstation should be open-source-first, but not tool-first. I do not want to keep adding interesting tools just because they exist. Every tool should have a clear role, map to a capability, fit the architecture principles, and support a real workflow.
 
-This document helps decide:
-
-- whether a tool should be considered
-- whether it should be trialled
-- whether it should become part of the standard workstation
-- whether it should be replaced
-- whether custom code is justified
-
----
-
-## 2. Selection principles
-
-Tool selection should follow the project principles:
-
-- open-source-first
-- CLI-native
-- gateway-first
-- rebuildable
-- composable
-- replaceable
-- local-first
-- frontier-capable
-- profile-aware
-- observable
-
-A tool should support the architecture rather than force the architecture to bend around the tool.
-
----
-
-## 3. Adopt before build
-
-Before building a custom script, wrapper or service, check whether an active open-source project already satisfies the need.
-
-The decision flow is:
+The goal is:
 
 ```text
-1. Does an active open-source tool already do this?
-2. Does it support CLI usage where relevant?
-3. Does it support local models?
-4. Does it support frontier models or gateway access?
-5. Does it work across the target profiles?
-6. Can it be installed reproducibly?
-7. Can it be configured rather than manually tuned?
-8. Can it be replaced cleanly later?
-9. If no suitable tool exists, build the smallest useful custom layer.
-```
-
-Custom code should normally be limited to:
-
-- thin wrappers
-- profile loading
-- configuration glue
-- validation checks
-- route explanation
-- documentation helpers
-
----
-
-## 4. Selection checklist
-
-When considering a tool, assess it against this checklist.
-
-### Capability fit
-
-- What capability does this tool satisfy?
-- Is the capability already covered?
-- Is this a replacement, complement or experiment?
-- Does this tool overlap with something already adopted?
-
-### Architecture fit
-
-- Does it support gateway-first usage?
-- Does it support OpenAI-compatible APIs or equivalent integration?
-- Does it work with local and frontier providers?
-- Can it be used without hard-coding provider decisions?
-- Can it be configured cleanly?
-
-### CLI fit
-
-- Does it support CLI usage?
-- Is the CLI experience natural enough to become a habit?
-- Can common workflows be run from the terminal?
-- Can output be saved, redirected or scripted?
-
-### Rebuild fit
-
-- Can it be installed from code?
-- Does it support Homebrew, winget, pipx, uv, containers or another reproducible method?
-- Can it be configured from files?
-- Can it be validated after install?
-- Can it be removed cleanly?
-
-### Profile fit
-
-- Does it make sense for `macos-work`?
-- Does it make sense for `windows-personal`?
-- Does it make sense for `fedora-atomic`?
-- Does it respect work/personal separation?
-- Can it be disabled per profile?
-
-### Maintenance fit
-
-- Is the project actively maintained?
-- Is there recent release activity?
-- Is the documentation usable?
-- Is the community or issue activity healthy?
-- Are there signs of abandonment or major direction change?
-
-### Safety and privacy fit
-
-- Does it make it clear where data goes?
-- Can it be restricted to local models?
-- Can frontier escalation be controlled?
-- Does it store data locally?
-- Does it support profile-aware privacy boundaries?
-
----
-
-## 5. Tool status
-
-Tools should be tracked using the component lifecycle.
-
-```text
-Candidate → Trial → Adopted → Preferred → Deprecated → Removed
-```
-
-Tool selection decides whether a tool should be considered.
-
-Component lifecycle tracks where that tool sits after consideration.
-
-See:
-
-```text
-docs/05-component-lifecycle.md
+Adopt useful tools deliberately.
+Avoid tool sprawl.
+Keep components replaceable.
 ```
 
 ---
 
-## 6. Initial tool candidates
+## 2. Tool selection principles
 
-The following are initial candidates based on the current workstation direction.
-
-These are not permanent choices.
-
----
-
-## 6.1 Model gateway
-
-### Capability
-
-Model Gateway
-
-### Candidate
-
-LiteLLM
-
-### Why it is being considered
-
-LiteLLM is being considered because it can act as a common gateway across local and frontier model providers.
-
-It supports the gateway-first architecture by allowing CLI tools, Open WebUI, IDE integrations and future agents to call a common model access layer.
-
-### Selection questions
-
-- Can it route to local providers reliably?
-- Can it route to Anthropic, OpenAI and Gemini?
-- Can it be configured cleanly?
-- Can it run as a local service?
-- Can Open WebUI and CLI tools use it as a common endpoint?
-- Does it support the level of routing required for the first milestones?
-
-### Initial status
-
-Candidate / Trial
+| Principle | Meaning |
+|---|---|
+| Capability before tool | A tool should satisfy a defined capability. |
+| Open-source-first | Active open-source tools should be considered before custom development. |
+| CLI-compatible | Tools should support CLI workflows where practical. |
+| Gateway-compatible | Tools should work with the gateway model where practical. |
+| Profile-aware | Tool usage must make sense for `macos-work`, `windows-personal` or future profiles. |
+| Rebuildable | Tools should be installable and configurable from the repo where practical. |
+| Secure by default | Tools must not require unsafe secrets handling or unclear data exposure. |
+| Replaceable | A better tool should be able to replace it without redesigning the workstation. |
+| Daily-use justified | Tools should support a real recurring workflow. |
 
 ---
 
-## 6.2 Local runtime — Windows
-
-### Capability
-
-Local Runtime
-
-### Candidate
-
-Ollama
-
-### Why it is being considered
-
-Ollama is already part of the existing AI lab direction and is a strong fit for local model experimentation, especially on the Windows personal development machine.
-
-### Selection questions
-
-- Does it perform well on the Windows device?
-- Does it work cleanly with WSL2 or the Windows host setup?
-- Can the gateway call it reliably?
-- Can required models be installed reproducibly?
-- Can llmfit use or assess it effectively?
-
-### Initial status
-
-Adopted for Windows personal profile
-
----
-
-## 6.3 Local runtime — macOS
-
-### Capability
-
-Local Runtime
-
-### Candidates
-
-- oMLX / MLX-compatible runtime
-- Ollama fallback
-
-### Why they are being considered
-
-The MacBook Pro should use a Mac-native local inference path where practical, while keeping Ollama as a fallback for compatibility and broader model/tool support.
-
-### Selection questions
-
-- Which runtime performs best for the MBP hardware?
-- Which models are available through each runtime?
-- Can the gateway call the runtime cleanly?
-- Does it work with CLI tools?
-- Does it support the work profile’s privacy posture?
-- Is the setup reproducible?
-
-### Initial status
-
-oMLX / MLX-compatible runtime: Candidate  
-Ollama on macOS: Candidate fallback
-
----
-
-## 6.4 Chat UI
-
-### Capability
-
-Chat UI
-
-### Candidate
-
-Open WebUI
-
-### Why it is being considered
-
-Open WebUI provides a self-hosted chat interface and can support local model usage and OpenAI-compatible endpoints.
-
-It should sit on top of the same gateway as CLI tools, rather than becoming a separate AI environment.
-
-### Selection questions
-
-- Can it connect cleanly to the gateway?
-- Can it access local and frontier routes through that gateway?
-- Can it be containerised?
-- Can it be configured reproducibly?
-- Does it create any separate state that needs to be backed up or managed?
-- Does it support the intended profile separation?
-
-### Initial status
-
-Candidate / Trial
-
----
-
-## 6.5 CLI coding assistant
-
-### Capability
-
-CLI Coding Assistant
-
-### Candidates
-
-- Aider
-- OpenCode
-
-### Why they are being considered
-
-The workstation should support terminal-native coding and vibe coding workflows.
-
-Aider is a strong candidate because it is mature and terminal-first.
-
-OpenCode is a candidate because it is positioned around open-source coding agent workflows across terminal and editor experiences.
-
-### Selection questions
-
-- Which tool best matches the preferred CLI workflow?
-- Which works best with local models?
-- Which works best through the gateway?
-- Which handles file edits safely and clearly?
-- Which supports frontier escalation?
-- Which is easiest to install and rebuild?
-- Which is less likely to create lock-in?
-
-### Initial status
-
-Candidate
-
----
-
-## 6.6 Agent runner
-
-### Capability
-
-Agent Runner
-
-### Candidate
-
-Goose
-
-### Why it is being considered
-
-Goose is being considered for future constrained agent workflows across coding, research, writing and architecture support.
-
-It is not part of the first foundation milestone.
-
-### Selection questions
-
-- Does it support CLI workflows?
-- Does it support provider flexibility?
-- Does it support local and frontier models?
-- Does it support tool use safely?
-- Can workflows be constrained?
-- Can it be installed and configured reproducibly?
-- Does it fit the profile model?
-
-### Initial status
-
-Candidate for later milestone
-
----
-
-## 6.7 Model fitness
-
-### Capability
-
-Model Fitness
-
-### Candidate
-
-llmfit
-
-### Why it is being considered
-
-llmfit supports the model fitness loop by helping assess which models are appropriate for a device and task.
-
-It is important because model choices should be based on fit, not hype.
-
-### Selection questions
-
-- Can it assess models relevant to the user’s devices?
-- Does it support the local runtimes being used?
-- Is the output useful for model routing decisions?
-- Can results be captured and compared over time?
-- Can it become part of a regular model review rhythm?
-
-### Initial status
-
-Candidate / Planned
-
-## 6.8 Secrets Management
-
-### Capability
-
-Secrets Management
-
-### Candidate
-
-Bitwarden
-
-### Why it is being considered
-
-Bitwarden is already in use and fits the project’s open-source-first approach. It provides a practical way to manage API keys and sensitive values without introducing a heavier secrets platform such as HashiCorp Vault.
-
-The project may use either the Bitwarden CLI or Bitwarden Secrets Manager CLI, depending on what proves most appropriate for local workstation use.
-
-### Selection questions
-
-- Can secrets be retrieved reliably from the CLI?
-
-- Does the workflow work on macOS, Windows and future Linux profiles?
-
-- Can it support rebuildable setup without committing secrets?
-
-- Is the developer experience simple enough for daily use?
-
-- Can `.env.local` remain a fallback rather than the default?
-
-- Can validation scripts check for required secrets without exposing them?
-
-### Initial status
-
-Candidate / Preferred direction
-
----
-
-## 7. When to build custom
-
-Custom code is justified when:
-
-- no suitable open-source tool exists
-- an existing tool is too heavy for the need
-- only a small wrapper is required
-- profile-aware behaviour is needed
-- routing explanation is needed
-- validation is needed
-- glue between tools is needed
-
-Custom code should avoid becoming a full platform unless there is a clear reason.
-
-Examples of acceptable custom code:
-
-```text
-ask-ai
-ai-route
-ai-status
-ai-model-review
-ai-bootstrap-check
-architect-ai
-write-ai
+## 3. Tool selection flow
+
+```mermaid
+flowchart TD
+    Need[Need or interesting tool]
+    Capability{Maps to a capability?}
+    Existing{Capability already has a tool?}
+    Assess[Assess against selection criteria]
+    Lifecycle[Assign lifecycle status]
+    Trial[Trial against real workflow]
+    Decision{Adopt?}
+    Adopt[Adopt / make preferred]
+    Reject[Reject or archive notes]
+    Document[Document decision]
+    ADR{ADR needed?}
+    ADRDoc[Create ADR]
+
+    Need --> Capability
+    Capability -->|No| Reject
+    Capability -->|Yes| Existing
+    Existing --> Assess
+    Assess --> Lifecycle
+    Lifecycle --> Trial
+    Trial --> Decision
+    Decision -->|No| Reject
+    Decision -->|Yes| Adopt
+    Adopt --> Document
+    Document --> ADR
+    ADR -->|Yes| ADRDoc
+    ADR -->|No| Document
 ```
 
-These should be thin, understandable and replaceable.
+A tool should not move straight from “interesting” to “standard build”.
 
 ---
 
-## 8. Tool trial process
+## 4. Standard selection questions
 
-When trialling a tool, document:
+Before adopting a tool, I should be able to answer these questions.
 
-- capability
-- reason for trial
-- install method
-- target profile
-- test workflow
-- success criteria
-- failure criteria
-- rollback approach
-- decision outcome
+| Question | Why it matters |
+|---|---|
+| What capability does this tool satisfy? | Prevents tool-first decisions. |
+| What workflow does it support? | Keeps the project focused on daily use. |
+| Which profile will use it? | Ensures work and personal usage stay separate. |
+| Is it open-source or open enough for this project? | Supports the open-source-first principle. |
+| Is it actively maintained? | Reduces risk of adopting abandoned tooling. |
+| Does it support CLI usage? | Keeps the workstation CLI-native. |
+| Does it work with the gateway? | Avoids separate AI environments. |
+| Does it support local models? | Supports local-first usage. |
+| Does it support frontier or approved providers where needed? | Supports escalation when justified. |
+| Can it be installed repeatably? | Supports rebuildability. |
+| Can it be configured from the repo? | Avoids undocumented machine state. |
+| Does it need secrets? | Triggers secure secrets handling. |
+| Does it respect profile boundaries? | Prevents work/personal drift. |
+| Can it be validated? | Supports health checks and rebuild confidence. |
+| Can it be removed cleanly? | Keeps the system replaceable. |
 
-Suggested location:
+---
 
-```text
-docs/tool-trials/
-```
+## 5. Selection criteria
 
-or as part of:
+Tools should be assessed across these dimensions.
 
-```text
-config/capabilities/components.yaml
+| Dimension | What I am looking for |
+|---|---|
+| Capability fit | The tool clearly implements a needed capability. |
+| Architecture fit | It aligns with gateway-first, CLI-native and rebuildable principles. |
+| Profile fit | It works appropriately for the intended profile. |
+| Workflow value | It supports something I will actually use. |
+| Local model support | It can use local models directly or through the gateway where relevant. |
+| Frontier support | It can use frontier or approved AI tools where appropriate. |
+| Gateway support | It can integrate with LiteLLM or equivalent where practical. |
+| CLI support | It can be operated from the terminal or supports CLI-friendly workflows. |
+| Configuration model | It can be configured in a way that is trackable and repeatable. |
+| Secrets handling | It can use Bitwarden or safe local fallback patterns. |
+| Maintenance | It has active development, documentation and a healthy community. |
+| Operational complexity | It does not add more overhead than the value it provides. |
+| Replacement path | It can be swapped out later if a better option appears. |
+
+---
+
+## 6. Fit assessment
+
+A simple fit rating is enough.
+
+| Rating | Meaning |
+|---|---|
+| Strong fit | Clearly supports the capability and aligns with the architecture. |
+| Good fit | Useful, with manageable trade-offs. |
+| Trial fit | Worth testing, but not proven yet. |
+| Weak fit | Has issues that may outweigh the benefit. |
+| Reject | Does not fit the capability, architecture or profile posture. |
+
+Example:
+
+```yaml
+tool: Open WebUI
+capability: Chat UI
+fit: Trial fit
+reason:
+  - Strong local AI UI candidate
+  - Needs gateway compatibility check
+  - Persistence and profile behaviour need review
+status: Candidate / Trial
 ```
 
 ---
 
-## 9. Tool replacement process
+## 7. Open-source-first does not mean open-source-only
 
-A tool can be replaced when:
+This project should prefer open-source tools where practical.
 
-- it no longer fits the architecture
-- a better tool satisfies the same capability
-- it is no longer maintained
-- it is difficult to rebuild
-- it bypasses the gateway unnecessarily
-- it creates too much lock-in
-- it is no longer used
+However, the workstation also needs to support approved work AI tools and frontier providers.
 
-Replacement should be documented in an ADR if the tool was significant.
+That means:
+
+| Area | Posture |
+|---|---|
+| Gateway | Open-source-first |
+| Local runtimes | Open-source-first |
+| Chat UI | Open-source-first |
+| Coding assistants | Open-source-first where useful, but existing approved/commercial tools may remain part of the wider workflow |
+| Secrets | Bitwarden preferred |
+| Work AI tools | Approved-tool-first for `macos-work` |
+| Frontier models | Profile-aware and use-case dependent |
+
+For `macos-work`, Gemini and Cursor should be documented as the first-use AI tools because they are the current approved work tools.
+
+For `windows-personal`, OpenAI and Anthropic can be primary frontier escalation paths because that profile is for personal development and experimentation.
 
 ---
 
-## 10. Tool sprawl guardrail
+## 8. Build versus adopt
 
-The project should avoid collecting tools simply because they are interesting.
+I should build custom functionality only when it adds a project-specific layer that existing tools do not provide.
 
-Before adding a new tool, ask:
+### Prefer adoption for
 
-```text
-What recurring workflow will this improve?
-What capability does it satisfy?
-What will it replace or complement?
-How will it be rebuilt?
-How will it be removed?
+| Capability | Prefer existing tools |
+|---|---|
+| Model gateway | LiteLLM or equivalent |
+| Local runtime | Ollama, oMLX / MLX-compatible runtime |
+| Chat UI | Open WebUI or equivalent |
+| Coding assistant | Aider, OpenCode or equivalent |
+| Agent runner | Goose or equivalent |
+| Model fitness | llmfit or equivalent |
+| Secrets | Bitwarden CLI / Secrets Manager CLI |
+
+### Prefer custom thin wrappers for
+
+| Workflow | Reason |
+|---|---|
+| `ask-ai` | Stable daily-use CLI entry point. |
+| `ai-route` | Explain routing decisions in my terms. |
+| `ai-status` | Profile-aware workstation health. |
+| `ai-bootstrap-check` | Rebuild validation. |
+| `ai-model-review` | Capture and apply model fitness results. |
+| `architect-ai` | Project-specific architecture assistant workflow. |
+| `write-ai` | Project-specific writing/tone workflow. |
+| `research-ai` | Project-specific research workflow. |
+| `ai-secrets` | Centralise Bitwarden secret retrieval if needed. |
+
+The custom layer should stay thin. It should hide complexity, not create a private platform.
+
+---
+
+## 9. Tool selection by capability
+
+### 9.1 Model Gateway
+
+| Field | Selection posture |
+|---|---|
+| Capability | Model Gateway |
+| Current candidate | LiteLLM or equivalent |
+| Why considered | Multi-provider gateway, OpenAI-compatible access pattern, useful for routing local and frontier models. |
+| Must support | Local runtimes, frontier providers, model aliases, config-driven use, CLI and UI access. |
+| Key tests | Can `ask-ai` and Open WebUI both use it? Can it support macOS and Windows profile policies? |
+| Risks | Configuration complexity, another moving part, provider compatibility drift. |
+| Initial status | Candidate / Trial |
+
+---
+
+### 9.2 Windows Local Runtime
+
+| Field | Selection posture |
+|---|---|
+| Capability | Local Runtime — Windows |
+| Current implementation | Ollama |
+| Why selected | Practical local model runtime with broad model availability and good fit for personal experimentation. |
+| Must support | WSL2 use, local model management, API access, gateway integration, GPU use where available. |
+| Key tests | Can it run useful coding and reasoning models? Can the gateway reach it? Can `ai-status` validate it? |
+| Risks | GPU configuration, model performance variability, model storage size. |
+| Initial status | Adopted |
+
+---
+
+### 9.3 macOS Local Runtime
+
+| Field | Selection posture |
+|---|---|
+| Capability | Local Runtime — macOS |
+| Current candidates | oMLX / MLX-compatible runtime, Ollama fallback |
+| Why considered | I want an Apple Silicon-friendly runtime for the work profile, with Ollama available for compatibility. |
+| Must support | Local model execution, CLI usability, gateway integration, repeatable setup and work-safe local usage. |
+| Key tests | Does it run well on the MBP? Can it support useful local models? Can it integrate with the gateway? |
+| Risks | Model availability, API compatibility, tool support, runtime maturity. |
+| Initial status | Candidate |
+
+---
+
+### 9.4 Frontier / Approved AI Tools
+
+| Field | Selection posture |
+|---|---|
+| Capability | Frontier / Approved Providers |
+| Current candidates | Gemini, Cursor, OpenAI, Anthropic |
+| Why considered | Local models will not handle every task; frontier and approved tools remain important. |
+| Must support | Profile-aware escalation, secure secrets, clear approval posture and routing integration where practical. |
+| Work profile posture | Gemini and Cursor first; Anthropic and OpenAI depending on use case, data sensitivity and approval context. |
+| Personal profile posture | OpenAI and Anthropic first; Gemini where useful. |
+| Risks | Approval changes, data sensitivity, cost, provider policy changes. |
+| Initial status | Candidate |
+
+---
+
+### 9.5 Chat UI
+
+| Field | Selection posture |
+|---|---|
+| Capability | Chat UI |
+| Current candidate | Open WebUI |
+| Why considered | Provides a self-hosted UI for local and routed model access. |
+| Must support | Gateway integration, local model access, frontier model access where appropriate, repeatable setup and clear persistence model. |
+| Key tests | Can it use the same gateway as the CLI? Does it avoid becoming a separate AI environment? Can it be containerised cleanly? |
+| Risks | Data persistence, profile drift, operational overhead. |
+| Initial status | Candidate / Trial |
+
+---
+
+### 9.6 CLI Coding Assistant
+
+| Field | Selection posture |
+|---|---|
+| Capability | CLI Coding Assistant |
+| Current candidates | Aider, OpenCode |
+| Why considered | Support terminal-native coding, local-first coding and personal vibe coding workflows. |
+| Must support | Repo-aware coding, safe file modification, local/frontier model usage, CLI ergonomics and repeatable install. |
+| Key tests | Does it fit my Claude Code-style habits? Can it use local/routed models? Is file modification transparent and safe? |
+| Risks | Workflow mismatch, unsafe edits, weak local model support, provider lock-in. |
+| Initial status | Candidate |
+
+---
+
+### 9.7 Agent Runner
+
+| Field | Selection posture |
+|---|---|
+| Capability | Agent Runner |
+| Current candidate | Goose or equivalent |
+| Why considered | Potential future support for constrained multi-step workflows. |
+| Must support | CLI usage, explicit permissions, local/frontier provider options, observable execution and profile-aware controls. |
+| Key tests | Can it run constrained workflows safely? Can work and personal profiles apply different permissions? |
+| Risks | Too much autonomy too early, unclear file permissions, poor observability, unnecessary complexity. |
+| Initial status | Future candidate |
+
+---
+
+### 9.8 Model Fitness
+
+| Field | Selection posture |
+|---|---|
+| Capability | Model Fitness |
+| Current candidate | llmfit |
+| Why considered | Model selection should be informed by device and task fit, not hype. |
+| Must support | Device-aware model assessment, repeatable results, useful output for model aliases and routing. |
+| Key tests | Does it give useful guidance for both MBP and Windows devices? Can results inform `local_fast`, `local_capable` and `local_code` aliases? |
+| Risks | Output may be too generic, limited runtime support, manual interpretation required. |
+| Initial status | Candidate / Planned |
+
+---
+
+### 9.9 Secrets Management
+
+| Field | Selection posture |
+|---|---|
+| Capability | Secrets Management |
+| Current candidate | Bitwarden |
+| Why selected | I already use Bitwarden. It fits the project better than introducing a heavier secrets platform. |
+| Must support | Secure storage, CLI retrieval where practical, cross-platform use, rebuild-friendly setup and validation without exposing values. |
+| Key tests | Can bootstrap and validation check required secrets? Is the CLI workflow practical? Is Secrets Manager a better fit than general vault CLI? |
+| Risks | CLI session handling, local developer ergonomics, separating work and personal secrets. |
+| Initial status | Preferred direction |
+
+---
+
+## 10. Tool trial record
+
+When trialling a tool, I should capture a short record.
+
+Suggested format:
+
+```yaml
+tool: Aider
+capability: CLI Coding Assistant
+status: Trial
+profile:
+  - windows-personal
+trial_workflow:
+  - Use against a small repo
+  - Test local model route
+  - Test frontier route
+  - Review file edit safety
+success_criteria:
+  - Fits CLI workflow
+  - Safe and understandable edits
+  - Works with routed models where practical
+  - Easy to install and remove
+risks:
+  - Provider lock-in
+  - Poor local model experience
+  - Too much overlap with existing tools
+decision:
+  - tbd
 ```
 
-If those questions are not clear, the tool should remain a note, not part of the workstation.
+This does not need to become bureaucratic. The point is to avoid forgetting why something was installed.
 
 ---
 
-## 11. Summary
+## 11. When an ADR is needed
 
-The goal is not to install every useful AI tool.
+A tool selection should have an ADR when it creates an architectural commitment.
 
-The goal is to build durable, reusable capabilities.
+An ADR is likely needed for:
 
-The guiding rule is:
+| Decision | ADR needed? |
+|---|---:|
+| Selecting the model gateway | Yes |
+| Selecting Bitwarden as preferred secrets approach | Yes |
+| Making a tool preferred for a capability | Usually |
+| Replacing a preferred component | Yes |
+| Changing provider posture for a profile | Yes |
+| Trialling a coding assistant | No |
+| Installing a temporary experiment | No |
+| Removing an unused candidate | No |
+
+The ADR should explain the decision, options considered, rationale, consequences, implementation impact and review trigger.
+
+---
+
+## 12. Rejection criteria
+
+A tool should be rejected or not progressed if:
+
+- it does not map to a defined capability
+- it is not useful for a recurring workflow
+- it is poorly maintained
+- it requires too much custom glue
+- it bypasses the gateway without a good reason
+- it does not fit any profile
+- it creates unclear security or privacy risk
+- it cannot be rebuilt or configured repeatably
+- it makes the workstation harder to understand
+- it overlaps with an existing tool without adding enough value
+
+Rejection is not failure. It keeps the workstation clean.
+
+---
+
+## 13. Replacement criteria
+
+A preferred or adopted tool should be revisited if:
+
+- a better tool appears
+- maintenance slows down
+- provider compatibility breaks
+- profile requirements change
+- it becomes difficult to rebuild
+- it creates security or privacy concerns
+- it stops supporting the workflow it was selected for
+- it adds more operational overhead than value
+- it no longer aligns with the architecture principles
+
+Replacement should be deliberate, documented and clean.
+
+---
+
+## 14. Tool selection checklist
+
+Before moving a tool to **Adopted** or **Preferred**, I should confirm:
+
+| Check | Required |
+|---|---:|
+| Capability is defined | Yes |
+| Tool fits the capability contract | Yes |
+| Profile usage is clear | Yes |
+| Install path is repeatable | Yes |
+| Config path is documented | Yes |
+| Secrets handling is safe | Yes |
+| Gateway fit is understood | Yes |
+| Validation path exists or is planned | Yes |
+| Removal path is known | Yes |
+| ADR exists if architecturally significant | Yes |
+| Tool supports a real recurring workflow | Yes |
+
+---
+
+## 15. Summary
+
+The tool selection rule is:
 
 ```text
-Adopt before build.
+Do not collect tools.
+Define capabilities.
 Trial deliberately.
-Prefer explicitly.
-Replace cleanly.
+Adopt only when useful.
+Prefer tools that are rebuildable, secure, profile-aware and replaceable.
 ```
+
+The best tool for this project is not necessarily the most powerful one.
+
+It is the one that fits the workstation architecture and supports the way I actually want to work.
