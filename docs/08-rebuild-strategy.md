@@ -1,507 +1,700 @@
 # Rebuild Strategy
 
-This document defines how AI Dev Workstation as Code should be made reproducible across devices.
+## 1. Purpose
 
-The workstation should not depend on undocumented manual setup. It should be rebuildable from the repository using profiles, package declarations, container definitions, configuration and validation checks.
+This document defines the rebuild strategy for **AI Dev Workstation as Code**.
 
----
+I want this workstation to be recoverable from the repository, not dependent on undocumented local machine state. If I rebuild a laptop, move to a new device, or test a future atomic Linux environment, I should be able to recreate the workstation in a repeatable way.
 
-## 1. Core principle
-
-```text
-Rebuildable by default, disposable by design.
-```
-
-If a laptop is rebuilt, replaced or reset, the AI workstation should be recoverable from the repository with minimal manual effort.
-
-The repository should be the source of truth.
-
----
-
-## 2. Why rebuildability matters
-
-The workstation is intended to become part of daily use.
-
-If it cannot be rebuilt easily, it will become fragile and hard to trust.
-
-Rebuildability supports:
-
-- new devices
-- clean rebuilds
-- atomic operating systems
-- consistent setup across machines
-- easier troubleshooting
-- safer experimentation
-- better documentation
-- reduced reliance on memory
-
----
-
-## 3. Target rebuild pattern
-
-The target rebuild pattern is:
+The goal is:
 
 ```text
-Clone repository
-Select profile
-Install package dependencies
-Apply configuration
-Start services
-Install or verify models
-Run validation checks
-Use workstation
+Clone the repo.
+Select a profile.
+Run bootstrap.
+Validate the workstation.
+Start using it.
 ```
 
-Example:
+This does not mean everything needs to be perfectly automated on day one. It means manual steps should be visible, documented and gradually reduced.
+
+---
+
+## 2. Rebuild principles
+
+| Principle | Meaning |
+|---|---|
+| Repository as source of truth | Important setup should live in the repo, not only on the machine. |
+| Profile-driven rebuilds | Bootstrap and validation should use the selected profile. |
+| Thin host where practical | Keep host changes minimal and explicit. |
+| Services as code | Gateway, UI and future services should be defined in repeatable config. |
+| Secure secrets | Secrets should come from Bitwarden where practical, not committed files. |
+| Idempotent scripts | Bootstrap should be safe to rerun where practical. |
+| Validate after setup | A rebuild is not complete until health checks pass. |
+| Manual steps are technical debt | If something cannot be automated yet, document it clearly. |
+| Cross-platform by design | macOS, Windows/WSL2 and future Fedora Atomic should share patterns where possible. |
+
+---
+
+## 3. Target rebuild flow
+
+```mermaid
+flowchart TD
+    Clone[Clone repository]
+    Profile[Select profile]
+    Prereq[Check prerequisites]
+    Packages[Install packages]
+    Secrets[Resolve secrets]
+    Config[Apply configuration]
+    Services[Start services]
+    Models[Install or verify models]
+    Validate[Run validation]
+    Use[Use workstation]
+
+    Clone --> Profile
+    Profile --> Prereq
+    Prereq --> Packages
+    Packages --> Secrets
+    Secrets --> Config
+    Config --> Services
+    Services --> Models
+    Models --> Validate
+    Validate --> Use
+```
+
+The target command flow should eventually look like this:
 
 ```bash
 git clone https://github.com/Deim0s13/ai-lab.git
 cd ai-lab
 ./bootstrap/bootstrap.sh --profile macos-work
 ai-bootstrap-check
+ai-status
 ```
 
----
-
-## 4. Thin-host approach
-
-The workstation should follow a thin-host pattern.
-
-```text
-Host OS
-= thin, stable and minimally modified
-
-Containers
-= services such as gateway, Open WebUI and future memory services
-
-User-space tools
-= CLI tools, wrappers, model utilities and developer tools
-
-Configuration repo
-= source of truth
-
-Secrets
-= externalised and never committed
-
-Models
-= reproducible model list, not stored in git
-```
-
-This approach fits macOS, Windows/WSL2 and future Fedora Atomic or Silverblue environments.
-
----
-
-## 5. What should be containerised
-
-Platform services should be containerised where practical.
-
-Initial container candidates:
-
-```text
-LiteLLM or equivalent gateway
-Open WebUI
-future vector database
-future memory service
-future observability service
-```
-
-Container benefits:
-
-- easier rebuild
-- easier removal
-- consistent service startup
-- reduced host pollution
-- clearer dependency boundaries
-
----
-
-## 6. What should not be forced into containers
-
-Not everything should be containerised.
-
-The following may be better installed as host or user-space tools:
-
-```text
-Ollama
-oMLX / MLX runtime
-llmfit
-Aider
-OpenCode
-Goose
-CLI wrappers
-shell configuration
-editor integrations
-```
-
-Reasons:
-
-- GPU or Apple Silicon access
-- better filesystem integration
-- simpler developer experience
-- easier CLI usage
-- better editor integration
-
-The principle is:
-
-```text
-Containerise services.
-Install user workflows natively or with isolated user package managers.
-```
-
----
-
-## 7. Platform strategy: macOS
-
-The MacBook Pro should use a repeatable macOS setup.
-
-Likely tools:
-
-```text
-Homebrew
-pipx
-uv
-container runtime
-repo-managed config
-```
-
-Potential package declaration:
-
-```text
-packages/brew/Brewfile
-packages/pipx/tools.txt
-```
-
-Expected setup flow:
+For Windows, the equivalent may run from WSL2:
 
 ```bash
-./bootstrap/bootstrap-macos.sh --profile macos-work
+git clone https://github.com/Deim0s13/ai-lab.git
+cd ai-lab
+./bootstrap/bootstrap.sh --profile windows-personal
+ai-bootstrap-check
+ai-status
 ```
-
-The script should:
-
-- check for Homebrew
-- install required packages
-- install user-space Python tools
-- configure shell environment
-- prepare containers
-- apply profile config
-- run validation
 
 ---
 
-## 8. Platform strategy: Windows
+## 4. Rebuild scope
 
-The Windows laptop should use a repeatable Windows plus WSL2 setup.
+The rebuild strategy covers:
 
-Likely tools:
+| Area | Rebuild approach |
+|---|---|
+| Packages | Declared in profile-aware package files. |
+| CLI tools | Installed or linked through bootstrap. |
+| Gateway | Defined through config and container/service files. |
+| Chat UI | Containerised where practical. |
+| Local runtimes | Installed through documented/profile-specific steps. |
+| Models | Declared as desired models or aliases; model binaries are not stored in git. |
+| Providers | Defined in config; secrets resolved separately. |
+| Secrets | Bitwarden preferred, `.env.local` fallback only. |
+| Profiles | Stored under `profiles/`. |
+| Routing | Stored under `config/`. |
+| Contexts | Stored or referenced under `contexts/`, with profile boundaries. |
+| Validation | Implemented through `ai-bootstrap-check` and `ai-status`. |
+| Documentation | Stored under `docs/`. |
 
-```text
-winget
-WSL2
-Ubuntu or selected WSL distro
-Podman or Docker
-Ollama
-repo-managed config
-```
-
-Expected setup flow:
-
-```powershell
-.\bootstrap\bootstrap-windows.ps1 -Profile windows-personal
-```
-
-Then inside WSL if needed:
-
-```bash
-./bootstrap/bootstrap-wsl.sh --profile windows-personal
-```
-
-The setup should clearly separate:
-
-- Windows host tasks
-- WSL tasks
-- container tasks
-- model runtime tasks
+The rebuild strategy does not mean the repo stores everything. It means the repo defines how to recreate everything.
 
 ---
 
-## 9. Platform strategy: Fedora Atomic
+## 5. Platform rebuild model
 
-The Fedora Atomic profile should favour minimal host changes.
+```mermaid
+flowchart TD
+    Repo[ai-lab repository]
 
-Likely tools and patterns:
+    Mac[macos-work]
+    Win[windows-personal]
+    Fedora[fedora-atomic]
 
-```text
-rpm-ostree only when required
-Podman for services
-toolbox or distrobox for mutable development
-Flatpak for GUI applications
-systemd user services
-user-space package managers where appropriate
+    Repo --> Mac
+    Repo --> Win
+    Repo --> Fedora
+
+    Mac --> MacPackages[Homebrew / macOS packages]
+    Mac --> MacRuntime[oMLX / MLX<br/>Ollama fallback]
+    Mac --> MacServices[Gateway / UI services]
+    Mac --> MacSecrets[Bitwarden]
+
+    Win --> WinPackages[WSL2 packages]
+    Win --> WinRuntime[Ollama / GPU-aware setup]
+    Win --> WinServices[Gateway / UI services]
+    Win --> WinSecrets[Bitwarden]
+
+    Fedora --> FedoraPackages[rpm-ostree / toolbox / user packages]
+    Fedora --> FedoraRuntime[Runtime TBD]
+    Fedora --> FedoraServices[Podman-first services]
+    Fedora --> FedoraSecrets[Bitwarden or compatible CLI]
 ```
 
-Expected setup flow:
+Each platform can have different installation mechanics, but the architecture should remain consistent.
+
+---
+
+## 6. macOS rebuild strategy
+
+The `macos-work` profile should support the MacBook Pro work device.
+
+### Expected rebuild responsibilities
+
+| Area | Approach |
+|---|---|
+| Package management | Homebrew where appropriate. |
+| Local runtime | oMLX / MLX-compatible runtime preferred. |
+| Fallback runtime | Ollama. |
+| Gateway | Local service or container where practical. |
+| Chat UI | Containerised Open WebUI later. |
+| Secrets | Bitwarden preferred. |
+| Frontier / approved tools | Gemini and Cursor first; Anthropic/OpenAI use-case dependent. |
+| Validation | Confirm runtime, gateway, secrets and approved-tool posture. |
+
+### Design notes
+
+The macOS work rebuild should be conservative. It should not assume every experimental component is installed. It should focus on work-safe capability first:
+
+- local model access
+- approved-tool-first posture
+- CLI general assistant
+- routing explanation
+- validation
+- model fitness
+
+Experimental agents and personal project tooling should not be enabled by default.
+
+---
+
+## 7. Windows rebuild strategy
+
+The `windows-personal` profile should support the Windows personal AI development lab.
+
+### Expected rebuild responsibilities
+
+| Area | Approach |
+|---|---|
+| Base environment | Windows with WSL2. |
+| Package management | WSL2 package manager and optional Windows package tooling where useful. |
+| Local runtime | Ollama primary. |
+| GPU support | Use local GPU where available. |
+| Gateway | Local service or container. |
+| Chat UI | Containerised Open WebUI later. |
+| Secrets | Bitwarden preferred. |
+| Frontier providers | OpenAI and Anthropic first; Gemini where useful. |
+| Validation | Confirm WSL2, Ollama, GPU where applicable, gateway, secrets and CLI tools. |
+
+### Design notes
+
+The Windows profile can be more experimental because it is the personal development lab.
+
+This is the right place to trial:
+
+- coding assistants
+- OpenAI and Anthropic frontier routing
+- agent runners
+- local model comparisons
+- routing experiments
+- RAG/project memory later
+
+Even though it is more experimental, components should still move through the lifecycle rather than becoming permanent by accident.
+
+---
+
+## 8. Fedora Atomic rebuild strategy
+
+The `fedora-atomic` profile is a future target.
+
+It exists to keep the architecture honest about rebuildability, even if it is not implemented immediately.
+
+### Expected rebuild responsibilities
+
+| Area | Approach |
+|---|---|
+| Host model | Thin host. |
+| System packages | Minimal host mutation. |
+| Services | Podman-first. |
+| Dev tools | User-space, toolbox, distrobox or equivalent. |
+| Local runtime | TBD. |
+| Secrets | Bitwarden or Linux-compatible equivalent. |
+| Validation | Confirm profile, services, runtime and CLI tools. |
+
+### Design notes
+
+This profile should help test whether the workstation can work in a more disposable machine model.
+
+The design should avoid relying on hidden host state, manual service setup or untracked configuration.
+
+---
+
+## 9. Repository structure for rebuildability
+
+Target structure:
+
+```text
+ai-lab/
+├── bootstrap/
+├── profiles/
+├── packages/
+├── containers/
+├── config/
+├── contexts/
+├── dotfiles/
+├── tools/
+├── tests/
+├── docs/
+└── archive/
+```
+
+### Directory responsibilities
+
+| Directory | Rebuild responsibility |
+|---|---|
+| `bootstrap/` | Entry point scripts for setup and rebuild. |
+| `profiles/` | Device/profile definitions. |
+| `packages/` | Package lists by OS/profile. |
+| `containers/` | Gateway, Open WebUI and future service definitions. |
+| `config/` | Providers, models, routes, policies and capabilities. |
+| `contexts/` | Work, personal, shared and project context definitions. |
+| `dotfiles/` | Optional shell/editor configuration if needed. |
+| `tools/` | CLI commands and wrappers. |
+| `tests/` | Validation and health checks. |
+| `docs/` | Architecture and decisions. |
+| `archive/` | Historical material and retired experiments. |
+
+The structure should support rebuildability without becoming overly complicated.
+
+---
+
+## 10. Bootstrap architecture
+
+The bootstrap process should be profile-aware.
+
+```mermaid
+flowchart TD
+    Start[bootstrap.sh]
+    Args[Read --profile]
+    Profile[Load profile config]
+    Platform[Detect platform]
+    Prereq[Check prerequisites]
+    Packages[Install packages]
+    Secrets[Check Bitwarden / fallback]
+    Config[Render or apply config]
+    Services[Start services]
+    Models[Install or verify models]
+    Validate[Run ai-bootstrap-check]
+
+    Start --> Args
+    Args --> Profile
+    Profile --> Platform
+    Platform --> Prereq
+    Prereq --> Packages
+    Packages --> Secrets
+    Secrets --> Config
+    Config --> Services
+    Services --> Models
+    Models --> Validate
+```
+
+Bootstrap should eventually support:
 
 ```bash
+./bootstrap/bootstrap.sh --profile macos-work
+./bootstrap/bootstrap.sh --profile windows-personal
 ./bootstrap/bootstrap.sh --profile fedora-atomic
 ```
 
-The profile should avoid relying on undocumented host state.
+The first implementation can be basic. It should focus on making the expected steps explicit.
 
 ---
 
-## 10. Bootstrap scripts
+## 11. Bootstrap behaviour
 
-Bootstrap scripts should be idempotent.
+Bootstrap scripts should aim to be:
 
-That means they should be safe to run more than once.
+| Behaviour | Meaning |
+|---|---|
+| Idempotent | Safe to rerun without breaking the environment. |
+| Profile-aware | Install only what the selected profile needs. |
+| Transparent | Show what is being checked, installed or skipped. |
+| Conservative | Avoid destructive changes unless explicitly requested. |
+| Validated | Run or suggest validation after setup. |
+| Modular | Split platform-specific logic into separate scripts where useful. |
 
-Expected behaviour:
-
-- if a tool exists, skip or update
-- if a directory exists, reuse it
-- if config exists, update carefully
-- if service exists, restart or report status
-- if a model exists, do not redownload unless requested
-- if a secret is missing, warn clearly
-- if a step fails, provide the next action
-
-Suggested scripts:
+Possible structure:
 
 ```text
 bootstrap/
 ├── bootstrap.sh
-├── bootstrap-macos.sh
-├── bootstrap-windows.ps1
-└── bootstrap-wsl.sh
+├── lib/
+│   ├── detect-platform.sh
+│   ├── load-profile.sh
+│   ├── check-prereqs.sh
+│   ├── install-packages.sh
+│   ├── configure-secrets.sh
+│   ├── configure-services.sh
+│   └── validate.sh
+├── macos/
+├── windows/
+└── fedora/
 ```
+
+This structure is illustrative. The implementation can start simpler and evolve.
 
 ---
 
-## 11. Package declarations
+## 12. Package strategy
 
-Package lists should live in the repo.
+Package installation should be declared rather than remembered.
 
-Suggested structure:
+Possible package files:
 
 ```text
 packages/
-├── brew/
-│   └── Brewfile
-├── winget/
-│   └── packages.json
-├── dnf/
-│   └── packages.txt
-└── pipx/
-    └── tools.txt
+├── macos-work.brew
+├── windows-personal.apt
+├── fedora-atomic.packages
+└── shared.tools
 ```
 
-Package declarations should be profile-aware where practical.
+Examples:
+
+| Profile | Package approach |
+|---|---|
+| `macos-work` | Homebrew packages, Python tooling, Node tooling if needed. |
+| `windows-personal` | WSL2 Linux packages, Python tooling, optional Windows tooling. |
+| `fedora-atomic` | Minimal host packages, user-space tools, containers. |
+
+The exact package strategy can evolve. The principle is that required packages should be declared somewhere in the repo.
 
 ---
 
-## 12. Services
+## 13. Container and service strategy
 
-Services should be defined in code.
+Services should be containerised where practical.
 
-Suggested structure:
+Good candidates for containers:
 
-```text
-containers/
-├── litellm/
-│   ├── compose.yaml
-│   └── config.yaml
-├── open-webui/
-│   └── compose.yaml
-└── shared/
-    └── network.env
-```
+| Service | Notes |
+|---|---|
+| Model gateway | LiteLLM or equivalent. |
+| Chat UI | Open WebUI. |
+| Vector database | Future RAG/project memory. |
+| Observability | Future, only if useful. |
 
-Future Linux user services:
+Not everything needs to be containerised.
 
-```text
-systemd/
-├── user/
-│   ├── litellm.service
-│   ├── open-webui.service
-│   └── ollama.service
-└── timers/
-    └── ai-model-review.timer
-```
+Host or user-space tools may still be better for:
+
+- Ollama
+- oMLX / MLX runtime
+- Bitwarden CLI
+- llmfit
+- Aider / OpenCode
+- Goose
+- small CLI wrappers
+
+Containerisation should reduce rebuild friction, not add unnecessary complexity.
 
 ---
 
-## 13. Secrets
+## 14. Secrets strategy
 
-Secrets must never be committed to the repository.
+Secrets must not be committed.
 
-The preferred secrets approach is Bitwarden.
+The preferred approach is Bitwarden.
 
-Bitwarden fits this project because it is already in use, supports CLI-based workflows, and avoids introducing an unnecessarily heavy secrets platform for a personal workstation.
+```mermaid
+flowchart LR
+    Bitwarden[Bitwarden]
+    EnvExample[.env.example<br/>committed template]
+    EnvLocal[.env.local<br/>ignored fallback]
+    Bootstrap[Bootstrap]
+    Gateway[Gateway]
+    CLI[CLI tools]
 
-Initial strategy:
+    Bitwarden --> Bootstrap
+    EnvLocal --> Bootstrap
+    EnvExample -. documents required names .-> EnvLocal
+    Bootstrap --> Gateway
+    Bootstrap --> CLI
+```
+
+### Intended pattern
 
 ```text
-
 Bitwarden
-
 = preferred source for secrets
 
 .env.example
-
-= committed template
+= committed template showing required variable names
 
 .env.local
-
 = ignored local fallback only
 ```
 
-Expected secrets may include
+Expected secrets may include:
 
 ```text
 ANTHROPIC_API_KEY=
 OPENAI_API_KEY=
 GEMINI_API_KEY=
 ```
-Possible implementation options:
 
-- Bitwarden CLI
-- Bitwarden Secrets Manager CLI
-- temporary .env.local fallback for early development
-
-The project should not store secrets directly in:
+The project should avoid storing secrets in:
 
 - committed files
 - shell profiles
 - bootstrap scripts
 - container compose files
-- model routing configuration
+- routing configuration
+- model configuration
 
-Future validation should check whether required secrets can be resolved through the selected secrets method.
-
+A future `ai-secrets` helper may be useful so Bitwarden integration is centralised rather than scattered across scripts.
 
 ---
 
-## 14. Models
+## 15. Model rebuild strategy
 
-Models should not be stored in git.
+Model binaries should not be stored in git.
 
-The repository should store:
+Instead, the repo should define:
 
+- desired models
 - model aliases
-- desired model list
-- llmfit results
-- model shortlist
-- routing mappings
+- runtime/provider mapping
+- profile-specific model shortlists
+- model fitness results or references
 
-Suggested files:
+Example:
 
-```text
-config/models/
-├── model-shortlist.yaml
-├── llmfit-windows.md
-├── llmfit-macos.md
-└── desired-models.yaml
+```yaml
+models:
+  macos-work:
+    local_fast:
+      provider: omlx
+      model: tbd
+    local_capable:
+      provider: omlx
+      model: tbd
+    local_code:
+      provider: ollama
+      model: tbd
+
+  windows-personal:
+    local_fast:
+      provider: ollama
+      model: tbd
+    local_capable:
+      provider: ollama
+      model: tbd
+    local_code:
+      provider: ollama
+      model: tbd
 ```
 
-Model installation should eventually be automated or at least validated.
+Model installation can be automated later. Initially, validation can simply report whether required or preferred models are available.
 
 ---
 
-## 15. Validation
+## 16. Config rebuild strategy
 
-Validation is essential.
+Configuration should be stored in the repo where safe.
 
-A rebuild is not complete until the workstation can prove that it works.
-
-Initial validation commands:
+Potential config files:
 
 ```text
-ai-bootstrap-check
-ai-status
+config/
+├── providers.yaml
+├── models.yaml
+├── routes.yaml
+├── policies.yaml
+├── capabilities.yaml
+└── gateway/
 ```
 
-These should check:
+Config should define:
 
-- selected profile
-- required package managers
-- container runtime
-- gateway service
-- local runtime
-- frontier provider configuration
-- Open WebUI service
-- llmfit availability
-- required models
-- CLI tools
-- route configuration
+- providers
+- provider priority
+- model aliases
+- task routes
+- profile policy overlays
+- capability flags
+- fallback behaviour
+- validation expectations
+
+Secrets should be referenced by name only. Values should come from Bitwarden or ignored local fallback.
+
+---
+
+## 17. Validation strategy
+
+A rebuild is not complete until validation passes.
+
+Validation should be split into two main commands:
+
+| Command | Purpose |
+|---|---|
+| `ai-bootstrap-check` | Confirms the workstation was set up correctly after bootstrap. |
+| `ai-status` | Shows current health and active profile status during normal use. |
+
+Validation should check:
+
+| Check | Purpose |
+|---|---|
+| Active profile | Confirms the selected profile is known. |
+| Platform | Confirms expected OS/subsystem. |
+| Packages | Confirms required tools exist. |
+| Secrets | Confirms required secrets are available without exposing them. |
+| Gateway | Confirms gateway is running or reachable. |
+| Local runtime | Confirms Ollama, oMLX or relevant runtime is available. |
+| Models | Confirms expected models or aliases are available. |
+| Providers | Confirms configured providers are available where appropriate. |
+| CLI commands | Confirms commands such as `ask-ai` and `ai-route` work. |
+| Services | Confirms containers or local services are healthy. |
 
 Example output:
 
 ```text
-AI Workstation Check
-
 Profile: macos-work
-
-✓ Git installed
-✓ Brew installed
-✓ Container runtime available
-✓ Gateway config found
-✓ LiteLLM running
-✓ oMLX reachable
-✓ Ollama reachable
-✓ Anthropic key present
-✓ OpenAI key present
-✓ ask-ai working
-✗ Open WebUI not running
-
-Next action:
-podman compose -f containers/open-webui/compose.yaml up -d
+Platform: macOS
+Secrets: Bitwarden available
+Gateway: running
+Local runtime: oMLX available, Ollama fallback available
+Approved tools: Gemini configured, Cursor available
+Frontier providers: Anthropic optional, OpenAI optional
+Models: local_fast unresolved
+Status: WARN
+Next action: run ai-model-review or configure local_fast alias
 ```
+
+Validation should explain what is wrong and what to do next.
 
 ---
 
-## 16. Manual steps
+## 18. Manual steps strategy
 
-Manual steps should be treated as technical debt.
+Manual steps are allowed early, but they should be visible.
 
-If something must be manual, document it in:
+For each manual step, document:
 
-```text
-docs/manual-steps.md
+| Field | Description |
+|---|---|
+| Step | What must be done manually. |
+| Profile | Which profile it applies to. |
+| Reason | Why it is manual for now. |
+| Future automation | How it could be automated later. |
+| Validation | How to confirm it was done. |
+
+Example:
+
+```markdown
+| Step | Profile | Reason | Future automation | Validation |
+|---|---|---|---|---|
+| Install Cursor | macos-work | Work-approved tool installed outside repo | Document install/check only | `ai-status` detects Cursor |
 ```
 
-The goal is to reduce this file over time.
+Manual does not mean bad. Undocumented manual state is the problem.
 
 ---
 
-## 17. Rebuild definition of done
+## 19. Definition of done for rebuildability
 
 A profile is considered rebuildable when:
 
-- bootstrap script exists
-- package declarations exist
-- required services are defined
-- provider config exists
-- secrets approach is documented
-- validation command exists
-- setup can be repeated on a clean machine
-- manual steps are documented
-- the profile can run at least one local AI request through the gateway
+| Requirement | Done? |
+|---|---:|
+| Profile config exists | Yes |
+| Required packages are declared | Yes |
+| Bootstrap can run without destructive side effects | Yes |
+| Secrets approach is documented | Yes |
+| Gateway can be started or checked | Yes |
+| Local runtime can be installed or checked | Yes |
+| Model aliases are defined | Yes |
+| Validation command exists | Yes |
+| Known manual steps are documented | Yes |
+| README/docs explain how to rebuild | Yes |
+
+For Milestone 1, “rebuildable” can mean:
+
+```text
+Enough is automated or documented that I can recreate the gateway foundation on a fresh or reset environment.
+```
+
+It does not need to mean perfect one-command automation yet.
 
 ---
 
-## 18. Summary
+## 20. Risks and mitigations
 
-The workstation should not be a manually assembled machine.
+| Risk | Mitigation |
+|---|---|
+| Bootstrap becomes too complex | Start simple and modularise only when needed. |
+| Manual setup remains hidden | Document manual steps as technical debt. |
+| Secrets leak into config | Use Bitwarden, `.env.example` and ignored fallback only. |
+| Work and personal profiles drift | Make validation profile-aware. |
+| Models are too large or slow | Use llmfit and model aliases. |
+| Containers add unnecessary complexity | Containerise services, not every tool. |
+| Cross-platform support becomes messy | Keep shared contracts, profile-specific implementation. |
+| Rebuild is never tested | Run validation after each milestone and profile change. |
 
-It should be a rebuildable environment.
+---
 
-The principle is:
+## 21. Initial implementation scope
+
+Milestone 1 should focus on a rebuildable gateway foundation.
+
+Expected initial deliverables:
+
+- `profiles/macos-work/profile.yaml`
+- `profiles/windows-personal/profile.yaml`
+- `.env.example`
+- Bitwarden-oriented secrets notes
+- basic provider config
+- basic model alias config
+- basic route config
+- gateway service definition
+- basic `ask-ai`
+- basic `ai-route`
+- basic `ai-status`
+- basic `ai-bootstrap-check`
+- documented manual steps
+
+Not included in Milestone 1:
+
+- full semantic routing
+- complete model installation automation
+- fully automated Cursor/Gemini integration
+- agent workflows
+- RAG/project memory
+- advanced observability
+- production-style secrets platform
+
+---
+
+## 22. Summary
+
+The rebuild strategy is:
 
 ```text
-Clone it.
-Bootstrap it.
-Validate it.
-Use it.
-Rebuild it when needed.
+Repository as source of truth.
+Profiles drive setup.
+Bitwarden protects secrets.
+Services are defined as code.
+Models are declared, not committed.
+Validation proves the rebuild.
+Manual steps are documented until automated.
 ```
+
+The machine should be replaceable.
+
+The workstation should be recoverable.
