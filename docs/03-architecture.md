@@ -1,411 +1,481 @@
 # Architecture
 
-This document describes the target architecture for AI Dev Workstation as Code.
+## 1. Purpose
 
-The architecture is designed to be:
+This document describes the target architecture for **AI Dev Workstation as Code**.
 
-- gateway-first
+I am building this as a local-first, gateway-led AI workstation that can support development, architecture, writing, research and future agent workflows across multiple devices.
+
+The architecture is intended to be:
+
+- rebuildable
+- modular
+- profile-aware
+- secure by default
 - CLI-native
-- open-source-first
 - local-first
 - frontier-capable
-- composable
-- replaceable
-- rebuildable
-- profile-driven
-- observable
+- replaceable over time
 
-The workstation should not be built around a single model, provider, tool or runtime. It should be built around stable workflows, replaceable capabilities and reusable configuration.
+This is not intended to be a production enterprise AI platform. It is a personal AI workstation architecture that borrows useful platform patterns: gateway, routing, profiles, policy, validation, component lifecycle and infrastructure-as-code style rebuildability.
 
 ---
 
-## 1. Architectural intent
+## 2. Architecture goals
 
-The intent is to create a durable AI workstation foundation that can evolve over time.
+The architecture should allow me to:
 
-The workstation should support multiple devices, multiple model providers and multiple interfaces without becoming a collection of disconnected tools.
-
-The key architectural decision is:
-
-```text
-Do not build around tools.
-Build around capabilities, contracts, profiles and replaceable adapters.
-```
-
-This allows the system to change as the AI tooling landscape changes.
-
----
-
-## 2. High-level architecture
-
-```text
-CLI / IDE / Open WebUI / Agents
-        ↓
-Stable workstation commands
-        ↓
-Capability contracts
-        ↓
-Gateway and routing layer
-        ↓
-Provider adapters
-        ↓
-Local runtimes / Frontier providers
-        ↓
-Observability, model fitness and lifecycle review
-```
-
-The user should interact with stable commands and workflows.
-
-The tools, models and providers underneath can change.
+- use local models by default
+- route complex tasks to frontier models when justified
+- keep work and personal usage separated
+- use approved work AI tools first on the work profile
+- use OpenAI and Anthropic more freely on the personal profile
+- work primarily from the CLI
+- support UI and IDE workflows without creating separate AI environments
+- add and replace tools as the ecosystem changes
+- rebuild the workstation from code and configuration
+- validate whether the environment is healthy
+- introduce agents later without redesigning the system
 
 ---
 
-## 3. Logical architecture
+## 3. Architectural approach
+
+The chosen approach is:
 
 ```text
-AI Dev Workstation as Code
-├── Interface layer
-│   ├── CLI
-│   ├── IDE
-│   ├── Open WebUI
-│   └── future agents
-│
-├── Command layer
-│   ├── ask-ai
-│   ├── ai-route
-│   ├── ai-status
-│   ├── ai-model-review
-│   ├── dev-ai
-│   ├── architect-ai
-│   ├── write-ai
-│   └── research-ai
-│
-├── Gateway layer
-│   ├── LiteLLM or equivalent
-│   ├── model aliases
-│   ├── routing policies
-│   ├── provider abstraction
-│   ├── fallback rules
-│   └── escalation rules
-│
-├── Provider layer
-│   ├── Ollama
-│   ├── oMLX / MLX-compatible runtime
-│   ├── Anthropic
-│   ├── OpenAI
-│   ├── Gemini
-│   └── future providers
-│
-├── Capability layer
-│   ├── coding assistant
-│   ├── architecture assistant
-│   ├── writing assistant
-│   ├── research assistant
-│   ├── chat UI
-│   ├── model fitness
-│   ├── RAG / memory
-│   └── agent runner
-│
-├── Configuration layer
-│   ├── profiles
-│   ├── providers
-│   ├── models
-│   ├── routes
-│   ├── policies
-│   └── capabilities
-│
-└── Rebuild layer
-    ├── bootstrap scripts
-    ├── package declarations
-    ├── container definitions
-    ├── service definitions
-    ├── validation checks
-    └── documentation
+Gateway-first, profile-aware, workstation-as-code.
+```
+
+This means:
+
+- user-facing workflows should be stable
+- model providers and local runtimes should be replaceable
+- routing should happen through a common control point where practical
+- profiles should drive behaviour by device and use case
+- bootstrap and validation should make the workstation rebuildable
+- custom code should be thin and focused on glue, validation and workflow consistency
+
+---
+
+## 4. High-level architecture
+
+```mermaid
+flowchart TD
+    User[Me / Workstation User]
+
+    CLI[CLI Commands]
+    IDE[IDE / Editor]
+    UI[Open WebUI or Chat UI]
+    Agents[Future Agents]
+
+    Gateway[AI Gateway / Router]
+    Policy[Profiles, Policy and Routing Config]
+
+    Local[Local Model Runtimes]
+    Frontier[Frontier / Approved AI Providers]
+
+    Ollama[Ollama]
+    OMLX[oMLX / MLX Runtime]
+    Gemini[Gemini / Approved Work AI]
+    Cursor[Cursor / Approved Work AI]
+    OpenAI[OpenAI]
+    Anthropic[Anthropic]
+
+    Validation[Validation and Health Checks]
+    Fitness[llmfit / Model Fitness]
+    Secrets[Bitwarden Secrets]
+
+    User --> CLI
+    User --> IDE
+    User --> UI
+    User --> Agents
+
+    CLI --> Gateway
+    IDE --> Gateway
+    UI --> Gateway
+    Agents --> Gateway
+
+    Policy --> Gateway
+    Secrets --> Gateway
+    Fitness --> Policy
+    Validation --> Gateway
+
+    Gateway --> Local
+    Gateway --> Frontier
+
+    Local --> Ollama
+    Local --> OMLX
+
+    Frontier --> Gemini
+    Frontier --> Cursor
+    Frontier --> OpenAI
+    Frontier --> Anthropic
+```
+
+The key architectural point is that the CLI, UI, IDE and future agents should not each become separate AI environments. Where practical, they should use the same gateway, profile and routing model.
+
+---
+
+## 5. System context
+
+```mermaid
+flowchart LR
+    Me[Me]
+
+    Repo[ai-lab Repository]
+    Workstation[AI Dev Workstation]
+
+    LocalModels[Local Models]
+    ApprovedWorkTools[Approved Work AI Tools]
+    FrontierProviders[Frontier Providers]
+    Bitwarden[Bitwarden]
+    GitHub[GitHub]
+
+    Me --> Workstation
+    Me --> Repo
+
+    Repo --> Workstation
+    Workstation --> LocalModels
+    Workstation --> ApprovedWorkTools
+    Workstation --> FrontierProviders
+    Workstation --> Bitwarden
+    Repo --> GitHub
+```
+
+The repository is the source of truth for the workstation. Local machine state should be treated as rebuildable or disposable.
+
+---
+
+## 6. Architecture layers
+
+```mermaid
+flowchart TD
+    A[Interface Layer<br/>CLI, IDE, Open WebUI, Agents]
+    B[Command Layer<br/>ask-ai, ai-route, ai-status, dev-ai, architect-ai]
+    C[Gateway Layer<br/>LiteLLM or equivalent, model aliases, routing]
+    D[Policy and Config Layer<br/>profiles, providers, routes, capabilities]
+    E[Provider Layer<br/>Ollama, oMLX, Gemini, Cursor, OpenAI, Anthropic]
+    F[Rebuild Layer<br/>bootstrap, packages, containers, validation]
+    G[Governance Layer<br/>ADRs, component lifecycle, tool selection]
+
+    A --> B
+    B --> C
+    C --> D
+    C --> E
+    D --> C
+    F --> A
+    F --> C
+    F --> E
+    G --> D
 ```
 
 ---
 
-## 4. Interface layer
+## 7. Layer responsibilities
 
-The interface layer defines how the user interacts with the workstation.
-
-Primary interface:
-
-- CLI
-
-Supporting interfaces:
-
-- IDE
-- Open WebUI
-- future agent interfaces
-
-The CLI is the primary interface because it supports the preferred working style and is easier to make consistent across devices.
-
-The UI and IDE should not become separate environments. They should sit on top of the same gateway, routing and configuration model.
+| Layer | Responsibility |
+|---|---|
+| Interface layer | Provides the ways I interact with the workstation: CLI, IDE, UI and future agents. |
+| Command layer | Provides stable commands and habits such as `ask-ai`, `ai-route`, `ai-status`, `dev-ai`, `architect-ai` and `write-ai`. |
+| Gateway layer | Provides a common model access point, routing, aliases and provider abstraction. |
+| Policy and config layer | Defines profiles, routes, providers, capabilities, model aliases and privacy rules. |
+| Provider layer | Connects to local runtimes and frontier or approved AI providers. |
+| Rebuild layer | Makes the workstation reproducible through bootstrap scripts, packages, containers and validation. |
+| Governance layer | Captures principles, ADRs, component lifecycle and tool selection decisions. |
 
 ---
 
-## 5. Command layer
+## 8. Profile architecture
 
-The command layer provides stable user-facing workflows.
+Profiles define the workstation’s behaviour by device and use case.
 
-Initial commands:
+```mermaid
+flowchart TD
+    Profiles[Profiles]
 
-```text
-ask-ai
-ai-route
-ai-status
-ai-model-review
+    Mac[macos-work]
+    Win[windows-personal]
+    Fedora[fedora-atomic]
+
+    Profiles --> Mac
+    Profiles --> Win
+    Profiles --> Fedora
+
+    Mac --> MacLocal[oMLX primary<br/>Ollama fallback]
+    Mac --> MacFrontier[Gemini and Cursor first<br/>Anthropic/OpenAI by use case]
+    Mac --> MacPolicy[Conservative work-safe policy]
+
+    Win --> WinLocal[Ollama primary]
+    Win --> WinFrontier[OpenAI and Anthropic first<br/>Gemini where useful]
+    Win --> WinPolicy[More experimental personal policy]
+
+    Fedora --> FedoraLocal[Local runtime TBD]
+    Fedora --> FedoraServices[Podman-first services]
+    Fedora --> FedoraPolicy[Thin-host rebuildable policy]
 ```
 
-Future commands:
+### macos-work
 
-```text
-dev-ai
-architect-ai
-write-ai
-research-ai
-agent-ai
+The `macos-work` profile is for my work laptop.
+
+It should prioritise:
+
+- approved work AI tools first
+- local-first workflows where practical
+- conservative routing
+- work-safe policy
+- architecture and writing workflows
+
+Approved / first-use AI tools:
+
+- Gemini
+- Cursor
+
+Additional providers depending on use case and approval context:
+
+- Anthropic
+- OpenAI
+
+### windows-personal
+
+The `windows-personal` profile is for my personal AI development lab.
+
+It should prioritise:
+
+- local experimentation
+- vibe coding
+- personal projects
+- OpenAI and Anthropic as primary frontier escalation paths
+- more experimental tools and agents over time
+
+### fedora-atomic
+
+The `fedora-atomic` profile is a future target for testing rebuildability on a more atomic or ephemeral Linux workstation model.
+
+It should prioritise:
+
+- thin host
+- Podman-first services
+- repeatable bootstrap
+- minimal manual state
+- user-space tools
+
+---
+
+## 9. Runtime and provider architecture
+
+```mermaid
+flowchart LR
+    Gateway[AI Gateway / Router]
+
+    subgraph Local["Local Runtime Providers"]
+        Ollama[Ollama]
+        OMLX[oMLX / MLX]
+    end
+
+    subgraph WorkApproved["Approved Work AI Tools"]
+        Gemini[Gemini]
+        Cursor[Cursor]
+    end
+
+    subgraph PersonalFrontier["Personal / Use-case Frontier Providers"]
+        OpenAI[OpenAI]
+        Anthropic[Anthropic]
+    end
+
+    Gateway --> Ollama
+    Gateway --> OMLX
+    Gateway --> Gemini
+    Gateway --> Cursor
+    Gateway --> OpenAI
+    Gateway --> Anthropic
 ```
 
-These commands should remain stable even if the tools underneath change.
+The gateway should hide provider-specific details from day-to-day workflows where practical.
 
-For example:
+For example, I should be able to use:
 
 ```bash
-architect-ai review platform-decision.md
+ask-ai --local "Summarise this note"
+ask-ai --best "Help me reason through this design"
+ai-route "Review this architecture decision"
 ```
 
-should not be hard-coded to a specific provider or model. It should call the routing layer and use the best available implementation for that profile and task.
+without needing to remember which model is currently best for each task.
 
 ---
 
-## 6. Gateway layer
+## 10. Routing architecture
 
-The gateway layer is the control plane of the workstation.
+Routing should be local-first, profile-aware and explainable.
 
-Its role is to provide:
+```mermaid
+flowchart TD
+    Request[Task Request]
 
-- provider abstraction
-- model aliases
-- local model routing
-- frontier model escalation
-- fallback behaviour
-- consistent API access
-- future cost controls
-- future policy enforcement
+    Classify[Classify Task Type]
+    Profile[Load Active Profile]
+    Policy[Apply Policy and Privacy Rules]
+    Fitness[Use Model Fitness / Shortlist]
+    Route[Select Route]
+    Confirm{Frontier confirmation required?}
+    Local[Local Model]
+    Frontier[Frontier / Approved Provider]
+    Explain[Explain Route]
 
-The starting candidate for the gateway is LiteLLM or an equivalent open-source gateway.
+    Request --> Classify
+    Classify --> Profile
+    Profile --> Policy
+    Policy --> Fitness
+    Fitness --> Route
+    Route --> Confirm
 
-The gateway should make it possible for CLI tools, Open WebUI, IDE tools and future agents to access models through a common interface.
-
----
-
-## 7. Provider layer
-
-The provider layer contains the actual model backends.
-
-Initial provider candidates:
-
-```text
-Ollama
-oMLX / MLX-compatible runtime
-Anthropic
-OpenAI
-Gemini
+    Confirm -->|No| Local
+    Confirm -->|No, frontier allowed| Frontier
+    Confirm -->|Yes| Explain
+    Explain --> Route
 ```
 
-Provider responsibilities:
+Initial routing does not need to be overly complex. The first implementation can be configuration-led and rule-based.
 
-- expose models to the gateway
-- support task-specific model selection
-- allow local and frontier routing
-- be replaceable where possible
+Routing should eventually consider:
 
-The provider layer should not leak into the user’s day-to-day workflow. Users should not need to remember which model or runtime is best for every task.
-
----
-
-## 8. Capability layer
-
-The capability layer defines what the workstation can do.
-
-Capabilities are not tools. Tools are implementations of capabilities.
-
-Initial capabilities:
-
-- model gateway
-- local runtime
-- CLI coding assistant
-- chat UI
-- model fitness
-- architecture assistant
-- writing assistant
-- research assistant
-- agent runner
-- RAG / memory
-
-Each capability should have a contract describing:
-
-- what it must do
-- what tool currently implements it
-- how it can be replaced
-- what status it has
-
-This keeps the architecture flexible.
-
----
-
-## 9. Configuration layer
-
-The configuration layer is the source of behaviour.
-
-Configuration should define:
-
-- profiles
-- providers
-- model aliases
-- routing rules
-- privacy rules
-- enabled capabilities
-- disabled capabilities
-- fallback behaviour
-- escalation rules
-
-The workstation should prefer configuration over hard-coded behaviour.
-
-Changing a model, provider or default route should usually require a config change, not a code change.
-
----
-
-## 10. Rebuild layer
-
-The rebuild layer makes the workstation reproducible.
-
-It should include:
-
-- bootstrap scripts
-- package declarations
-- container definitions
-- service definitions
-- validation checks
-- documentation
-
-The aim is for a new or rebuilt device to be able to clone the repository, apply a profile, install required tools, start services and validate the environment.
-
-The machine should be disposable. The repo should be the source of truth.
-
----
-
-## 11. Profile-driven design
-
-Profiles define how the workstation behaves on each device.
-
-Initial profiles:
-
-```text
-macos-work
-windows-personal
-fedora-atomic
-```
-
-Each profile should define:
-
-- purpose
-- local runtimes
-- frontier providers
-- enabled capabilities
-- disabled capabilities
-- privacy rules
-- default routes
-- escalation policy
-
-Profiles allow the same architecture to support different use cases without mixing concerns.
-
----
-
-## 12. Local-first, frontier-capable routing
-
-Local models should be the default route where appropriate.
-
-Frontier providers should be used when justified by:
-
-- complexity
-- reasoning requirements
-- customer-facing quality
-- local model failure
-- coding difficulty
-- user request
-- policy
-
-Routing should be observable.
-
-Where practical, the system should be able to explain:
-
+- selected profile
 - task type
-- selected route
-- provider
-- model
-- whether it stayed local
-- whether escalation occurred
-- why the route was selected
+- local runtime availability
+- model fitness results
+- data sensitivity
+- approved tool posture
+- frontier escalation rules
+- user flags such as `--local`, `--best` and `--explain-route`
 
 ---
 
-## 13. Rebuildable workstation pattern
+## 11. Rebuild architecture
 
-The workstation should follow a thin-host pattern.
+The workstation should be recoverable from the repository.
 
-Recommended pattern:
+```mermaid
+flowchart TD
+    Clone[Clone ai-lab Repository]
+    Profile[Select Profile]
+    Packages[Install Packages]
+    Secrets[Resolve Secrets from Bitwarden]
+    Config[Apply Config]
+    Services[Start Services]
+    Models[Install or Verify Models]
+    Validate[Run Validation]
+    Use[Use Workstation]
 
-```text
-Host OS
-= thin, stable, minimal
-
-Containers
-= services such as gateway, Open WebUI and future memory services
-
-User-space tools
-= CLI tools, wrappers, model utilities and developer tools
-
-Configuration repo
-= source of truth
-
-Secrets
-= externalised and never committed
-
-Models
-= reproducible model list, not stored in git
+    Clone --> Profile
+    Profile --> Packages
+    Packages --> Secrets
+    Secrets --> Config
+    Config --> Services
+    Services --> Models
+    Models --> Validate
+    Validate --> Use
 ```
 
-This is suitable for macOS, Windows/WSL2 and future Fedora Silverblue or atomic Linux environments.
+The target flow is:
 
----
-
-## 14. Tool replacement model
-
-Tools should be replaceable.
-
-For example:
-
-```text
-CLI coding assistant
-Current candidate: Aider
-Alternative candidate: OpenCode
-Future replacement: any tool satisfying the same capability contract
+```bash
+git clone https://github.com/Deim0s13/ai-lab.git
+cd ai-lab
+./bootstrap/bootstrap.sh --profile macos-work
+ai-bootstrap-check
 ```
 
-The architecture should not care which tool is preferred, as long as the capability contract is met.
-
-This means the system should use stable command names, model aliases and configuration-driven routing wherever possible.
+Manual steps should be treated as technical debt and documented until automated.
 
 ---
 
-## 15. Target repository structure
+## 12. Secrets architecture
+
+Secrets must not be committed to the repository.
+
+```mermaid
+flowchart LR
+    Bitwarden[Bitwarden]
+    EnvExample[.env.example<br/>Committed template]
+    EnvLocal[.env.local<br/>Ignored fallback]
+    Bootstrap[Bootstrap Scripts]
+    Gateway[Gateway / Services]
+    Tools[CLI Tools]
+
+    Bitwarden --> Bootstrap
+    EnvLocal --> Bootstrap
+    EnvExample -. documents required values .-> EnvLocal
+
+    Bootstrap --> Gateway
+    Bootstrap --> Tools
+```
+
+Bitwarden is the preferred secrets source.
+
+`.env.local` may be used as an ignored local fallback, but it should not become the primary long-term pattern.
+
+The architecture should avoid storing secrets in:
+
+- committed files
+- shell profiles
+- bootstrap scripts
+- container compose files
+- routing configuration
+- model configuration
+
+---
+
+## 13. Component model
+
+The workstation is built around capabilities rather than fixed tools.
+
+```mermaid
+flowchart TD
+    Capability[Capability]
+    Contract[Capability Contract]
+    Tool[Current Tool]
+    Status[Lifecycle Status]
+    Replacement[Replacement Option]
+
+    Capability --> Contract
+    Contract --> Tool
+    Tool --> Status
+    Contract --> Replacement
+```
+
+Examples:
+
+| Capability | Current / Candidate Implementation |
+|---|---|
+| Model gateway | LiteLLM |
+| Local runtime — Windows | Ollama |
+| Local runtime — macOS | oMLX / MLX, Ollama fallback |
+| Chat UI | Open WebUI |
+| CLI coding assistant | Aider / OpenCode |
+| Agent runner | Goose |
+| Model fitness | llmfit |
+| Secrets management | Bitwarden |
+
+A tool can move through the lifecycle:
+
+```text
+Candidate → Trial → Adopted → Preferred → Deprecated → Removed
+```
+
+This allows me to experiment without turning the workstation into a messy collection of tools.
+
+---
+
+## 14. Repository architecture
+
+The target repository structure is:
 
 ```text
 ai-lab/
 ├── README.md
+├── CHANGELOG.md
 ├── bootstrap/
 ├── profiles/
 ├── packages/
@@ -421,28 +491,126 @@ ai-lab/
 └── archive/
 ```
 
-The repository should contain both the documentation and the rebuildable implementation.
+Key directories:
+
+| Directory | Responsibility |
+|---|---|
+| `bootstrap/` | Setup and rebuild scripts |
+| `profiles/` | Device-specific profiles |
+| `packages/` | Package declarations |
+| `containers/` | Gateway, Open WebUI and future service definitions |
+| `config/` | Providers, routing, models, policies and capabilities |
+| `contexts/` | Shared, work, personal and persona context |
+| `tools/` | CLI wrappers and workstation commands |
+| `tests/` | Validation and health checks |
+| `docs/` | Architecture, principles, decisions and roadmap |
+| `archive/` | Legacy material and historical experiments |
 
 ---
 
-## 16. Architecture summary
+## 15. Initial implementation view
 
-The architecture should make it easy to:
+Milestone 1 focuses on the smallest useful gateway foundation.
 
-- add a new provider
-- replace a local runtime
-- trial a new coding tool
-- add a new profile
-- update routing policy
-- rebuild a machine
-- validate the setup
-- introduce agents later
-- keep daily workflows stable
+```mermaid
+flowchart TD
+    CLI[ask-ai / ai-status / ai-route]
+    Gateway[LiteLLM or equivalent]
+    Ollama[Ollama]
+    Frontier[Configured frontier provider placeholder]
+    Profile[Profile config]
+    Secrets[Bitwarden or .env.local fallback]
+    Validate[ai-bootstrap-check]
 
-The key architectural stance is:
+    CLI --> Gateway
+    Gateway --> Ollama
+    Gateway --> Frontier
+    Profile --> CLI
+    Profile --> Gateway
+    Secrets --> Gateway
+    Validate --> CLI
+    Validate --> Gateway
+    Validate --> Ollama
+```
+
+Milestone 1 should prove that:
+
+- the repo structure works
+- a profile can be selected
+- the gateway can start
+- at least one local provider can be reached
+- frontier providers can be configured safely
+- basic CLI commands can call the gateway
+- validation can report health
+- the setup can be rebuilt
+
+---
+
+## 16. Key architecture decisions
+
+These decisions should be captured or expanded through ADRs:
+
+| Decision | ADR |
+|---|---|
+| Use a gateway-first architecture | `docs/adr/0001-gateway-first.md` |
+| Use open-source tools before building custom tools | `docs/adr/0002-open-source-first.md` |
+| Treat the CLI as a first-class interface | `docs/adr/0003-cli-native.md` |
+| Make the workstation rebuildable from code and config | `docs/adr/0004-rebuildable-by-default.md` |
+| Build around composable and replaceable components | `docs/adr/0005-composable-and-replaceable.md` |
+| Use local-first but frontier-capable routing | `docs/adr/0006-local-first-frontier-capable.md` |
+| Separate work and personal behaviour through profiles | `docs/adr/0007-profile-based-work-personal-separation.md` |
+
+Additional ADRs should be created for major tool decisions such as LiteLLM, Open WebUI, Bitwarden, Aider, OpenCode, Goose and oMLX.
+
+---
+
+## 17. Constraints and assumptions
+
+### Constraints
+
+- The project should be rebuildable.
+- The work profile must respect approved AI tooling and data sensitivity.
+- Secrets must not be committed.
+- The CLI should remain a primary interface.
+- The architecture should avoid unnecessary custom platform development.
+- The system should remain understandable and maintainable.
+
+### Assumptions
+
+- The AI tooling landscape will continue to change quickly.
+- Local models will improve and model choices will change.
+- Some tools may be replaced over time.
+- The workstation will be built incrementally.
+- The first implementation does not need advanced semantic routing.
+- Rebuildability and documentation are more important than speed.
+
+---
+
+## 18. Risks and mitigations
+
+| Risk | Mitigation |
+|---|---|
+| Tool sprawl | Use capability contracts and component lifecycle. |
+| Work/personal context mixing | Use profiles, context boundaries and routing policy. |
+| Secrets leakage | Use Bitwarden, `.env.example`, ignored local fallback and validation. |
+| Overbuilding too early | Use milestones and adopt-before-build principle. |
+| Local models underperforming | Use llmfit and frontier escalation. |
+| Gateway becomes too complex | Start with simple routing and evolve gradually. |
+| UI and CLI drift apart | Route both through the same gateway where practical. |
+| Project gets abandoned | Prioritise daily-use workflows and stable commands. |
+
+---
+
+## 19. Architecture summary
+
+The architecture is designed around a simple idea:
 
 ```text
-Stable way of working.
-Replaceable implementation.
-Rebuildable environment.
+Stable workflows.
+Replaceable components.
+Rebuildable workstation.
 ```
+
+The first milestone should build the control plane, not the entire future state.
+
+Once the gateway, profile, routing, secrets and validation foundations are in place, the workstation can safely grow into coding workflows, Open WebUI parity, work personas, model fitness, controlled agents and future RAG/project memory.

@@ -2,9 +2,9 @@
 
 ## What this is
 
-AI Dev Workstation as Code is a rebuildable, open-source-first, CLI-native AI workstation project.
+AI Dev Workstation as Code is my rebuildable, open-source-first, CLI-native AI workstation project.
 
-It is designed to provide a consistent AI development and productivity environment across multiple devices, while still allowing each device to use the most appropriate local runtime, model provider and workflow tools.
+I am building it to give myself a consistent AI development and productivity environment across multiple devices, while still allowing each device to use the most appropriate local runtime, model provider and workflow tools.
 
 The workstation is intended to support:
 
@@ -18,17 +18,17 @@ The workstation is intended to support:
 - future agent-based workflows
 - reproducible rebuilds on new or refreshed devices
 
-This project is not intended to be a one-off experiment or a collection of disconnected scripts. It is intended to become a durable AI capability layer that can evolve over time.
+This is not intended to become a one-off experiment or a collection of disconnected scripts. I want it to become a durable AI capability layer that I can keep using, rebuilding and improving over time.
 
 ---
 
-## Why this exists
+## Why I am building this
 
 The AI tooling space is moving quickly. New local runtimes, coding agents, model gateways, frontier models and developer tools are appearing constantly.
 
-Rather than building around a single tool, model or provider, this project takes a gateway-first and capability-based approach.
+Rather than build around a single tool, model or provider, I want this project to take a gateway-first and capability-based approach.
 
-The aim is to keep the user-facing workflow stable while allowing the tools underneath to change.
+The aim is to keep my way of working stable while allowing the tools underneath to change.
 
 In practice, that means:
 
@@ -78,6 +78,18 @@ Likely runtimes:
 - oMLX or MLX-based runtime as the preferred Mac-native path
 - Ollama as fallback and compatibility runtime
 
+Approved / first-use AI tools:
+
+- Gemini
+- Cursor
+
+Additional frontier providers, depending on use case and approval context:
+
+- Anthropic
+- OpenAI
+
+The `macos-work` profile should prioritise approved work AI tools first. Other frontier providers may be used depending on the use case, data sensitivity, approval status and routing policy.
+
 ### Future atomic Linux environment
 
 Potential future target:
@@ -108,9 +120,9 @@ This project is not:
 - a production enterprise AI platform
 - a benchmark project for its own sake
 
-The user already has access to Claude, OpenAI, Codex and Gemini. This project does not need to immediately replace those tools.
+I already have access to Claude, OpenAI, Codex and Gemini, so this project is not trying to replace those tools from day one.
 
-Instead, it provides the user’s own local and routed AI workstation foundation.
+Instead, I want to build my own local and routed AI workstation foundation that can become part of my daily workflow.
 
 ---
 
@@ -132,7 +144,7 @@ The workstation should be:
 - model-fitness informed
 - agent-ready
 
-The user-facing workflow should remain stable even when tools underneath are replaced.
+The workflows I build around should remain stable even when tools underneath are replaced.
 
 ---
 
@@ -155,7 +167,7 @@ This means the first priority is not to build a coding agent or UI. The first pr
 - validation checks
 - rebuildable setup
 
-Once the control plane exists, coding tools, Open WebUI, work personas, model fitness checks and agents can be added in a controlled way.
+Once the control plane exists, I can add coding tools, Open WebUI, work personas, model fitness checks and agents in a controlled way.
 
 ---
 

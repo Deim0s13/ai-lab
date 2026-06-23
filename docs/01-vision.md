@@ -2,16 +2,16 @@
 
 ## Project vision
 
-AI Dev Workstation as Code is a rebuildable AI development and productivity environment that can evolve as tools, models and runtimes change.
+AI Dev Workstation as Code is my rebuildable AI development and productivity environment.
 
-It should become part of the user’s normal daily workflow, not just another experiment.
+I want this project to become part of my normal daily workflow, not just another experiment that gets abandoned after a few weeks.
 
-The workstation should make it easier to:
+The workstation should make it easier for me to:
 
 - use local models safely and effectively
-- understand which models fit which device and task
+- understand which models fit each device and task
 - route work between local and frontier models
-- use AI from the CLI, IDE or UI
+- work from the CLI, IDE or UI
 - support development and vibe coding
 - support architecture, writing and research workflows
 - introduce agents in a controlled way
@@ -19,11 +19,11 @@ The workstation should make it easier to:
 
 ---
 
-## The problem
+## The problem I am trying to solve
 
 AI tooling is fragmented.
 
-There are local runtimes, frontier models, coding agents, chat UIs, CLI tools, IDE extensions, agent frameworks, model routers and benchmarking tools. Each can be useful, but without structure the workstation can quickly become messy, fragile or abandoned.
+There are local runtimes, frontier models, coding agents, chat UIs, CLI tools, IDE extensions, agent frameworks, model routers and model assessment tools. Each can be useful, but without structure the workstation can quickly become messy, fragile or easy to abandon.
 
 The risk is building a novelty stack:
 
@@ -32,10 +32,10 @@ Interesting for a few weeks.
 Hard to maintain.
 Hard to rebuild.
 Hard to remember.
-Easy to replace with ChatGPT, Claude or Codex.
+Easy to replace with ChatGPT, Claude, Codex or Gemini.
 ```
 
-This project exists to avoid that outcome.
+I want to avoid that outcome.
 
 ---
 
@@ -43,7 +43,7 @@ This project exists to avoid that outcome.
 
 The goal is to build a durable AI workstation foundation.
 
-The system should help answer:
+I want the system to help me answer:
 
 - What models can this machine run well?
 - Which provider should this task use?
@@ -59,13 +59,13 @@ The system should help answer:
 
 ## The direction
 
-The chosen direction is:
+The direction for this project is:
 
 ```text
 Open-source-first, CLI-native, gateway-first, composable, rebuildable AI Dev Workstation.
 ```
 
-This means:
+This means I want to:
 
 - use open-source tools where practical
 - keep the CLI as a first-class interface
@@ -83,7 +83,7 @@ This means:
 
 The gateway is the control plane.
 
-Instead of every tool calling a specific model or provider directly, tools should call a common gateway where practical.
+Instead of every tool calling a specific model or provider directly, I want tools to call a common gateway where practical.
 
 This makes it possible to change:
 
@@ -95,7 +95,7 @@ This makes it possible to change:
 - cost controls
 - routing rules
 
-without changing the user-facing workflow.
+without changing the workflows I build around.
 
 For example:
 
@@ -109,15 +109,15 @@ coding tools
 agents
 ```
 
-should not need to care whether the task is handled by Ollama, oMLX, Anthropic, OpenAI, Gemini or a future provider.
+should not need to care whether the task is handled by Ollama, oMLX, Gemini, Anthropic, OpenAI or a future provider.
 
 ---
 
 ## Why CLI-native
 
-The CLI is the primary interface because it supports the user’s preferred way of working.
+The CLI is the primary interface because it matches how I prefer to work.
 
-The user already spends time in CLI-based AI workflows, particularly with tools such as Claude Code. This workstation should build on that habit rather than force a new one.
+I already spend time in CLI-based AI workflows, particularly with tools such as Claude Code. This workstation should build on that habit rather than force a new one.
 
 The principle is:
 
@@ -133,7 +133,7 @@ The UI and IDE are important, but they should not become separate AI environment
 
 The workstation should not rely on undocumented machine state.
 
-If a laptop is rebuilt, replaced or reset, the environment should be recoverable from the repository with minimal manual effort.
+If I rebuild, replace or reset a laptop, I should be able to recover the environment from the repository with minimal manual effort.
 
 This is especially important for atomic or ephemeral operating system patterns such as Fedora Silverblue or Fedora Atomic Desktop.
 
@@ -172,13 +172,13 @@ The long-term target is a personal AI operating layer that supports:
 - constrained agents
 - future RAG and memory workflows
 
-The system does not need to reach this state immediately. It should be built in milestones, with each milestone adding durable capability.
+The system does not need to reach this state immediately. I want to build it in milestones, with each milestone adding durable capability.
 
 ---
 
 ## Success looks like
 
-This project is successful if the user starts using it as the default local AI entry point.
+This project is successful if I start using it as my default local AI entry point.
 
 Early success means:
 
@@ -194,13 +194,13 @@ Coding tools can use the same provider layer.
 Longer-term success means:
 
 ```text
-The workstation becomes the normal way to access local AI, route complex tasks, test models, support coding, and prepare architecture or writing outputs.
+The workstation becomes my normal way to access local AI, route complex tasks, test models, support coding, and prepare architecture or writing outputs.
 ```
 
 ---
 
 ## Guiding statement
 
-Build the thing that helps choose, route and govern AI usage first.
+Build the thing that helps me choose, route and govern AI usage first.
 
 Then plug in coding, agents and workflows.
