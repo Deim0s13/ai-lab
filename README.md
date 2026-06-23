@@ -1,10 +1,10 @@
 # AI Lab
 
-AI Lab is evolving into an **AI Dev Workstation as Code**.
+AI Lab is evolving into my **AI Dev Workstation as Code**.
 
 This repository defines a rebuildable, open-source-first, CLI-native AI development and productivity workstation. It is designed to support local-first AI usage, routed access to frontier models, development workflows, work/persona contexts, model fitness checks and future agent-based workflows.
 
-The aim is not to build a one-off local chatbot or a pile of scripts. The aim is to create a durable AI workstation foundation that can be rebuilt, adapted and extended over time.
+The aim is not to build a one-off local chatbot or a pile of scripts. The aim is to create a durable AI workstation foundation that I can rebuild, adapt and extend over time.
 
 ---
 
@@ -32,7 +32,7 @@ Milestone 1 — Rebuildable Gateway Foundation
 
 ## What This Is
 
-AI Lab is intended to become a personal AI workstation layer that can run across multiple devices.
+AI Lab is intended to become my personal AI workstation layer across multiple devices.
 
 It should support:
 
@@ -56,21 +56,21 @@ It should support:
 This project is not:
 
 - a production enterprise AI platform
-- a single-model chatbot
+- a single-model local chatbot
 - a replacement for every frontier AI tool
 - a benchmark project for its own sake
 - a manually assembled workstation
 - a collection of disconnected experiments
 
-The user already has access to Claude, OpenAI, Codex and Gemini. This project does not need to immediately replace those tools.
+I already have access to Claude, OpenAI, Codex and Gemini, so this project is not trying to replace those tools from day one.
 
-Instead, it provides a local and routed AI workstation foundation that can become part of daily use.
+Instead, the goal is to build my own local and routed AI workstation foundation that can become part of my daily workflow.
 
 ---
 
 ## Architectural Direction
 
-The selected direction is:
+The direction for this project is:
 
 ```text
 Open-source-first, CLI-native, gateway-first, composable, rebuildable AI Dev Workstation.
@@ -79,7 +79,7 @@ Open-source-first, CLI-native, gateway-first, composable, rebuildable AI Dev Wor
 The project should be:
 
 - **open-source-first** — adopt active open-source tools before building custom functionality
-- **CLI-native** — the terminal is a first-class interface
+- **CLI-native** — keep the terminal as a first-class interface
 - **gateway-first** — route model access through a common control plane where practical
 - **local-first** — use local models by default where appropriate
 - **frontier-capable** — escalate to Anthropic, OpenAI, Gemini or other providers when justified
@@ -366,7 +366,7 @@ Future options may include 1Password CLI, `pass`, `sops` with `age`, or OS keych
 
 ## Working Principles
 
-The project is guided by these principles:
+This project is guided by these principles:
 
 ```text
 Build the way of working, not just the tool.
