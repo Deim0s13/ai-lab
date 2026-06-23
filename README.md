@@ -1,448 +1,395 @@
 # AI Lab
 
-Personal AI-augmented architecture workstation for experimenting with local LLMs, GPU-backed inference, AI workflow tooling, and architecture-focused CLI assistants.
+AI Lab is evolving into an **AI Dev Workstation as Code**.
 
-This project is intentionally practical. It is not about building a production AI platform from day one. It is about learning modern AI infrastructure, model workflows, local inference, APIs, containers, GPU acceleration, and orchestration by building useful tools that support architecture work.
+This repository defines a rebuildable, open-source-first, CLI-native AI development and productivity workstation. It is designed to support local-first AI usage, routed access to frontier models, development workflows, work/persona contexts, model fitness checks and future agent-based workflows.
 
----
-
-## Purpose
-
-The purpose of this project is to build practical AI fluency through hands-on experimentation.
-
-The focus areas are:
-
-* local LLM inference
-* GPU-backed model execution
-* Ollama and local model runtimes
-* API-driven AI workflows
-* Podman-based container management
-* Open WebUI as a local AI interface
-* VS Code / Continue.dev integration
-* CLI-based AI workflow tools
-* architecture-focused prompting and context
-* basic model routing and orchestration
-
-The longer-term goal is to evolve this into a personal AI-augmented architecture platform that helps with customer preparation, technology comparison, risk analysis, architecture thinking, and enterprise AI learning.
+The aim is not to build a one-off local chatbot or a pile of scripts. The aim is to create a durable AI workstation foundation that can be rebuilt, adapted and extended over time.
 
 ---
 
-## Current Architecture
+## Current Status
+
+This project is in the **foundation design and build phase**.
+
+The current focus is:
+
+- documenting the architecture
+- defining the project principles
+- creating the profile model
+- defining the routing strategy
+- establishing rebuildability
+- selecting initial open-source tools
+- preparing the first gateway-based implementation
+
+The first implementation milestone is:
 
 ```text
-Windows 11
-└── WSL2 Ubuntu
-    ├── NVIDIA GPU passthrough
-    ├── Ollama service
-    ├── Local LLMs
-    ├── Podman
-    ├── Open WebUI via Podman Quadlet
-    ├── VS Code + Continue.dev
-    └── AI workflow tools
+Milestone 1 — Rebuildable Gateway Foundation
 ```
 
 ---
 
-## Core Components
+## What This Is
 
-| Component              | Purpose                                      |
-| ---------------------- | -------------------------------------------- |
-| WSL2 Ubuntu            | Linux-based working environment on Windows   |
-| NVIDIA GPU passthrough | Enables GPU acceleration for local inference |
-| Ollama                 | Local model runtime                          |
-| Podman                 | Container runtime                            |
-| Open WebUI             | Local browser-based AI interface             |
-| Continue.dev           | AI assistant inside VS Code                  |
-| CLI tools              | Workflow layer for local AI experimentation  |
+AI Lab is intended to become a personal AI workstation layer that can run across multiple devices.
 
----
+It should support:
 
-## Current Models
-
-| Model             | Intended Use                                                            |
-| ----------------- | ----------------------------------------------------------------------- |
-| `qwen3:14b`       | General architecture explanation and everyday reasoning                 |
-| `deepseek-r1:14b` | Deeper reasoning, comparison, risk, trade-off and strategy work         |
-| `llama3.1:8b`     | Lightweight rewrites, short responses, quick summaries and simple tasks |
+- local model usage
+- model routing
+- frontier model escalation
+- CLI-first workflows
+- Open WebUI or similar chat UI support
+- development and vibe coding workflows
+- architecture and writing workflows
+- model fitness review
+- work and personal profile separation
+- future controlled agents
+- future RAG and project memory workflows
+- reproducible rebuilds on new or refreshed devices
 
 ---
 
-## Project Structure
+## What This Is Not
+
+This project is not:
+
+- a production enterprise AI platform
+- a single-model chatbot
+- a replacement for every frontier AI tool
+- a benchmark project for its own sake
+- a manually assembled workstation
+- a collection of disconnected experiments
+
+The user already has access to Claude, OpenAI, Codex and Gemini. This project does not need to immediately replace those tools.
+
+Instead, it provides a local and routed AI workstation foundation that can become part of daily use.
+
+---
+
+## Architectural Direction
+
+The selected direction is:
 
 ```text
-~/projects/ai-lab/
-├── tools/
-│   ├── ask-ollama
-│   ├── architect-ai
-│   ├── ai-status
-│   ├── ai-gpu-check
-│   ├── ollama-api-test
-│   └── context/
-│       ├── architect.txt
-│       ├── writing-style.txt
-│       └── banking.txt
-│
+Open-source-first, CLI-native, gateway-first, composable, rebuildable AI Dev Workstation.
+```
+
+The project should be:
+
+- **open-source-first** — adopt active open-source tools before building custom functionality
+- **CLI-native** — the terminal is a first-class interface
+- **gateway-first** — route model access through a common control plane where practical
+- **local-first** — use local models by default where appropriate
+- **frontier-capable** — escalate to Anthropic, OpenAI, Gemini or other providers when justified
+- **composable** — build around capabilities, not fixed tools
+- **replaceable** — allow components to be swapped as better options emerge
+- **rebuildable** — recover the environment from code and configuration
+- **observable** — explain routing and provider decisions where practical
+- **profile-driven** — support different behaviour per device and use case
+
+---
+
+## Target Devices
+
+### MacBook Pro
+
+Profile:
+
+```text
+macos-work
+```
+
+Primary purpose:
+
+- work AI workstation
+- architecture workflows
+- writing and summarisation
+- customer preparation
+- local-first coding assistance
+- work-safe routing
+
+Expected local runtimes:
+
+- oMLX / MLX-compatible runtime
+- Ollama fallback
+
+Expected frontier providers:
+
+- Anthropic
+- OpenAI
+- Gemini, if useful
+
+---
+
+### Windows Laptop
+
+Profile:
+
+```text
+windows-personal
+```
+
+Primary purpose:
+
+- personal AI development lab
+- vibe coding
+- local model experimentation
+- personal project work
+- routing experiments
+- future agent experimentation
+
+Expected local runtime:
+
+- Ollama
+
+Expected environment:
+
+- Windows
+- WSL2
+- local GPU where available
+- container runtime
+
+---
+
+### Future Atomic Linux Workstation
+
+Profile:
+
+```text
+fedora-atomic
+```
+
+Potential targets:
+
+- Fedora Silverblue
+- Fedora Atomic Desktop
+- other rebuildable or atomic Linux environments
+
+Design pattern:
+
+- thin host
+- Podman-first services
+- user-space tools
+- declarative configuration
+- repeatable bootstrap
+
+---
+
+## Initial Tool Candidates
+
+These are initial candidates and may change as the project evolves.
+
+| Capability | Initial Candidate |
+|---|---|
+| Model gateway | LiteLLM |
+| Windows local runtime | Ollama |
+| macOS local runtime | oMLX / MLX-compatible runtime |
+| macOS fallback runtime | Ollama |
+| Chat UI | Open WebUI |
+| CLI coding assistant | Aider / OpenCode |
+| Agent runner | Goose |
+| Model fitness | llmfit |
+| Frontier providers | Anthropic, OpenAI, Gemini |
+
+Tools are treated as implementations of capabilities. They can be trialled, adopted, replaced or removed over time.
+
+---
+
+## Repository Structure
+
+Target structure:
+
+```text
+ai-lab/
+├── README.md
+├── CHANGELOG.md
+├── bootstrap/
+├── profiles/
+├── packages/
 ├── containers/
-│   └── open-webui/
-│       └── open-webui.container
-│
+├── config/
+├── contexts/
+├── dotfiles/
+├── tools/
+├── systemd/
 ├── docs/
-│   ├── workstation-architecture.md
-│   ├── troubleshooting.md
-│   └── model-notes.md
-│
-└── README.md
+├── tests/
+├── labs/
+└── archive/
 ```
+
+Key directories:
+
+| Directory | Purpose |
+|---|---|
+| `docs/` | Project architecture, principles, milestones and decisions |
+| `docs/adr/` | Architecture Decision Records |
+| `profiles/` | Device and use-case profiles |
+| `config/` | Providers, routing, models, policies and capabilities |
+| `containers/` | Containerised services such as gateway and chat UI |
+| `bootstrap/` | Rebuild and setup scripts |
+| `tools/` | CLI wrappers and workstation commands |
+| `contexts/` | Shared, work, personal and persona context |
+| `tests/` | Validation and health checks |
+| `labs/` | Learning notes and practical experiments |
+| `archive/` | Legacy notes, previous experiments and historical material |
 
 ---
-
-## CLI Tools
-
-| Tool              | Purpose                                       |
-| ----------------- | --------------------------------------------- |
-| `ask-ollama`      | General-purpose local AI CLI interface        |
-| `architect-ai`    | Architecture-focused workflow wrapper         |
-| `ai-status`       | Workstation health check and safe remediation |
-| `ai-gpu-check`    | Focused GPU acceleration validation           |
-| `ollama-api-test` | Direct Ollama API testing and learning tool   |
-
----
-
-## Context Files
-
-| File                | Purpose                                       |
-| ------------------- | --------------------------------------------- |
-| `architect.txt`     | Architecture persona and framing              |
-| `writing-style.txt` | Preferred tone and communication style        |
-| `banking.txt`       | Banking and financial services domain context |
-
-The context system keeps the tools modular. For example:
-
-```bash
-ask-ollama --persona architect --style writing-style "Explain RAG"
-```
-
-Or with banking context:
-
-```bash
-ask-ollama --persona architect --style writing-style --domain banking "Explain RAG to a banking customer"
-```
-
----
-
-## Quick Start
-
-Ensure the tools folder is in your `PATH`:
-
-```bash
-export PATH="$HOME/projects/ai-lab/tools:$PATH"
-```
-
-Check the workstation:
-
-```bash
-ai-status
-```
-
-Run a full health check with safe remediation and GPU probe:
-
-```bash
-ai-status --fix --probe
-```
-
-Check GPU acceleration:
-
-```bash
-ai-gpu-check --probe
-```
-
-Call the Ollama API directly:
-
-```bash
-ollama-api-test "Reply with exactly: ok"
-```
-
-Ask a local model a question:
-
-```bash
-ask-ollama "Explain RAG"
-```
-
-Use model routing:
-
-```bash
-ask-ollama --auto "Compare OpenShift AI and SageMaker"
-```
-
-Use the architecture workflow wrapper:
-
-```bash
-architect-ai explain "RAG"
-```
-
-Use banking context:
-
-```bash
-architect-ai banking compare "OpenShift AI vs SageMaker"
-```
-
----
-
-## Tool Examples
-
-### `ask-ollama`
-
-General local AI interface.
-
-```bash
-ask-ollama "Explain Kubernetes operators"
-```
-
-With persona and style:
-
-```bash
-ask-ollama --persona architect --style writing-style "Explain OpenShift AI"
-```
-
-With banking context:
-
-```bash
-ask-ollama --persona architect --style writing-style --domain banking "Explain RAG to a banking customer"
-```
-
-With model routing:
-
-```bash
-ask-ollama --auto "Compare OpenShift AI and SageMaker"
-```
-
-With previous response memory:
-
-```bash
-ask-ollama --continue "Make that more concise"
-```
-
-Save output:
-
-```bash
-ask-ollama --auto "Explain local inference" --save docs/local-inference-notes.md
-```
-
----
-
-### `architect-ai`
-
-Role-specific wrapper for architecture workflows.
-
-```bash
-architect-ai explain "RAG"
-```
-
-```bash
-architect-ai risks "self-hosted AI platform"
-```
-
-```bash
-architect-ai compare "OpenShift AI vs SageMaker"
-```
-
-```bash
-architect-ai discovery "enterprise AI adoption"
-```
-
-```bash
-architect-ai banking compare "OpenShift AI vs SageMaker"
-```
-
----
-
-### `ai-status`
-
-Overall workstation health check.
-
-```bash
-ai-status
-```
-
-Apply safe fixes:
-
-```bash
-ai-status --fix
-```
-
-Run a model probe as part of the check:
-
-```bash
-ai-status --fix --probe
-```
-
-Safe remediation may start or restart known local services such as Ollama or Open WebUI. It does not change drivers, recreate containers, download models, or make destructive changes.
-
----
-
-### `ai-gpu-check`
-
-Focused GPU validation.
-
-```bash
-ai-gpu-check
-```
-
-With inference probe:
-
-```bash
-ai-gpu-check --probe
-```
-
-This confirms whether WSL2 can see the NVIDIA GPU and whether Ollama reports GPU usage for the active model.
-
----
-
-### `ollama-api-test`
-
-Direct API learning tool.
-
-```bash
-ollama-api-test "Explain RAG in one paragraph"
-```
-
-Show the request payload:
-
-```bash
-ollama-api-test --show-request "Explain model serving"
-```
-
-Show raw JSON response:
-
-```bash
-ollama-api-test --raw "Say hello"
-```
-
-Use streaming output:
-
-```bash
-ollama-api-test --stream "Explain Kubernetes operators simply"
-```
-
----
-
-## Open WebUI
-
-Open WebUI is managed as a Podman Quadlet user service.
-
-Active Quadlet location:
-
-```text
-~/.config/containers/systemd/open-webui.container
-```
-
-Version-controlled copy:
-
-```text
-containers/open-webui/open-webui.container
-```
-
-Runtime data location:
-
-```text
-~/containers/open-webui
-```
-
-Useful commands:
-
-```bash
-systemctl --user status open-webui.service
-systemctl --user restart open-webui.service
-journalctl --user -u open-webui.service -f
-```
-
-Open WebUI should be available at:
-
-```text
-http://localhost:8080
-```
-
----
-
-## Workstreams Completed
-
-| Workstream                    | Status   |
-| ----------------------------- | -------- |
-| Local inference understanding | Complete |
-| API awareness                 | Complete |
-| Container understanding       | Complete |
-| GPU acceleration              | Complete |
-| Linux workflow maturity       | Complete |
-| Model orchestration v0.1      | Complete |
-
----
-
-## Current Capability
-
-The workstation can now:
-
-* run local models through Ollama
-* use the NVIDIA GPU from WSL2
-* expose models through Open WebUI
-* use local models in Continue.dev
-* call Ollama directly through API scripts
-* run architecture-focused CLI workflows
-* apply reusable persona, style, and domain context
-* route prompts to different models using simple rules
-* validate runtime health and apply safe remediation
-
----
-
-## Roadmap
-
-### v0.3 — Workflow Maturity and Routing Intelligence
-
-Planned focus:
-
-* improve project documentation
-* improve `architect-ai` workflows
-* add route explanation mode
-* improve model routing from keyword-based to classifier-based routing
-* improve troubleshooting documentation
-* add changelog and clearer versioning
-
-### Future Areas
-
-Potential later phases:
-
-* vLLM as a production-style local inference server
-* OpenAI-compatible local serving
-* LiteLLM or similar provider abstraction
-* OpenAI / Claude integration
-* semantic routing using embeddings or classifier models
-* lightweight RAG and personal knowledge workflows
-* llm-d and Kubernetes-native distributed inference concepts
-* OpenShift AI alignment and platform architecture patterns
-
----
-
-## Design Principles
-
-This project should remain:
-
-* practical
-* useful
-* understandable
-* portable
-* version-controlled
-* role-aligned
-* interesting enough to keep using
-
-The goal is not to become a full-time AI engineer or developer. The goal is to become more fluent in AI systems, infrastructure patterns, and architecture-relevant workflows through hands-on experimentation.
 
 ## Documentation
 
+Start here:
+
 | Document | Purpose |
 |---|---|
-| [01-workstation-overview.md](docs/01-workstation-overview.md) | Architecture, purpose, and current capability |
-| [02-setup-and-prerequisites.md](docs/02-setup-and-prerequisites.md) | Rebuild and setup instructions |
-| [03-tools-reference.md](docs/03-tools-reference.md) | CLI tool usage and examples |
-| [04-open-webui-podman-quadlet.md](docs/04-open-webui-podman-quadlet.md) | Open WebUI container service setup |
-| [05-gpu-and-ollama-troubleshooting.md](docs/05-gpu-and-ollama-troubleshooting.md) | GPU, Ollama, and runtime troubleshooting |
-| [06-model-routing.md](docs/06-model-routing.md) | Current and future model routing |
-| [07-roadmap.md](docs/07-roadmap.md) | Planned future phases |
+| `docs/00-overview.md` | Project overview and orientation |
+| `docs/01-vision.md` | Long-term vision and direction |
+| `docs/02-principles.md` | Design principles |
+| `docs/03-architecture.md` | Target architecture |
+| `docs/04-capability-contracts.md` | Capability-based design |
+| `docs/05-component-lifecycle.md` | How tools move from candidate to preferred or removed |
+| `docs/06-profiles.md` | Device profile model |
+| `docs/07-routing-strategy.md` | Local and frontier routing approach |
+| `docs/08-rebuild-strategy.md` | Rebuildability and workstation-as-code approach |
+| `docs/09-tool-selection.md` | How tools are selected |
+| `docs/10-milestones.md` | Delivery roadmap |
+
+Architecture decisions are recorded in:
+
+```text
+docs/adr/
+```
+
+---
+
+## Milestones
+
+The planned delivery path is:
+
+```text
+Milestone 1 — Rebuildable Gateway Foundation
+Milestone 2 — CLI Habit Layer
+Milestone 3 — Model Fitness Loop
+Milestone 4 — UI Parity
+Milestone 5 — Development Workflow
+Milestone 6 — Work Persona Layer
+Milestone 7 — Controlled Agents
+Milestone 8 — RAG / Project Memory
+```
+
+The project will evolve in small, usable stages.
+
+Each milestone should produce durable capability rather than novelty.
+
+---
+
+## Milestone 1: Rebuildable Gateway Foundation
+
+The first milestone establishes the spine of the workstation.
+
+Expected deliverables:
+
+- profile definitions
+- package declaration placeholders
+- `.env.example`
+- gateway configuration
+- provider placeholders
+- basic routing configuration
+- container configuration
+- basic `ask-ai`
+- basic `ai-status`
+- basic `ai-route`
+- basic `ai-bootstrap-check`
+- llmfit result capture location
+
+Success looks like:
+
+```bash
+git clone https://github.com/Deim0s13/ai-lab.git
+cd ai-lab
+./bootstrap/bootstrap.sh --profile macos-work
+ai-bootstrap-check
+ask-ai "Explain what this workstation does"
+```
+
+This will evolve as implementation begins.
+
+---
+
+## Rebuildability
+
+The workstation should be rebuildable from code and configuration.
+
+The target rebuild flow is:
+
+```text
+Clone repository
+Select profile
+Install package dependencies
+Apply configuration
+Start services
+Install or verify models
+Run validation checks
+Use workstation
+```
+
+The repository should be the source of truth.
+
+Manual machine state should be avoided or documented.
+
+---
+
+## Secrets
+
+Secrets must not be committed to the repository.
+
+The initial approach is:
+
+```text
+.env.example   committed
+.env.local     ignored
+```
+
+Expected secrets may include:
+
+```text
+ANTHROPIC_API_KEY=
+OPENAI_API_KEY=
+GEMINI_API_KEY=
+```
+
+Future options may include 1Password CLI, `pass`, `sops` with `age`, or OS keychain integration.
+
+---
+
+## Working Principles
+
+The project is guided by these principles:
+
+```text
+Build the way of working, not just the tool.
+
+Keep the interface stable.
+
+Keep the components replaceable.
+
+Keep the environment rebuildable.
+
+Use local models first.
+
+Escalate when justified.
+
+Document everything.
+```
+
+---
+
+## Current Project Mantra
+
+```text
+Stable workflow.
+Replaceable components.
+Rebuildable workstation.
+```
