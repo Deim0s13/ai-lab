@@ -77,7 +77,65 @@ The order can change if reality demands it, but this is the preferred delivery p
 
 ---
 
-# 5. Milestone 1 — Rebuildable Gateway Foundation
+## 5. Pre-Milestone 1 — Architecture hardening
+
+Before Milestone 1 implementation starts, I need to close the main architecture gaps that affect safety, resilience, rebuildability and long-term maintainability.
+
+This is not a separate implementation milestone. It is a design hardening step that makes Milestone 1 safer to build.
+
+The focus is to confirm the boundary conditions before creating the gateway foundation.
+
+## Required decisions
+
+| Area | Decision needed | ADR |
+|---|---|---|
+| Gateway failure | Define what happens when the gateway is unavailable. | `docs/adr/0008-gateway-failure-and-degraded-operation.md` |
+| Runtime access | Define when tools use the gateway versus direct runtime access. | `docs/adr/0009-runtime-access-patterns.md` |
+| Model fitness | Confirm llmfit as a candidate, not a fixed dependency, and define fallback approach. | `docs/adr/0010-model-fitness-approach.md` |
+| Secrets | Confirm Bitwarden as the preferred secrets strategy. | `docs/adr/0011-secrets-management-strategy.md` |
+| Context boundaries | Define work/personal context access rules. | `docs/adr/0012-work-personal-context-boundaries.md` |
+| Routing validation | Define routing tests and decision logging. | `docs/adr/0013-routing-validation-and-observability.md` |
+| Agent guardrails | Define controlled agent constraints before implementation. | `docs/adr/0014-controlled-agent-guardrails.md` |
+| Fedora Atomic status | Clarify that Fedora Atomic is a future/reference profile. | `docs/adr/0015-fedora-atomic-profile-status.md` |
+
+## Hardening checklist
+
+Before starting Milestone 1 implementation, the following should be true:
+
+| Check | Expected outcome |
+|---|---|
+| Gateway failure model is defined | Normal, degraded local and degraded manual modes are documented. |
+| Runtime access model is defined | Gateway-first is the default, with documented direct access exceptions. |
+| macOS runtime split is understood | oMLX / MLX and Ollama responsibilities are explicit. |
+| Model fitness approach is replaceable | llmfit is a candidate, with gateway-based checks as fallback. |
+| Secrets strategy is decided | Bitwarden is preferred; `.env.local` is fallback only. |
+| Work/personal context boundaries are explicit | Profiles define allowed and blocked context categories. |
+| Routing validation is designed | Expected routing behaviours are testable. |
+| Routing logging is designed | Metadata-only routing logs are defined and excluded from git. |
+| Agent guardrails are pre-defined | Agents are disabled by default for work profile and constrained for personal profile. |
+| Fedora Atomic status is clear | Future/reference only, not active Milestone 1 scope. |
+
+## Impact on Milestone 1
+
+Milestone 1 should now build against these assumptions:
+
+- the gateway is the preferred path, but not the only possible path for basic local degraded use
+- `ask-ai --local` may support direct local fallback where configured
+- work profile routing must prioritise approved tools first
+- personal profile routing can use OpenAI and Anthropic more freely
+- secrets should be resolved through Bitwarden where practical
+- routing decisions should be testable
+- routing decisions should be logged as metadata only
+- future/reference profiles should not create validation failures
+- agents remain out of scope until guardrails are implemented
+
+The hardening step protects the project from building a brittle foundation.
+
+It also makes the milestone implementation more testable.
+
+---
+
+# 6. Milestone 1 — Rebuildable Gateway Foundation
 
 ## Intent
 
@@ -155,7 +213,7 @@ This milestone is successful when:
 
 ---
 
-# 6. Milestone 2 — CLI Habit Layer
+# 7. Milestone 2 — CLI Habit Layer
 
 ## Intent
 
@@ -217,7 +275,7 @@ This milestone is successful when:
 
 ---
 
-# 7. Milestone 3 — Model Fitness Loop
+# 8. Milestone 3 — Model Fitness Loop
 
 ## Intent
 
@@ -275,7 +333,7 @@ This milestone is successful when:
 
 ---
 
-# 8. Milestone 4 — UI Parity
+# 9. Milestone 4 — UI Parity
 
 ## Intent
 
@@ -331,7 +389,7 @@ This milestone is successful when:
 
 ---
 
-# 9. Milestone 5 — Development Workflow
+# 10. Milestone 5 — Development Workflow
 
 ## Intent
 
@@ -391,7 +449,7 @@ This milestone is successful when:
 
 ---
 
-# 10. Milestone 6 — Work Persona Layer
+# 11. Milestone 6 — Work Persona Layer
 
 ## Intent
 
@@ -450,7 +508,7 @@ This milestone is successful when:
 
 ---
 
-# 11. Milestone 7 — Controlled Agents
+# 12. Milestone 7 — Controlled Agents
 
 ## Intent
 
@@ -508,7 +566,7 @@ This milestone is successful when:
 
 ---
 
-# 12. Milestone 8 — RAG / Project Memory
+# 13. Milestone 8 — RAG / Project Memory
 
 ## Intent
 
@@ -564,7 +622,7 @@ This milestone is successful when:
 
 ---
 
-## 13. Cross-milestone dependencies
+## 14. Cross-milestone dependencies
 
 ```mermaid
 flowchart TD
@@ -608,7 +666,7 @@ The most important dependencies are:
 
 ---
 
-## 14. Definition of done by milestone
+## 15. Definition of done by milestone
 
 Each milestone should be considered done only when it has:
 
@@ -627,7 +685,7 @@ A milestone is not done just because a tool was installed.
 
 ---
 
-## 15. Backlog parking lot
+## 16. Backlog parking lot
 
 Potential future work that should not distract from the current milestones:
 
@@ -652,11 +710,13 @@ These may be useful later, but they should not be allowed to derail the foundati
 
 ---
 
-## 16. Immediate next step
+## 17. Immediate next step
 
-The immediate next step is Milestone 1.
+The immediate next step is to complete the Pre-Milestone 1 architecture hardening step.
 
-Milestone 1 should create the smallest useful gateway foundation:
+That means confirming the ADRs and updating the core docs so the gateway foundation is built against clear assumptions for failure modes, runtime access, secrets, routing validation, context boundaries and profile status.
+
+Once that is done, Milestone 1 should create the smallest useful gateway foundation:
 
 ```text
 profiles
@@ -668,11 +728,9 @@ validation
 documentation
 ```
 
-Once that spine exists, the workstation can grow without becoming a pile of disconnected experiments.
-
 ---
 
-## 17. Summary
+## 18. Summary
 
 The delivery strategy is:
 
