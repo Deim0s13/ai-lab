@@ -33,13 +33,19 @@ The profile model exists to make that explicit.
 flowchart TD
     Profiles[Profiles]
 
+    Active[Active implementation profiles]
+    Future[Future / reference profiles]
+
     Mac[macos-work]
     Win[windows-personal]
     Fedora[fedora-atomic]
 
-    Profiles --> Mac
-    Profiles --> Win
-    Profiles --> Fedora
+    Profiles --> Active
+    Profiles --> Future
+
+    Active --> Mac
+    Active --> Win
+    Future --> Fedora
 
     Mac --> MacUse[Work AI workstation]
     Mac --> MacRuntime[oMLX / MLX preferred<br/>Ollama fallback]
@@ -51,55 +57,28 @@ flowchart TD
     Win --> WinProviders[OpenAI and Anthropic first<br/>Gemini where useful]
     Win --> WinPolicy[Experimental personal policy]
 
-    Fedora --> FedoraUse[Future rebuildability target]
+    Fedora --> FedoraUse[Future rebuildability reference]
     Fedora --> FedoraRuntime[Runtime TBD]
-    Fedora --> FedoraProviders[Profile-specific providers TBD]
+    Fedora --> FedoraProviders[Provider posture TBD]
     Fedora --> FedoraPolicy[Thin-host atomic policy]
 ```
 
-The initial profiles are:
+The initial profile status is:
 
-| Profile | Device / environment | Primary purpose |
-|---|---|---|
-| `macos-work` | MacBook Pro | Work AI workstation |
-| `windows-personal` | Windows laptop / WSL2 | Personal AI development lab |
-| `fedora-atomic` | Future Linux target | Rebuildable atomic workstation pattern |
+| Profile | Status | Device / environment | Primary purpose |
+|---|---|---|---|
+| `macos-work` | Active | MacBook Pro | Work AI workstation |
+| `windows-personal` | Active | Windows laptop / WSL2 | Personal AI development lab |
+| `fedora-atomic` | Future / reference | Future Linux target | Rebuildable atomic workstation pattern |
 
----
+Only the active profiles are expected to be implemented during the first milestones.
 
-## 4. Profile responsibilities
+`fedora-atomic` is intentionally retained as a future reference profile. It keeps the architecture honest about rebuildability, thin-host design and Podman-first services, but it is not an active Milestone 1 implementation target.
 
-A profile should define:
+Related ADR:
 
-| Area | Examples |
-|---|---|
-| Device intent | Work, personal lab, rebuildability testbed |
-| Local runtime | Ollama, oMLX / MLX, future runtime |
-| Provider posture | Approved tools first, frontier providers, local-only defaults |
-| Routing policy | Local-first, best-quality escalation, confirmation rules |
-| Enabled capabilities | CLI, UI, coding, agents, RAG, model fitness |
-| Disabled capabilities | Anything not appropriate for that profile |
-| Secrets scope | Which keys or Bitwarden items are required |
-| Context scope | Work, personal, shared or isolated context |
-| Validation checks | What must be healthy for that profile |
-| Risk posture | Conservative, balanced or experimental |
-
-Profiles should eventually live as configuration files under:
-
-```text id="1dh3fi"
-profiles/
-```
-
-Example:
-
-```text id="wleqsd"
-profiles/
-├── macos-work/
-│   └── profile.yaml
-├── windows-personal/
-│   └── profile.yaml
-└── fedora-atomic/
-    └── profile.yaml
+```text id="yt8e6i"
+docs/adr/0015-fedora-atomic-profile-status.md
 ```
 
 ---
@@ -196,9 +175,10 @@ Restricted or future:
 
 ### Example profile configuration
 
-```yaml id="z67zcc"
+```YAML
 name: macos-work
 description: Work AI workstation profile for MacBook Pro
+status: active
 
 device:
   os: macos
@@ -210,6 +190,15 @@ local_runtimes:
     - omlx
   fallback:
     - ollama
+
+runtime_access:
+  default: gateway
+  direct_local_fallback: true
+  direct_frontier_fallback: false
+  direct_allowed_for:
+    - ai-status
+    - ai-bootstrap-check
+    - ai-model-review
 
 providers:
   approved_first:
@@ -224,6 +213,8 @@ routing:
   explain_routes: true
   require_confirmation_for_frontier: true
   approved_tools_first: true
+  block_frontier_for:
+    - restricted
 
 capabilities:
   enabled:
@@ -247,17 +238,25 @@ capabilities:
 secrets:
   source: bitwarden
   fallback: env_local
+  required:
+    - GEMINI_API_KEY
+  optional:
+    - ANTHROPIC_API_KEY
+    - OPENAI_API_KEY
 
 context:
   allowed:
     - work
+    - work-sensitive
     - shared
+    - project
   blocked:
-    - personal_experiments
+    - personal
 
 notes:
   - Gemini and Cursor are documented as the first-use AI tools for work profile.
   - Anthropic and OpenAI are use-case dependent and subject to approval context.
+  - Direct runtime access is limited to validation and model review workflows.
 ```
 
 ---
@@ -345,9 +344,10 @@ Later:
 
 ### Example profile configuration
 
-```yaml id="z9o8e8"
+```YAML
 name: windows-personal
 description: Personal AI development lab profile for Windows and WSL2
+status: active
 
 device:
   os: windows
@@ -358,6 +358,16 @@ device:
 local_runtimes:
   preferred:
     - ollama
+
+runtime_access:
+  default: gateway
+  direct_local_fallback: true
+  direct_frontier_fallback: false
+  direct_allowed_for:
+    - ask-ai
+    - ai-status
+    - ai-bootstrap-check
+    - ai-model-review
 
 providers:
   primary_frontier:
@@ -394,6 +404,11 @@ capabilities:
 secrets:
   source: bitwarden
   fallback: env_local
+  required:
+    - OPENAI_API_KEY
+    - ANTHROPIC_API_KEY
+  optional:
+    - GEMINI_API_KEY
 
 context:
   allowed:
@@ -401,10 +416,12 @@ context:
     - shared
     - project
   blocked:
-    - work_sensitive
+    - work
+    - work-sensitive
 
 notes:
   - This profile is the main place for OpenAI and Anthropic frontier experimentation.
+  - Work and work-sensitive context must not be available to this profile by default.
   - Experimental components should still be tracked through the component lifecycle.
 ```
 
@@ -464,9 +481,10 @@ Future baseline:
 
 ### Example profile configuration
 
-```yaml id="p77an0"
+```YAML
 name: fedora-atomic
-description: Future atomic Linux workstation profile
+description: Future reference profile for an atomic Linux workstation pattern
+status: future_reference
 
 device:
   os: fedora-atomic
@@ -476,6 +494,14 @@ device:
 local_runtimes:
   preferred:
     - tbd
+
+runtime_access:
+  default: gateway
+  direct_local_fallback: false
+  direct_frontier_fallback: false
+  direct_allowed_for:
+    - ai-status
+    - ai-bootstrap-check
 
 providers:
   primary_frontier:
@@ -505,14 +531,22 @@ secrets:
   source: bitwarden
   fallback: env_local
 
+context:
+  allowed:
+    - shared
+    - project
+  blocked:
+    - work-sensitive
+
 host_model:
   pattern: thin_host
   services: podman_first
   manual_state: minimise
 
 notes:
-  - This profile exists to keep the architecture honest about rebuildability.
-  - It does not need to be implemented before the macOS and Windows profiles.
+  - This is a future/reference profile, not an active Milestone 1 implementation target.
+  - It exists to keep the architecture honest about rebuildability.
+  - Validation should not fail during Milestone 1 because this profile is not implemented.
 ```
 
 ---
@@ -582,49 +616,107 @@ Example checks:
 
 Validation should not simply check whether everything exists. It should check whether the right things exist for the selected profile.
 
+Validation should respect profile status.
+
+Active profiles should have concrete validation expectations.
+
+Future/reference profiles should not cause validation failures unless they are explicitly selected or promoted to active status.
+
 ---
 
 ## 10. Context boundaries
 
-Profiles should control context boundaries.
+Profiles must control context boundaries.
+
+The workstation should not rely only on manual judgement to keep work and personal context separate. Context access needs to be explicit because future capabilities such as writing assistants, research workflows, RAG and agents may load context automatically.
+
+Initial context categories:
+
+| Context | Description |
+|---|---|
+| `work` | Work-related context, internal notes, customer material, work personas and work-specific architecture context. |
+| `personal` | Personal projects, personal notes, experiments and personal preferences. |
+| `shared` | Non-sensitive reusable context that is safe for both work and personal profiles. |
+| `project` | Context specific to this repo and the AI workstation project. |
+| `work-sensitive` | Work context that should never be available to personal workflows. |
 
 ```mermaid id="5plk22"
 flowchart TD
     Contexts[Contexts]
 
     Work[work]
+    WorkSensitive[work-sensitive]
     Personal[personal]
     Shared[shared]
     Project[project]
 
     Mac[macos-work]
     Win[windows-personal]
+    Fedora[fedora-atomic]
 
     Contexts --> Work
+    Contexts --> WorkSensitive
     Contexts --> Personal
     Contexts --> Shared
     Contexts --> Project
 
     Mac --> Work
+    Mac --> WorkSensitive
     Mac --> Shared
+    Mac --> Project
 
     Win --> Personal
     Win --> Shared
     Win --> Project
 
+    Fedora --> Project
+    Fedora --> Shared
+
     Work -. blocked .-> Win
+    WorkSensitive -. blocked .-> Win
     Personal -. blocked .-> Mac
 ```
 
-Initial context rule:
+Initial context access rules:
 
 | Profile | Allowed context | Blocked context |
 |---|---|---|
-| `macos-work` | work, shared | personal experiments |
-| `windows-personal` | personal, shared, project | work-sensitive |
-| `fedora-atomic` | TBD | TBD |
+| `macos-work` | `work`, `work-sensitive`, `shared`, selected `project` | `personal` |
+| `windows-personal` | `personal`, `shared`, selected `project` | `work`, `work-sensitive` |
+| `fedora-atomic` | `shared`, selected `project` | `work-sensitive` until explicitly enabled |
 
-This will become more important when RAG, project memory and agents are introduced.
+Context rules should apply to:
+
+- CLI assistants
+- architecture assistant
+- writing assistant
+- research assistant
+- coding assistant where context is loaded
+- future agents
+- future RAG/project memory
+
+If a blocked context is requested, the command should fail clearly and not route the request.
+
+Example:
+
+```text id="gctbfw"
+Context blocked
+Profile: windows-personal
+Requested context: work/customer-notes.md
+Reason: work context is not available to windows-personal profile
+```
+
+The context boundary rule is:
+
+```text id="2nvvkb"
+A profile can only load context that it is explicitly allowed to use.
+```
+
+Related ADR:
+
+```text id="8gc6nj"
+docs/adr/0012-work-personal-context-boundaries.md
+```
 
 ---
 
