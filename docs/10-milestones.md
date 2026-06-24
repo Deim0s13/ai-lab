@@ -503,6 +503,8 @@ This milestone should explore CLI coding tools such as Aider or OpenCode and dec
 
 The goal is not to replace everything. The goal is to create a useful local-first and routed coding workflow inside this workstation.
 
+Coding tools should be treated as harnessed workflows, not just direct model calls. That means task framing, context selection, routing, verification and failure handling should be explicit.
+
 ## Target capabilities
 
 | Capability | Expected state |
@@ -621,6 +623,8 @@ Introduce agents carefully, after the foundation is trusted.
 Agents should support constrained workflows with explicit permissions, observable execution and profile-aware boundaries.
 
 This milestone should start in the personal profile before work-profile use is considered.
+
+This milestone is where harness engineering becomes explicit: agents must run inside constrained workflows with defined tools, context, permissions, observability, verification and intervention points.
 
 ## Target capabilities
 

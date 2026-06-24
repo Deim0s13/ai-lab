@@ -14,6 +14,21 @@ Avoid tool sprawl.
 Keep components replaceable.
 ```
 
+```text
+For coding assistants and agents, tool selection should consider harness quality as well as model quality.
+
+Selection criteria should include:
+
+- context control
+- tool permission model
+- observability
+- ability to run tests/checks
+- rollback or review workflow
+- gateway compatibility
+- profile-awareness
+- ability to constrain file access
+```
+
 ---
 
 ## 2. Tool selection principles

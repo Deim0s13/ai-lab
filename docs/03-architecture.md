@@ -713,6 +713,40 @@ This allows me to experiment without turning the workstation into a messy collec
 
 ---
 
+## Harness engineering lens
+
+For coding and agent workflows, this project treats the model as only one part of the system.
+
+The useful unit is:
+
+```text
+agent workflow = model + harness + environment
+```
+
+The harness includes:
+
+- task specification
+- context selection
+- routing policy
+- tool access
+- permissions
+- observability
+- verification
+- failure handling
+- intervention points
+
+This project will not introduce a separate harness platform during the early milestones. Instead, harness engineering is used as a design lens for the CLI, coding and agent workflows.
+
+Relevant existing components include:
+
+- docs/11-cli-interface-contracts.md
+- docs/07-routing-strategy.md
+- contexts/README.md
+- tests/README.md
+- docs/adr/0014-controlled-agent-guardrails.md
+
+---
+
 ## 16. Repository architecture
 
 The target repository structure is:
