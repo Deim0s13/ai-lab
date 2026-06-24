@@ -1,0 +1,98 @@
+name: windows-personal
+description: Personal AI development lab profile for Windows and WSL2
+status: active
+
+device:
+  os: windows
+  subsystem: wsl2
+  role: personal
+  risk_posture: experimental
+
+local_runtimes:
+  preferred:
+    - ollama
+  fallback: []
+
+runtime_access:
+  default: gateway
+  direct_local_fallback: true
+  direct_frontier_fallback: false
+  direct_allowed_for:
+    - ask-ai
+    - ai-status
+    - ai-bootstrap-check
+    - ai-model-review
+
+providers:
+  primary_frontier:
+    - openai
+    - anthropic
+  optional:
+    - gemini
+
+approved_workspaces: []
+
+routing:
+  default: local_first
+  explain_routes: true
+  require_confirmation_for_frontier: false
+  allow_experimental_routes: true
+  block_context:
+    - work
+    - work-sensitive
+
+capabilities:
+  enabled:
+    - model_gateway
+    - local_runtime
+    - routing_policy
+    - secrets_management
+    - cli_general_assistant
+    - validation
+  planned:
+    - model_fitness
+    - chat_ui
+    - cli_coding_assistant
+    - architecture_assistant
+    - writing_assistant
+    - research_assistant
+  future:
+    - agent_runner
+    - rag_project_memory
+
+secrets:
+  source: bitwarden
+  fallback: env_local
+  required:
+    - name: OPENAI_API_KEY
+      ref: ai-lab/windows-personal/OPENAI_API_KEY
+    - name: ANTHROPIC_API_KEY
+      ref: ai-lab/windows-personal/ANTHROPIC_API_KEY
+  optional:
+    - name: GEMINI_API_KEY
+      ref: ai-lab/windows-personal/GEMINI_API_KEY
+
+context:
+  allowed:
+    - personal
+    - shared
+    - project
+  blocked:
+    - work
+    - work-sensitive
+
+validation:
+  required:
+    - profile_loads
+    - gateway_config_exists
+    - local_runtime_available
+    - required_secrets_available
+    - routing_config_exists
+  optional:
+    - optional_provider_secrets_available
+
+notes:
+  - This profile is the main place for OpenAI and Anthropic frontier experimentation.
+  - Work and work-sensitive context must not be available to this profile by default.
+  - NotebookLM is not available to this profile because it is a work-approved workspace.
+  - Experimental components should still be tracked through the component lifecycle.
