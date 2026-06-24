@@ -168,6 +168,18 @@ This repo may be public, so context files must be safe to commit unless explicit
 
 ---
 
+## External approved workspaces
+
+Some work context may live outside this repo in approved internal tools.
+
+For `macos-work`, NotebookLM may be used as an approved source-grounded workspace for customer or internal material where organisational policy allows.
+
+This repo should not duplicate customer-sensitive content unless explicitly safe to commit.
+
+The workstation may reference the existence of a NotebookLM workspace, but should not commit customer material into the public repo.
+
+---
+
 ## Relationship to ADRs
 
 Relevant ADR:

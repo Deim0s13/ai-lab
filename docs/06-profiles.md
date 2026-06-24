@@ -173,6 +173,14 @@ Restricted or future:
 - RAG / project memory
 - experimental coding automation
 
+### Approved work research workspace
+
+The `macos-work` profile may use NotebookLM as an approved internal research and synthesis workspace where organisational policy allows.
+
+NotebookLM is not treated as a local runtime, gateway backend or CLI provider. It is a source-grounded workspace for approved work material, customer context, research notes and document synthesis.
+
+Use of NotebookLM should remain subject to data sensitivity, account context and internal policy.
+
 ### Example profile configuration
 
 ```YAML
@@ -252,6 +260,18 @@ context:
     - project
   blocked:
     - personal
+
+approved_workspaces:
+  - name: notebooklm
+    purpose: source_grounded_research
+    allowed_for:
+      - work
+      - customer
+      - internal
+    notes:
+      - Use only within approved internal account context.
+      - Treat as a research workspace, not a gateway provider.
+      - Do not use from windows-personal profile.
 
 notes:
   - Gemini and Cursor are documented as the first-use AI tools for work profile.
