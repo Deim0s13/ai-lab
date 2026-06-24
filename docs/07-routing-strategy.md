@@ -482,7 +482,301 @@ Reason:
 
 ---
 
-## 13. Relationship to llmfit
+## 13. Routing validation tests
+
+Routing should be testable from the beginning.
+
+The purpose of routing tests is to prove that the workstation is selecting the expected route for a given profile, task type, sensitivity level and user override.
+
+These tests are not model quality tests. They are architecture behaviour tests.
+
+They should answer questions such as:
+
+- does `macos-work` prefer local models for simple work-safe tasks?
+- does `macos-work` prioritise Gemini and Cursor for approved work AI routes?
+- does `windows-personal` use OpenAI and Anthropic as primary frontier escalation paths?
+- does `--local` prevent frontier escalation?
+- does restricted sensitivity block external routing?
+- does gateway failure trigger the expected degraded mode?
+- does a blocked context fail clearly?
+
+### Initial routing test catalogue
+
+| Test ID | Profile | Scenario | Input conditions | Expected route behaviour |
+|---|---|---|---|---|
+| `route-001` | `macos-work` | Local summary | `task=summarise`, `sensitivity=internal` | Use `local_fast` or `local_capable`; no frontier escalation. |
+| `route-002` | `macos-work` | Customer architecture review | `task=architecture_review`, `sensitivity=customer`, `--best` | Use `approved_work` first; Gemini/Cursor before Anthropic/OpenAI. |
+| `route-003` | `macos-work` | Restricted work content | `sensitivity=restricted` | Use local-only route or block; no frontier provider. |
+| `route-004` | `macos-work` | Explicit local request | `--local`, any supported task | Use local route only; no approved or frontier provider. |
+| `route-005` | `macos-work` | Non-approved frontier request | `provider=openai`, `sensitivity=customer` | Require confirmation or block depending on policy. |
+| `route-006` | `windows-personal` | Personal coding debug | `task=coding_debug`, `--best` | Use `local_code` if suitable; otherwise `frontier_code` using Anthropic/OpenAI priority. |
+| `route-007` | `windows-personal` | Explicit OpenAI request | `provider=openai` | Use OpenAI if configured and secrets are available. |
+| `route-008` | `windows-personal` | Block work context | request uses `work` context | Block context load and do not route. |
+| `route-009` | any active profile | Gateway unavailable, local requested | `--local`, gateway down, local fallback configured | Use `degraded_local` mode. |
+| `route-010` | any active profile | Gateway unavailable, no fallback | gateway down, no fallback configured | Use `degraded_manual` mode and show recovery steps. |
+
+### Example route test command
+
+The implementation may eventually support a command such as:
+
+```bash id="mdn30q"
+ai-route --test
+```
+
+or targeted tests such as:
+
+```bash id="xnn4v2"
+ai-route \
+  --profile macos-work \
+  --task architecture_review \
+  --sensitivity customer \
+  --best \
+  --explain
+```
+
+Expected output should be plain enough to understand without reading the config files.
+
+Example:
+
+```text id="s03aal"
+Test: route-002
+Profile: macos-work
+Task: architecture_review
+Sensitivity: customer
+Requested mode: best
+
+Expected:
+- route: approved_work
+- provider priority: gemini, cursor
+- non-approved frontier providers are not first route
+
+Actual:
+- route: approved_work
+- provider: gemini
+- mode: normal
+
+Result: PASS
+```
+
+### Test data
+
+Routing tests should use synthetic prompts only.
+
+The tests should not contain:
+
+- real work content
+- customer information
+- secrets
+- personal sensitive information
+- internal Red Hat material
+
+The test prompt content should be minimal because the purpose is to validate routing behaviour, not output quality.
+
+Example:
+
+```text id="y45mfr"
+"Summarise this synthetic internal note."
+"Review this fictional architecture option."
+"Debug this small example Python function."
+```
+
+### Validation scope
+
+Routing validation should be included in:
+
+| Command | Role |
+|---|---|
+| `ai-route --test` | Runs routing decision tests. |
+| `ai-bootstrap-check` | Confirms basic route configuration is valid after rebuild. |
+| `ai-status` | Shows current route configuration and any unresolved aliases. |
+
+Routing tests should check decisions before model calls where possible. This avoids unnecessary cost and reduces the chance of sending test content externally.
+
+Related ADR:
+
+```text id="v5hs3g"
+docs/adr/0013-routing-validation-and-observability.md
+```
+
+---
+
+## 14. Routing decision logging
+
+Routing decisions should be observable from the first implementation.
+
+I do not need a full observability platform at this stage. A simple structured local log is enough.
+
+The purpose of routing logs is to help me understand:
+
+- which profile was active
+- which route was selected
+- whether the task stayed local
+- whether frontier escalation occurred
+- whether degraded mode was used
+- whether the request succeeded or failed
+- how long the route took
+- whether routing behaviour is drifting over time
+
+### Logging principles
+
+| Principle | Meaning |
+|---|---|
+| Metadata only by default | Do not log prompt text by default. |
+| Profile-aware | Logs should include the active profile. |
+| Privacy-conscious | Work and personal logs should not be mixed if that creates risk. |
+| Useful for debugging | Logs should show selected route, provider, model alias and mode. |
+| Simple first | JSONL file logging is enough for early milestones. |
+| Replaceable later | Logging can move to richer observability later if useful. |
+
+### Initial log format
+
+A routing log entry should look broadly like this:
+
+```json id="ayw7gr"
+{
+  "timestamp": "2026-06-24T10:00:00+12:00",
+  "profile": "macos-work",
+  "command": "ask-ai",
+  "task_type": "summarise",
+  "sensitivity": "internal",
+  "route": "local_fast",
+  "provider": "omlx",
+  "model_alias": "local_fast",
+  "model": "tbd",
+  "mode": "normal",
+  "gateway_used": true,
+  "degraded_mode": false,
+  "frontier_used": false,
+  "prompt_hash": "sha256:...",
+  "latency_ms": 1234,
+  "status": "success"
+}
+```
+
+For a degraded route:
+
+```json id="7xwnq7"
+{
+  "timestamp": "2026-06-24T10:05:00+12:00",
+  "profile": "windows-personal",
+  "command": "ask-ai",
+  "task_type": "quick_question",
+  "sensitivity": "personal",
+  "route": "local_fast",
+  "provider": "ollama",
+  "model_alias": "local_fast",
+  "mode": "degraded_local",
+  "gateway_used": false,
+  "degraded_mode": true,
+  "frontier_used": false,
+  "prompt_hash": "sha256:...",
+  "latency_ms": 980,
+  "status": "success"
+}
+```
+
+For a blocked route:
+
+```json id="bve9zl"
+{
+  "timestamp": "2026-06-24T10:10:00+12:00",
+  "profile": "windows-personal",
+  "command": "research-ai",
+  "task_type": "research_synthesis",
+  "sensitivity": "work",
+  "route": "blocked",
+  "provider": null,
+  "model_alias": null,
+  "mode": "policy_block",
+  "gateway_used": false,
+  "degraded_mode": false,
+  "frontier_used": false,
+  "reason": "work context is not available to windows-personal profile",
+  "status": "blocked"
+}
+```
+
+### Prompt handling
+
+Prompt text should not be logged by default.
+
+If a prompt identifier is needed, use a hash:
+
+```text id="hwvu8k"
+prompt_hash = sha256(prompt)
+```
+
+The purpose of the hash is only to correlate repeated routing events without storing the prompt itself.
+
+For work profile usage, logging should be conservative. If there is any doubt, omit the hash as well.
+
+### Log location
+
+The log location should be configurable.
+
+Possible early structure:
+
+```text id="rhlyzv"
+logs/
+└── routing/
+    ├── macos-work.jsonl
+    └── windows-personal.jsonl
+```
+
+These logs should not be committed.
+
+The `.gitignore` should exclude:
+
+```text id="0c7g95"
+logs/
+```
+
+A future implementation may choose an OS-appropriate application data directory instead. The important point is that routing logs are local, structured and excluded from git.
+
+### Logging events
+
+Routing logs should be written for:
+
+| Event | Log? |
+|---|---:|
+| successful local route | Yes |
+| successful approved work route | Yes |
+| successful frontier route | Yes |
+| degraded local fallback | Yes |
+| degraded manual failure | Yes |
+| blocked route | Yes |
+| route test result | Optional |
+| validation check | Optional |
+
+### Relationship to model fitness
+
+Routing logs may later help model fitness decisions.
+
+For example, logs can show:
+
+- local model routes that frequently fail
+- tasks that often escalate to frontier providers
+- latency differences between local models
+- profile-specific usage patterns
+- aliases that need review
+
+This does not need to be automated in Milestone 1. The initial value is visibility and debugging.
+
+### Relationship to LiteLLM callbacks
+
+If the gateway supports useful callback or logging behaviour, I may use that later.
+
+However, the first implementation should not depend on a full gateway logging setup. CLI-level logging is enough to start because it captures the decision before the request reaches the provider.
+
+Related ADR:
+
+```text id="uwbxlu"
+docs/adr/0013-routing-validation-and-observability.md
+```
+
+---
+
+## 15. Relationship to llmfit
 
 Model fitness should inform routing over time.
 
@@ -513,7 +807,7 @@ Routing should not be based only on model popularity. It should be based on actu
 
 ---
 
-## 14. Gateway relationship
+## 16. Gateway relationship
 
 The gateway should execute the selected route where practical.
 
@@ -532,7 +826,7 @@ The important principle is that the user-facing commands should remain stable.
 
 ---
 
-## 15. Initial implementation scope
+## 17. Initial implementation scope
 
 The first routing implementation should be deliberately simple.
 
@@ -563,7 +857,7 @@ Those can come later if they are genuinely useful.
 
 ---
 
-## 16. Routing examples
+## 18. Routing examples
 
 ### macOS work — local summary
 
@@ -630,7 +924,7 @@ no frontier escalation
 
 ---
 
-## 17. Risks and mitigations
+## 19. Risks and mitigations
 
 | Risk | Mitigation |
 |---|---|
@@ -642,10 +936,14 @@ no frontier escalation
 | Sensitive data is routed externally | Support sensitivity flags and conservative work profile defaults. |
 | UI and CLI route differently | Route both through the same gateway and config where practical. |
 | Model aliases drift from actual performance | Periodically review llmfit results and update aliases. |
+| Routing behaviour drifts without being noticed | Add routing validation tests and expected route scenarios. |
+| Work profile routes to non-approved providers first | Test approved-tool priority for `macos-work`. |
+| Routing logs expose sensitive content | Log metadata only by default and exclude logs from git. |
+| Gateway failure path is untested | Add gateway-down routing tests for degraded local and degraded manual modes. |
 
 ---
 
-## 18. Future evolution
+## 20. Future evolution
 
 Routing can evolve over time.
 
@@ -667,7 +965,7 @@ These should only be added when the simple routing model is no longer enough.
 
 ---
 
-## 19. Summary
+## 21. Summary
 
 The routing strategy is:
 
