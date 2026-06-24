@@ -158,24 +158,40 @@ The goal is not to build every future workflow. The goal is to build the spine.
 | Validation | Basic `ai-bootstrap-check` created. |
 | Rebuildability | Bootstrap approach exists, even if not fully automated. |
 
-## Expected deliverables
+## Deliverables
 
-- repo structure aligned to target architecture
-- `profiles/macos-work/profile.yaml`
-- `profiles/windows-personal/profile.yaml`
+Milestone 1 should produce the smallest useful gateway foundation.
+
+Deliverables:
+
+- active profile definitions for `macos-work` and `windows-personal`
+- future/reference profile placeholder for `fedora-atomic`
+- profile-aware secret requirements
 - `.env.example`
-- Bitwarden-oriented secrets notes
-- `config/providers.yaml`
-- `config/models.yaml`
-- `config/routes.yaml`
-- `config/policies.yaml`
-- basic gateway configuration
-- basic service/container definition for gateway
-- initial `ask-ai`
-- initial `ai-route`
-- initial `ai-status`
-- initial `ai-bootstrap-check`
-- documented manual steps
+- `.env.local` ignored fallback
+- Bitwarden-oriented secrets setup notes
+- gateway configuration
+- provider configuration
+- model alias configuration
+- routing configuration
+- metadata-only routing decision logging
+- routing validation test catalogue
+- basic routing assertions
+- basic CLI tools:
+  - `ask-ai`
+  - `ai-route`
+  - `ai-status`
+  - `ai-bootstrap-check`
+- CLI interface contract
+- local runtime health checks
+- gateway health checks
+- provider/secrets availability checks
+- degraded-mode behaviour for local fallback
+- stub README files for target repo directories
+- `tests/README.md`
+- `labs/README.md`
+- `contexts/README.md`
+- documentation updates
 
 ## Example target flow
 
@@ -189,17 +205,72 @@ ask-ai --local "Explain what this workstation does"
 
 ## Success criteria
 
-This milestone is successful when:
+Milestone 1 is successful when I can run:
 
-- I can select a profile.
-- The repo has a clear rebuild structure.
-- Secrets are not committed.
-- The gateway can be started or reached.
-- At least one local route can be tested.
-- Provider placeholders are configured without exposing secrets.
-- `ai-status` can report useful health information.
-- `ai-route` can explain a basic routing decision.
-- The setup is documented well enough to repeat.
+```bash
+git clone <repo>
+cd ai-lab
+ai-bootstrap-check --profile macos-work
+ai-bootstrap-check --profile windows-personal
+ai-status --profile macos-work
+ai-route --profile macos-work --task summarise --sensitivity internal --explain
+ask-ai --profile macos-work --local "Explain what this workstation does"
+```
+
+And the workstation can show:
+
+- which profile is active
+- whether the gateway is healthy
+- whether local runtimes are available
+- whether required secrets are available without exposing values
+- which route would be selected for a given profile/task/sensitivity
+- whether degraded local fallback is available
+- where metadata-only routing logs are written
+- whether basic routing validation passes
+
+Milestone 1 does not need advanced agents, RAG, polished UI integration or final model choices.
+
+It does need a working foundation that is observable, profile-aware and rebuildable
+
+:::
+
+:::writing{variant="document" id="71952"}
+## Update Milestone 2 — CLI Habit Layer
+
+In **Milestone 2 — CLI Habit Layer**, add this acceptance criteria section.
+
+```markdown
+### Acceptance criteria
+
+Milestone 2 is successful when the CLI tools are useful enough to become part of daily workflow.
+
+The expected command sequence is:
+
+```bash
+ask-ai --local "Summarise this synthetic note"
+ask-ai --best --explain-route "Review this fictional architecture option"
+ai-route --profile macos-work --task summarise --sensitivity internal --explain
+ai-route --profile windows-personal --task coding_debug --sensitivity personal --best --explain
+ai-status
+```
+The milestone is complete when:
+
+- `ask-ai` is useful for quick terminal-based prompts
+- `ask-ai --local` reliably keeps requests local
+- `ask-ai --best` uses the best route allowed by the active profile
+- `ask-ai --explain-route` explains why a route was selected
+- `ai-route` can dry-run routing decisions without sending prompt content to providers
+- `ai-status` gives a clear view of gateway, runtime, provider and secret state
+- commands behave consistently across macos-work and `windows-personal`
+- command failures are understandable
+- exit codes broadly follow the CLI contract
+- metadata-only routing logs are written for routed requests
+
+Milestone 2 should not be considered complete just because wrapper scripts exist.
+
+It is complete when the CLI layer is reliable enough that I naturally use it instead of manually calling the underlying tools.
+
+You may also add this short definition of done:
 
 ## Not included
 
@@ -313,6 +384,39 @@ ai-model-review --profile macos-work
 ai-model-review --profile windows-personal
 ai-route --task summarise --profile macos-work
 ```
+
+### Acceptance criteria
+
+Milestone 3 is successful when model aliases are informed by actual model fitness evidence rather than placeholders.
+
+The expected command sequence is:
+
+```bash
+ai-model-review --profile macos-work --run
+ai-model-review --profile windows-personal --run
+ai-model-review --profile macos-work --alias local_fast
+ai-model-review --profile windows-personal --alias local_code
+ai-status
+ai-route --profile macos-work --task summarise --sensitivity internal --explain
+ai-route --profile windows-personal --task coding_debug --sensitivity personal --best --explain
+```
+The milestone is complete when:
+
+* `ai-model-review` can run or summarise model fitness checks
+* model review results are stored in a repeatable location
+* model aliases such as `local_fast`, `local_capable` and `local_code` have documented candidates
+* alias decisions are profile-aware
+* `macos-work` clearly maps aliases to oMLX / MLX-compatible runtime or Ollama fallback
+* `windows-personal` clearly maps aliases to Ollama-backed models where appropriate
+* llmfit has either been trialled or explicitly deferred
+* gateway-based model checks exist as a fallback or complement
+* routing decisions can reference model fitness findings
+* model choices can be reviewed and changed without rewriting CLI tools
+
+Milestone 3 should not require a perfect benchmark suite.
+
+It is complete when I have enough evidence to choose sensible local model aliases for each active profile.
+Add this definition of done:
 
 ## Success criteria
 
