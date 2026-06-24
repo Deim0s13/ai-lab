@@ -271,6 +271,7 @@ Start here:
 | `docs/08-rebuild-strategy.md` | Rebuildability and workstation-as-code approach |
 | `docs/09-tool-selection.md` | How tools are selected |
 | `docs/10-milestones.md` | Delivery roadmap |
+| `docs/11-cli-interface-contracts.md` | Initial CLI command contracts, flags, output and exit codes |
 
 Architecture decisions are recorded in:
 
