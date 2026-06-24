@@ -91,6 +91,93 @@ The project should be:
 
 ---
 
+## Profile Routing Summary
+
+The workstation is profile-aware.
+
+Each profile can use the same overall architecture while applying different routing, provider and safety rules.
+
+| Profile | Status | Routing posture |
+|---|---|---|
+| `macos-work` | Active | Local-first; Gemini and Cursor first for approved work AI; Anthropic and OpenAI only depending on use case, data sensitivity and approval context. |
+| `windows-personal` | Active | Local-first; OpenAI and Anthropic are the primary frontier escalation paths; Gemini where useful. |
+| `fedora-atomic` | Future / reference | Future rebuildability profile; not an active Milestone 1 implementation target. |
+
+Work-safe routing means the work profile does not treat non-approved frontier providers as the default route, blocks restricted content from external routing, and keeps work context separate from personal workflows.
+
+Routing behaviour is defined in:
+
+```text
+docs/07-routing-strategy.md
+```
+
+Profile behaviour is defined in:
+
+```text
+docs/06-profiles.md
+```
+
+---
+
+## Runtime Access Summary
+
+The gateway is the preferred model access path.
+
+```text
+tool or CLI command → gateway → runtime or provider
+```
+
+Direct runtime access is allowed only where documented, mainly for:
+
+- local degraded mode
+- validation checks
+- bootstrap checks
+- model fitness review
+
+For `macos-work`, an oMLX / MLX-compatible runtime is the preferred Mac-native local runtime, with Ollama as fallback. These are not treated as identical backends. Model aliases and validation must make the runtime mapping explicit.
+
+For `windows-personal`, Ollama is the primary local runtime.
+
+Runtime access behaviour is defined in:
+
+```text
+docs/03-architecture.md
+docs/adr/0009-runtime-access-patterns.md
+```
+
+---
+
+## CLI Contract Summary
+
+The CLI is the primary interface for the workstation.
+
+The initial Milestone 1 CLI commands are:
+
+| Command | Purpose |
+|---|---|
+| `ask-ai` | General terminal-first AI prompt entry point. |
+| `ai-route` | Explain and test routing decisions. |
+| `ai-status` | Show active profile, gateway health, runtime health and provider/secrets status. |
+| `ai-bootstrap-check` | Validate that a profile has been rebuilt or set up correctly. |
+
+The initial CLI contracts define:
+
+- expected flags
+- output style
+- exit codes
+- profile behaviour
+- degraded-mode behaviour
+- routing log expectations
+- validation expectations
+
+The CLI contract is defined in:
+
+```text
+docs/11-cli-interface-contracts.md
+```
+
+---
+
 ## Target Devices
 
 ### MacBook Pro
@@ -320,6 +407,9 @@ Expected deliverables:
 - basic `ai-route`
 - basic `ai-bootstrap-check`
 - llmfit result capture location
+- CLI interface contract
+- metadata-only routing decision logging
+- routing validation tests
 
 Success looks like:
 
