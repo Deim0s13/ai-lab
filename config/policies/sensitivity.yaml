@@ -1,0 +1,50 @@
+version: 1
+
+sensitivity_levels:
+  public:
+    description: Public or non-sensitive content.
+    external_routing_allowed: true
+    confirmation_required: false
+
+  internal:
+    description: Internal but low-risk work content.
+    external_routing_allowed: true
+    confirmation_required: false
+
+  customer:
+    description: Customer-specific or commercially sensitive content.
+    external_routing_allowed: true
+    confirmation_required: true
+
+  personal:
+    description: Personal information or personal project material.
+    external_routing_allowed: true
+    confirmation_required: false
+
+  restricted:
+    description: Content that should not be routed externally.
+    external_routing_allowed: false
+    confirmation_required: true
+
+profile_defaults:
+  macos-work:
+    default_sensitivity: internal
+    blocked_external_for:
+      - restricted
+    confirmation_required_for:
+      - customer
+
+  windows-personal:
+    default_sensitivity: personal
+    blocked_external_for:
+      - restricted
+      - work
+      - work-sensitive
+    confirmation_required_for: []
+
+  fedora-atomic:
+    status: future_reference
+    default_sensitivity: public
+    blocked_external_for:
+      - restricted
+    confirmation_required_for: []

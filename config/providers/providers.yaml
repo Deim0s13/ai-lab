@@ -1,0 +1,94 @@
+version: 1
+
+providers:
+  local:
+    omlx:
+      type: local_runtime
+      status: candidate
+      profiles:
+        - macos-work
+      purpose:
+        - local_fast
+        - local_capable
+      notes:
+        - Preferred Mac-native local runtime for macos-work.
+        - Model support and gateway integration still need validation.
+
+    ollama:
+      type: local_runtime
+      status: adopted
+      profiles:
+        - windows-personal
+        - macos-work
+      purpose:
+        - local_fast
+        - local_capable
+        - local_code
+      notes:
+        - Primary local runtime for windows-personal.
+        - Fallback local runtime for macos-work.
+
+  approved_work:
+    gemini:
+      type: approved_work_ai
+      status: available
+      profiles:
+        - macos-work
+      secret:
+        required: true
+        name: GEMINI_API_KEY
+      notes:
+        - First-use approved work AI tool for macos-work where appropriate.
+
+    cursor:
+      type: approved_work_ai
+      status: available
+      profiles:
+        - macos-work
+      secret:
+        required: false
+        name: null
+      notes:
+        - Approved work coding/IDE assistant.
+        - Not treated as a gateway provider in the first implementation.
+
+  frontier:
+    openai:
+      type: frontier_provider
+      status: available
+      profiles:
+        - windows-personal
+        - macos-work
+      secret:
+        required: true
+        name: OPENAI_API_KEY
+      notes:
+        - Primary frontier option for windows-personal.
+        - Use-case dependent for macos-work.
+
+    anthropic:
+      type: frontier_provider
+      status: available
+      profiles:
+        - windows-personal
+        - macos-work
+      secret:
+        required: true
+        name: ANTHROPIC_API_KEY
+      notes:
+        - Primary frontier option for windows-personal.
+        - Use-case dependent for macos-work.
+
+  workspaces:
+    notebooklm:
+      type: approved_work_workspace
+      status: available
+      profiles:
+        - macos-work
+      secret:
+        required: false
+        name: null
+      notes:
+        - Approved work research and source-grounded synthesis workspace where internal policy allows.
+        - Not a gateway backend, runtime or CLI provider.
+        - Customer/internal material should not be committed to this repo.

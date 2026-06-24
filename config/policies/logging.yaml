@@ -1,0 +1,53 @@
+version: 1
+
+routing_logs:
+  enabled: true
+  format: jsonl
+  prompt_logging: false
+  prompt_hash_enabled: true
+
+  default_location: logs/routing/
+
+  per_profile:
+    macos-work:
+      enabled: true
+      file: logs/routing/macos-work.jsonl
+      prompt_hash_enabled: false
+      notes:
+        - Work profile logging should be conservative.
+        - Do not log prompt text.
+        - Prompt hashes may be disabled for work profile if there is any doubt.
+
+    windows-personal:
+      enabled: true
+      file: logs/routing/windows-personal.jsonl
+      prompt_hash_enabled: true
+
+    fedora-atomic:
+      enabled: false
+      file: logs/routing/fedora-atomic.jsonl
+
+  fields:
+    - timestamp
+    - profile
+    - command
+    - task_type
+    - sensitivity
+    - route
+    - provider
+    - model_alias
+    - model
+    - mode
+    - gateway_used
+    - degraded_mode
+    - frontier_used
+    - prompt_hash
+    - latency_ms
+    - status
+
+  never_log:
+    - prompt_text
+    - secrets
+    - api_keys
+    - customer_content
+    - work_sensitive_content

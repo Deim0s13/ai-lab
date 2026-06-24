@@ -1,0 +1,134 @@
+version: 1
+
+routing_defaults:
+  mode: local_first
+  explain_routes: true
+  log_decisions: true
+  prompt_logging: false
+
+sensitivity_levels:
+  - public
+  - internal
+  - customer
+  - personal
+  - restricted
+
+task_types:
+  - quick_question
+  - summarise
+  - rewrite
+  - coding_explain
+  - coding_generate
+  - coding_debug
+  - architecture_review
+  - writing_polish
+  - research_synthesis
+  - model_selection
+  - agent_workflow
+
+profiles:
+  macos-work:
+    default_route: local_first
+    approved_tools_first: true
+    require_confirmation_for_frontier: true
+
+    provider_priority:
+      approved_work:
+        - gemini
+        - cursor
+      frontier:
+        - anthropic
+        - openai
+      local:
+        - omlx
+        - ollama
+
+    sensitivity_policy:
+      public:
+        allowed_routes:
+          - local_fast
+          - local_capable
+          - approved_work
+      internal:
+        allowed_routes:
+          - local_fast
+          - local_capable
+          - approved_work
+      customer:
+        allowed_routes:
+          - local_capable
+          - approved_work
+        requires_confirmation_for:
+          - frontier_reasoning
+          - frontier_code
+      restricted:
+        allowed_routes:
+          - local_fast
+          - local_capable
+        blocked_routes:
+          - approved_work
+          - frontier_reasoning
+          - frontier_code
+
+    task_policy:
+      summarise:
+        preferred_route: local_fast
+      rewrite:
+        preferred_route: local_fast
+      architecture_review:
+        preferred_route: approved_work
+      coding_debug:
+        preferred_route: local_code
+
+  windows-personal:
+    default_route: local_first
+    approved_tools_first: false
+    require_confirmation_for_frontier: false
+
+    provider_priority:
+      frontier:
+        - openai
+        - anthropic
+        - gemini
+      local:
+        - ollama
+
+    sensitivity_policy:
+      public:
+        allowed_routes:
+          - local_fast
+          - local_capable
+          - frontier_reasoning
+      personal:
+        allowed_routes:
+          - local_fast
+          - local_capable
+          - local_code
+          - frontier_reasoning
+          - frontier_code
+      restricted:
+        allowed_routes:
+          - local_fast
+          - local_capable
+        blocked_routes:
+          - frontier_reasoning
+          - frontier_code
+
+    task_policy:
+      quick_question:
+        preferred_route: local_fast
+      summarise:
+        preferred_route: local_fast
+      coding_debug:
+        preferred_route: local_code
+        escalation_route: frontier_code
+      architecture_review:
+        preferred_route: local_capable
+        escalation_route: frontier_reasoning
+
+  fedora-atomic:
+    status: future_reference
+    default_route: local_first
+    notes:
+      - Future/reference only.
+      - Should not be required for Milestone 1 validation.
