@@ -351,8 +351,253 @@ Routing should eventually consider:
 - user flags such as `--local`, `--best` and `--explain-route`
 
 ---
+## 11. Gateway failure and degraded operation
 
-## 11. Rebuild architecture
+The gateway is the preferred control point for model access, but it should not become a hard single point of failure for basic local use.
+
+The workstation should support three operating modes:
+
+| Mode | Description | Expected behaviour |
+|---|---|---|
+| Normal | Gateway is healthy and reachable. | CLI, UI, IDE tools and future agents use the gateway where practical. |
+| Degraded local | Gateway is unavailable, but a local runtime is available. | Selected CLI commands may fall back to direct local runtime access where explicitly configured. |
+| Degraded manual | Gateway is unavailable and no automated fallback is configured. | The CLI explains the failure and provides the next manual recovery step. |
+
+The gateway-first principle still applies. Degraded local mode exists to keep the workstation usable during failure or rebuild scenarios, not to create a second hidden architecture.
+
+```mermaid
+flowchart TD
+    Request[User request]
+    CLI[CLI command]
+    GatewayHealth{Gateway healthy?}
+    Gateway[AI Gateway]
+    Route[Normal routed execution]
+    FallbackAllowed{Direct local fallback allowed?}
+    LocalRuntime[Direct local runtime]
+    Manual[Explain failure and manual recovery step]
+
+    Request --> CLI
+    CLI --> GatewayHealth
+
+    GatewayHealth -->|Yes| Gateway
+    Gateway --> Route
+
+    GatewayHealth -->|No| FallbackAllowed
+    FallbackAllowed -->|Yes| LocalRuntime
+    FallbackAllowed -->|No| Manual
+```
+
+### Degraded local mode
+
+Degraded local mode should be limited and explicit.
+
+It may be supported for:
+
+- `ask-ai --local`
+- `ai-status`
+- `ai-bootstrap-check`
+- `ai-model-review`
+
+It should not silently apply to:
+
+- approved work AI tool routing
+- frontier provider routing
+- Open WebUI
+- agents
+- work-sensitive tasks
+
+Example degraded local output:
+
+```text
+Gateway: unavailable
+Profile: windows-personal
+Requested route: local
+Fallback: direct Ollama
+Mode: degraded_local
+```
+
+### Degraded manual mode
+
+If the gateway is unavailable and no fallback is configured, the workstation should fail clearly.
+
+Example:
+
+```text
+Gateway: unavailable
+Profile: macos-work
+Fallback: not configured
+Mode: degraded_manual
+
+Next action:
+- start the gateway service
+- run ai-status for details
+- use the documented direct runtime command if urgent
+```
+
+### Design constraints
+
+- The gateway remains the default path.
+- Direct local fallback must be profile-aware.
+- Fallback should be local-only at first.
+- Frontier fallback should not happen silently.
+- Work profile fallback must remain conservative.
+- Degraded mode should be visible in CLI output and routing logs.
+- Validation should test both gateway health and configured fallback paths.
+
+Related ADR:
+
+```text
+docs/adr/0008-gateway-failure-and-degraded-operation.md
+```
+
+---
+
+## 12. Runtime access model
+
+The workstation supports multiple local runtimes. The Windows personal profile is expected to use Ollama as the primary local runtime. The macOS work profile may use an oMLX / MLX-compatible runtime as the preferred Mac-native path, with Ollama as a fallback.
+
+Because these runtimes may have different model formats, APIs, CLIs and configuration models, runtime access must be explicit.
+
+The default access pattern is:
+
+```text
+tool or CLI command → gateway → runtime or provider
+```
+
+Direct runtime access is allowed only where documented.
+
+```mermaid
+flowchart TD
+    Tool[CLI / UI / IDE / Agent]
+    AccessPolicy[Runtime access policy]
+    Gateway[AI Gateway]
+    Direct{Direct access allowed?}
+    Runtime[Local runtime]
+    Provider[Frontier / Approved provider]
+
+    Tool --> AccessPolicy
+    AccessPolicy --> Gateway
+    Gateway --> Runtime
+    Gateway --> Provider
+
+    AccessPolicy --> Direct
+    Direct -->|Allowed for local fallback or validation| Runtime
+    Direct -->|Not allowed| Gateway
+```
+
+### Runtime access rules
+
+| Tool / capability | Preferred access | Direct access allowed? | Notes |
+|---|---|---:|---|
+| `ask-ai` | Gateway | Yes, local fallback only | Used for degraded local mode. |
+| `ai-route` | Config only | No | Explains route decisions; should not call runtimes. |
+| `ai-status` | Gateway and direct health checks | Yes | Health checks may inspect runtimes directly. |
+| `ai-bootstrap-check` | Gateway and direct health checks | Yes | Rebuild validation needs direct checks. |
+| `ai-model-review` | Direct/runtime-specific or gateway-based | Yes | Model assessment may need direct runtime access. |
+| Open WebUI | Gateway | No initially | Avoid creating a separate UI model path. |
+| Aider / OpenCode | Gateway where practical | Yes, if required | Direct access must be documented per tool. |
+| Goose / agents | Gateway | No initially | Agents need stronger controls. |
+| RAG / project memory | Gateway | No initially | Retrieval may be local, but generation should route through policy. |
+
+### Profile-level runtime policy
+
+Profiles should declare their runtime access posture.
+
+Example:
+
+```yaml
+runtime_access:
+  default: gateway
+  direct_local_fallback: true
+  direct_frontier_fallback: false
+  direct_allowed_for:
+    - ai-status
+    - ai-bootstrap-check
+    - ai-model-review
+```
+
+For `macos-work`, direct runtime access should remain conservative:
+
+```yaml
+runtime_access:
+  default: gateway
+  direct_local_fallback: true
+  direct_frontier_fallback: false
+  direct_allowed_for:
+    - ai-status
+    - ai-bootstrap-check
+    - ai-model-review
+```
+
+For `windows-personal`, direct local fallback can be more permissive for local experimentation:
+
+```yaml
+runtime_access:
+  default: gateway
+  direct_local_fallback: true
+  direct_frontier_fallback: false
+  direct_allowed_for:
+    - ask-ai
+    - ai-status
+    - ai-bootstrap-check
+    - ai-model-review
+```
+
+### macOS runtime split
+
+The macOS profile needs special care because oMLX / MLX-compatible runtimes and Ollama may not share the same model format, CLI behaviour or integration model.
+
+The architecture should avoid hiding this difference.
+
+The profile should make clear:
+
+- which runtime is preferred
+- which runtime is fallback
+- which model aliases map to each runtime
+- which tools use the gateway
+- which tools may use direct runtime access
+- how validation checks both paths
+
+Example:
+
+```yaml
+local_runtimes:
+  preferred:
+    - omlx
+  fallback:
+    - ollama
+
+model_aliases:
+  local_fast:
+    provider: omlx
+    model: tbd
+  local_capable:
+    provider: omlx
+    model: tbd
+  local_code:
+    provider: ollama
+    model: tbd
+```
+
+### Design constraints
+
+- Gateway access is the default.
+- Direct runtime access must be explicit.
+- Direct frontier provider fallback is not allowed by default.
+- Tools that bypass the gateway must be documented.
+- Validation should detect gateway access and direct runtime access separately.
+- Runtime-specific model aliases should be visible in config.
+- Agents should not bypass the gateway initially.
+
+Related ADR:
+
+```text
+docs/adr/0009-runtime-access-patterns.md
+```
+
+---
+
+## 13. Rebuild architecture
 
 The workstation should be recoverable from the repository.
 
@@ -391,7 +636,7 @@ Manual steps should be treated as technical debt and documented until automated.
 
 ---
 
-## 12. Secrets architecture
+## 14. Secrets architecture
 
 Secrets must not be committed to the repository.
 
@@ -427,7 +672,7 @@ The architecture should avoid storing secrets in:
 
 ---
 
-## 13. Component model
+## 15. Component model
 
 The workstation is built around capabilities rather than fixed tools.
 
@@ -468,7 +713,7 @@ This allows me to experiment without turning the workstation into a messy collec
 
 ---
 
-## 14. Repository architecture
+## 16. Repository architecture
 
 The target repository structure is:
 
@@ -508,7 +753,7 @@ Key directories:
 
 ---
 
-## 15. Initial implementation view
+## 17. Initial implementation view
 
 Milestone 1 focuses on the smallest useful gateway foundation.
 
@@ -546,7 +791,7 @@ Milestone 1 should prove that:
 
 ---
 
-## 16. Key architecture decisions
+## 18. Key architecture decisions
 
 These decisions should be captured or expanded through ADRs:
 
@@ -564,7 +809,7 @@ Additional ADRs should be created for major tool decisions such as LiteLLM, Open
 
 ---
 
-## 17. Constraints and assumptions
+## 19. Constraints and assumptions
 
 ### Constraints
 
@@ -586,7 +831,7 @@ Additional ADRs should be created for major tool decisions such as LiteLLM, Open
 
 ---
 
-## 18. Risks and mitigations
+## 20. Risks and mitigations
 
 | Risk | Mitigation |
 |---|---|
@@ -598,10 +843,12 @@ Additional ADRs should be created for major tool decisions such as LiteLLM, Open
 | Gateway becomes too complex | Start with simple routing and evolve gradually. |
 | UI and CLI drift apart | Route both through the same gateway where practical. |
 | Project gets abandoned | Prioritise daily-use workflows and stable commands. |
+| Gateway becomes a single point of failure | Define normal, degraded local and degraded manual modes; validate gateway health and fallback paths. |
+| macOS runtime split creates drift | Make runtime access explicit; document gateway versus direct runtime access per tool and profile. |
 
 ---
 
-## 19. Architecture summary
+## 21. Architecture summary
 
 The architecture is designed around a simple idea:
 
