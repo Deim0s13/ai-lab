@@ -1,0 +1,86 @@
+version: 1
+
+capabilities:
+  model_gateway:
+    status: planned
+    priority: milestone_1
+    candidates:
+      - litellm
+    notes:
+      - Gateway-first is the preferred model access pattern.
+
+  local_runtime_windows:
+    status: adopted
+    priority: milestone_1
+    candidates:
+      - ollama
+    profiles:
+      - windows-personal
+
+  local_runtime_macos:
+    status: candidate
+    priority: milestone_1
+    candidates:
+      - omlx
+      - ollama
+    profiles:
+      - macos-work
+
+  routing_policy:
+    status: planned
+    priority: milestone_1
+    notes:
+      - Routing should be profile-aware, sensitivity-aware and explainable.
+
+  secrets_management:
+    status: planned
+    priority: milestone_1
+    candidates:
+      - bitwarden
+      - env_local_fallback
+    notes:
+      - Bitwarden is preferred.
+      - .env.local is fallback only.
+
+  cli_general_assistant:
+    status: planned
+    priority: milestone_1
+    commands:
+      - ask-ai
+
+  validation:
+    status: planned
+    priority: milestone_1
+    commands:
+      - ai-status
+      - ai-bootstrap-check
+
+  model_fitness:
+    status: planned
+    priority: milestone_3
+    candidates:
+      - llmfit
+      - gateway_based_checks
+
+  chat_ui:
+    status: planned
+    priority: milestone_4
+    candidates:
+      - open_webui
+
+  cli_coding_assistant:
+    status: planned
+    priority: milestone_5
+    candidates:
+      - aider
+      - opencode
+
+  agent_runner:
+    status: future
+    priority: milestone_7
+    candidates:
+      - goose
+
+  rag_project_memory:
+    status: future
+    priority: milestone_8

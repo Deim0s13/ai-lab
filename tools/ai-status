@@ -1,555 +1,231 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-# ==============================================================================
-# ai-status
-# ------------------------------------------------------------------------------
-# Health check and safe remediation tool for the local AI workstation.
-#
-# Checks:
-# - Ollama service/process
-# - Ollama API reachability
-# - available models
-# - active model processor usage
-# - NVIDIA GPU visibility
-# - Open WebUI systemd user service
-# - Open WebUI Podman container
-# - Open WebUI HTTP endpoint
-#
-# Safe remediation with --fix:
-# - start Ollama service if stopped
-# - restart Ollama service if API is unreachable
-# - reload user systemd if Open WebUI Quadlet exists but service is not generated
-# - start Open WebUI user service if stopped
-# - restart Open WebUI user service if HTTP endpoint is unreachable
-# - fall back to Podman start/restart only if systemd user service is unavailable
-#
-# It does NOT:
-# - change GPU drivers
-# - modify Ollama service files
-# - download models
-# - recreate containers
-# - change network configuration
-#
-# Examples:
-#   ai-status
-#   ai-status --probe
-#   ai-status --fix
-#   ai-status --fix --probe
-# ==============================================================================
-
-
-# ==============================================================================
-# 1. BASIC SCRIPT CONFIGURATION
-# ==============================================================================
-
-VERSION="0.3.0"
-SCRIPT_NAME="$(basename "$0")"
-
-CONFIG_FILE="$HOME/.config/ask-ollama/config"
-
-OLLAMA_URL="http://127.0.0.1:11434"
-DEFAULT_MODEL="qwen3:14b"
-
-OPEN_WEBUI_SERVICE="open-webui.service"
-OPEN_WEBUI_CONTAINER="open-webui"
-OPEN_WEBUI_URL="http://127.0.0.1:8080"
-OPEN_WEBUI_QUADLET="$HOME/.config/containers/systemd/open-webui.container"
-
-RUN_PROBE=false
-RUN_FIX=false
-
-TAGS_FILE="$(mktemp)"
-trap 'rm -f "$TAGS_FILE"' EXIT
-
-
-# ==============================================================================
-# 2. LOAD OPTIONAL CONFIG
-# ------------------------------------------------------------------------------
-# Reuses ask-ollama configuration if present.
-#
-# Supported variables:
-# - DEFAULT_MODEL
-# - OLLAMA_HOST
-# ==============================================================================
-
-if [[ -f "$CONFIG_FILE" ]]; then
-  # shellcheck source=/dev/null
-  source "$CONFIG_FILE" || true
-
-  if [[ -n "${OLLAMA_HOST:-}" ]]; then
-    OLLAMA_URL="$OLLAMA_HOST"
-  fi
-fi
-
-
-# ==============================================================================
-# 3. HELP AND OUTPUT FUNCTIONS
-# ==============================================================================
-
-show_help() {
-  cat <<EOF
-Usage:
-  $SCRIPT_NAME [OPTIONS]
-
-Options:
-  -h, --help       Show this help message
-  -v, --version    Display script version
-  --probe          Run a lightweight model prompt before checking GPU usage
-  --fix            Apply safe remediation actions
-
-Examples:
-  $SCRIPT_NAME
-  $SCRIPT_NAME --probe
-  $SCRIPT_NAME --fix
-  $SCRIPT_NAME --fix --probe
-EOF
-}
-
-ok() {
-  echo "✅ $1"
-}
-
-warn() {
-  echo "⚠️  $1"
-}
-
-fail() {
-  echo "❌ $1"
-}
-
-action() {
-  echo "🔧 $1"
-}
-
-section() {
-  echo ""
-  echo "== $1 =="
-}
-
-
-# ==============================================================================
-# 4. OPTIONS PARSER
-# ==============================================================================
-
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    -h|--help)
-      show_help
-      exit 0
-      ;;
-
-    -v|--version)
-      echo "$SCRIPT_NAME version $VERSION"
-      exit 0
-      ;;
-
-    --probe)
-      RUN_PROBE=true
-      ;;
-
-    --fix)
-      RUN_FIX=true
-      ;;
-
-    *)
-      fail "Unknown option: $1"
-      show_help
-      exit 1
-      ;;
-  esac
-
-  shift
-done
-
-
-# ==============================================================================
-# 5. UTILITY FUNCTIONS — OLLAMA
-# ==============================================================================
-
-ollama_service_exists() {
-  systemctl list-unit-files --type=service 2>/dev/null | grep -q '^ollama.service'
-}
-
-ollama_service_running() {
-  systemctl is-active --quiet ollama 2>/dev/null
-}
-
-ollama_process_running() {
-  pgrep -x ollama >/dev/null 2>&1
-}
-
-ollama_api_reachable() {
-  curl -fsS --max-time 5 "$OLLAMA_URL/api/tags" -o "$TAGS_FILE" 2>/dev/null
-}
-
-start_ollama() {
-  if ollama_service_exists; then
-    action "Starting Ollama service"
-    sudo systemctl start ollama
-  else
-    warn "Ollama systemd service not found. Start Ollama manually with: ollama serve"
-    return 1
-  fi
-}
-
-restart_ollama() {
-  if ollama_service_exists; then
-    action "Restarting Ollama service"
-    sudo systemctl restart ollama
-  else
-    warn "Ollama systemd service not found. Restart Ollama manually."
-    return 1
-  fi
-}
-
-
-# ==============================================================================
-# 6. UTILITY FUNCTIONS — OPEN WEBUI
-# ==============================================================================
-
-open_webui_quadlet_exists() {
-  [[ -f "$OPEN_WEBUI_QUADLET" ]]
-}
-
-open_webui_service_exists() {
-  systemctl --user cat "$OPEN_WEBUI_SERVICE" >/dev/null 2>&1
-}
-
-open_webui_service_running() {
-  systemctl --user is-active --quiet "$OPEN_WEBUI_SERVICE" 2>/dev/null
-}
-
-reload_user_systemd() {
-  action "Reloading user systemd units"
-  systemctl --user daemon-reload
-}
-
-start_open_webui_service() {
-  action "Starting Open WebUI user service"
-  systemctl --user start "$OPEN_WEBUI_SERVICE"
-}
-
-restart_open_webui_service() {
-  action "Restarting Open WebUI user service"
-  systemctl --user restart "$OPEN_WEBUI_SERVICE"
-}
-
-open_webui_container_exists() {
-  podman ps -a --format '{{.Names}}' 2>/dev/null | grep -Fxq "$OPEN_WEBUI_CONTAINER"
-}
-
-open_webui_container_running() {
-  podman ps --format '{{.Names}}' 2>/dev/null | grep -Fxq "$OPEN_WEBUI_CONTAINER"
-}
-
-start_open_webui_container() {
-  action "Starting Open WebUI container with Podman"
-  podman start "$OPEN_WEBUI_CONTAINER" >/dev/null
-}
-
-restart_open_webui_container() {
-  action "Restarting Open WebUI container with Podman"
-  podman restart "$OPEN_WEBUI_CONTAINER" >/dev/null
-}
-
-open_webui_reachable() {
-  curl -fsS --max-time 5 "$OPEN_WEBUI_URL" >/dev/null 2>&1
-}
-
-
-# ==============================================================================
-# 7. OLLAMA SERVICE / PROCESS CHECK
-# ==============================================================================
-
-section "Ollama Runtime"
-
-if command -v ollama >/dev/null 2>&1; then
-  ok "Ollama CLI found: $(command -v ollama)"
-else
-  fail "Ollama CLI not found"
-  exit 1
-fi
-
-if ollama_service_exists; then
-  if ollama_service_running; then
-    ok "Ollama service is running"
-  else
-    fail "Ollama service is not running"
-
-    if [[ "$RUN_FIX" == true ]]; then
-      start_ollama || true
-      sleep 3
-
-      if ollama_service_running; then
-        ok "Ollama service started successfully"
-      else
-        fail "Ollama service still not running after attempted fix"
-      fi
-    fi
-  fi
-else
-  if ollama_process_running; then
-    ok "Ollama process is running"
-  else
-    fail "Ollama process is not running"
-
-    if [[ "$RUN_FIX" == true ]]; then
-      warn "No systemd service found, so ai-status will not start Ollama automatically."
-      warn "Recommended: install/configure Ollama as a systemd service."
-    fi
-  fi
-fi
-
-
-# ==============================================================================
-# 8. OLLAMA API CHECK
-# ==============================================================================
-
-section "Ollama API"
-
-if ollama_api_reachable; then
-  ok "Ollama API reachable at $OLLAMA_URL"
-else
-  fail "Ollama API not reachable at $OLLAMA_URL"
-
-  if [[ "$RUN_FIX" == true ]]; then
-    restart_ollama || true
-    sleep 5
-
-    if ollama_api_reachable; then
-      ok "Ollama API reachable after restart"
-    else
-      fail "Ollama API still unreachable after attempted fix"
-    fi
-  fi
-fi
-
-
-# ==============================================================================
-# 9. AVAILABLE MODELS
-# ==============================================================================
-
-section "Available Models"
-
-if [[ -s "$TAGS_FILE" ]] && command -v jq >/dev/null 2>&1; then
-  MODELS="$(jq -r '.models[].name' "$TAGS_FILE" 2>/dev/null || true)"
-
-  if [[ -n "$MODELS" ]]; then
-    echo "$MODELS" | sed 's/^/- /'
-  else
-    warn "No models found via API"
-  fi
-else
-  ollama list || warn "Unable to list models"
-fi
-
-
-# ==============================================================================
-# 10. GPU VISIBILITY CHECK
-# ==============================================================================
-
-section "GPU"
-
-if command -v nvidia-smi >/dev/null 2>&1; then
-  GPU_NAME="$(nvidia-smi --query-gpu=name --format=csv,noheader | head -n 1)"
-  GPU_DRIVER="$(nvidia-smi --query-gpu=driver_version --format=csv,noheader | head -n 1)"
-  GPU_MEMORY="$(nvidia-smi --query-gpu=memory.total --format=csv,noheader | head -n 1)"
-
-  ok "GPU detected: $GPU_NAME"
-  echo "Driver: $GPU_DRIVER"
-  echo "Memory: $GPU_MEMORY"
-else
-  fail "nvidia-smi not found. WSL2 may not have GPU visibility."
-
-  if [[ "$RUN_FIX" == true ]]; then
-    warn "GPU visibility requires Windows NVIDIA driver / WSL configuration."
-    warn "No automatic fix applied."
-  fi
-fi
-
-
-# ==============================================================================
-# 11. OPTIONAL INFERENCE PROBE
-# ------------------------------------------------------------------------------
-# This loads the default model and runs a tiny prompt, making ollama ps useful.
-# ==============================================================================
-
-if [[ "$RUN_PROBE" == true ]]; then
-  section "Inference Probe"
-
-  echo "Running lightweight prompt with model: $DEFAULT_MODEL"
-
-  if timeout 120s ollama run "$DEFAULT_MODEL" "Reply with exactly: ok" >/dev/null 2>&1; then
-    ok "Inference probe completed"
-  else
-    warn "Inference probe did not complete within 120 seconds"
-  fi
-fi
-
-
-# ==============================================================================
-# 12. ACTIVE MODEL / PROCESSOR CHECK
-# ==============================================================================
-
-section "Active Models"
-
-OLLAMA_PS_OUTPUT="$(ollama ps 2>/dev/null || true)"
-ACTIVE_MODELS="$(echo "$OLLAMA_PS_OUTPUT" | awk 'NR > 1')"
-
-if [[ -n "$ACTIVE_MODELS" ]]; then
-  echo "$OLLAMA_PS_OUTPUT"
-
-  if echo "$OLLAMA_PS_OUTPUT" | grep -qi "GPU"; then
-    ok "Ollama reports GPU usage"
-  elif echo "$OLLAMA_PS_OUTPUT" | grep -qi "CPU"; then
-    warn "Ollama reports CPU usage"
-
-    if [[ "$RUN_FIX" == true ]]; then
-      warn "CPU-only execution is not auto-fixed."
-      warn "Check Ollama service environment, NVIDIA WSL support, and CUDA visibility."
-    fi
-  else
-    warn "Unable to determine processor usage from ollama ps"
-  fi
-else
-  warn "No active models loaded. Run 'ai-status --probe' to test processor usage."
-fi
-
-
-# ==============================================================================
-# 13. OPEN WEBUI SERVICE CHECK
-# ==============================================================================
-
-section "Open WebUI Service"
-
-if open_webui_quadlet_exists; then
-  ok "Open WebUI Quadlet found: $OPEN_WEBUI_QUADLET"
-else
-  warn "Open WebUI Quadlet not found at $OPEN_WEBUI_QUADLET"
-fi
-
-if open_webui_service_exists; then
-  if open_webui_service_running; then
-    ok "Open WebUI user service is running"
-  else
-    warn "Open WebUI user service exists but is not running"
-
-    if [[ "$RUN_FIX" == true ]]; then
-      start_open_webui_service || true
-      sleep 5
-
-      if open_webui_service_running; then
-        ok "Open WebUI user service started successfully"
-      else
-        fail "Open WebUI user service still not running after attempted fix"
-      fi
-    fi
-  fi
-else
-  warn "Open WebUI user service is not currently generated"
-
-  if [[ "$RUN_FIX" == true && -f "$OPEN_WEBUI_QUADLET" ]]; then
-    reload_user_systemd || true
-    sleep 2
-
-    if open_webui_service_exists; then
-      ok "Open WebUI user service generated after daemon reload"
-      start_open_webui_service || true
-      sleep 5
-    else
-      fail "Open WebUI user service still not generated after daemon reload"
-    fi
-  fi
-fi
-
-
-# ==============================================================================
-# 14. OPEN WEBUI CONTAINER CHECK
-# ==============================================================================
-
-section "Open WebUI Container"
-
-if command -v podman >/dev/null 2>&1; then
-  if open_webui_container_running; then
-    ok "Open WebUI container is running"
-  elif open_webui_container_exists; then
-    warn "Open WebUI container exists but is not running"
-
-    if [[ "$RUN_FIX" == true && ! open_webui_service_exists ]]; then
-      start_open_webui_container || true
-      sleep 5
-
-      if open_webui_container_running; then
-        ok "Open WebUI container started successfully"
-      else
-        fail "Open WebUI container still not running after attempted fix"
-      fi
-    fi
-  else
-    warn "Open WebUI container not found"
-
-    if [[ "$RUN_FIX" == true ]]; then
-      warn "Container does not exist. No automatic creation performed."
-    fi
-  fi
-else
-  warn "Podman not found"
-fi
-
-
-# ==============================================================================
-# 15. OPEN WEBUI HTTP CHECK
-# ==============================================================================
-
-section "Open WebUI Endpoint"
-
-if open_webui_reachable; then
-  ok "Open WebUI reachable at $OPEN_WEBUI_URL"
-else
-  warn "Open WebUI not reachable at $OPEN_WEBUI_URL"
-
-  if [[ "$RUN_FIX" == true ]]; then
-    if open_webui_service_exists; then
-      restart_open_webui_service || true
-      sleep 8
-
-      if open_webui_reachable; then
-        ok "Open WebUI reachable after service restart"
-      else
-        warn "Open WebUI still unreachable after service restart"
-      fi
-    elif command -v podman >/dev/null 2>&1 && open_webui_container_exists; then
-      restart_open_webui_container || true
-      sleep 8
-
-      if open_webui_reachable; then
-        ok "Open WebUI reachable after container restart"
-      else
-        warn "Open WebUI still unreachable after container restart"
-      fi
-    else
-      warn "No Open WebUI service or container available for automatic restart."
-    fi
-  fi
-fi
-
-
-# ==============================================================================
-# 16. SUMMARY
-# ==============================================================================
-
-section "Summary"
-
-echo "AI workstation status check complete."
-echo ""
-echo "Useful commands:"
-echo "  ai-status"
-echo "  ai-status --probe"
-echo "  ai-status --fix"
-echo "  ai-status --fix --probe"
-echo ""
-echo "Open WebUI service commands:"
-echo "  systemctl --user status open-webui.service"
-echo "  systemctl --user restart open-webui.service"
-echo "  journalctl --user -u open-webui.service -f"
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+from typing import Any
+
+try:
+    import yaml
+except ModuleNotFoundError:
+    print("Error: PyYAML is required to run ai-status.")
+    print("Install with: python3 -m pip install --user pyyaml")
+    sys.exit(1)
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+REQUIRED_CONFIG_FILES = [
+    "config/providers/providers.yaml",
+    "config/models/aliases.yaml",
+    "config/routing/routes.yaml",
+    "config/policies/logging.yaml",
+    "config/policies/sensitivity.yaml",
+    "config/capabilities/capabilities.yaml",
+]
+
+
+def load_yaml(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        raise FileNotFoundError(path)
+
+    with path.open("r", encoding="utf-8") as file:
+        data = yaml.safe_load(file)
+
+    if data is None:
+        return {}
+
+    if not isinstance(data, dict):
+        raise ValueError(f"{path} must contain a YAML mapping")
+
+    return data
+
+
+def ok_fail(value: bool) -> str:
+    return "OK" if value else "FAIL"
+
+
+def resolve_profile(profile_name: str) -> Path:
+    return REPO_ROOT / "profiles" / profile_name / "profile.yaml"
+
+
+def check_config_files() -> list[tuple[str, bool]]:
+    results: list[tuple[str, bool]] = []
+
+    for relative_path in REQUIRED_CONFIG_FILES:
+        path = REPO_ROOT / relative_path
+        results.append((relative_path, path.exists()))
+
+    return results
+
+
+def print_list(title: str, values: list[str] | None) -> None:
+    print(f"{title}:")
+    if not values:
+        print("- none")
+        return
+
+    for value in values:
+        print(f"- {value}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        description="Show AI workstation profile and configuration status."
+    )
+    parser.add_argument(
+        "--profile",
+        required=True,
+        help="Profile to inspect, for example macos-work or windows-personal.",
+    )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Show additional profile detail.",
+    )
+
+    args = parser.parse_args()
+
+    profile_path = resolve_profile(args.profile)
+
+    print("AI Lab Status")
+    print()
+
+    if not profile_path.exists():
+        print(f"Profile: {args.profile}")
+        print("Status: FAIL")
+        print()
+        print(f"Error: profile file not found: {profile_path.relative_to(REPO_ROOT)}")
+        print()
+        print("Next action:")
+        print(f"- create profiles/{args.profile}/profile.yaml")
+        return 3
+
+    try:
+        profile = load_yaml(profile_path)
+    except Exception as exc:
+        print(f"Profile: {args.profile}")
+        print("Status: FAIL")
+        print()
+        print(f"Error: could not load profile YAML: {exc}")
+        return 3
+
+    profile_status = profile.get("status", "unknown")
+    risk_posture = profile.get("device", {}).get("risk_posture", "unknown")
+    local_runtimes = profile.get("local_runtimes", {})
+    runtime_access = profile.get("runtime_access", {})
+    providers = profile.get("providers", {})
+    approved_workspaces = profile.get("approved_workspaces", [])
+    secrets = profile.get("secrets", {})
+    context = profile.get("context", {})
+
+    print(f"Profile: {args.profile}")
+    print(f"Profile file: {profile_path.relative_to(REPO_ROOT)}")
+    print(f"Profile status: {profile_status}")
+    print(f"Risk posture: {risk_posture}")
+    print()
+
+    print("Config files:")
+    config_results = check_config_files()
+    missing_config = False
+
+    for relative_path, exists in config_results:
+        print(f"- {relative_path}: {ok_fail(exists)}")
+        if not exists:
+            missing_config = True
+
+    print()
+
+    print("Gateway:")
+    print("- status: NOT CHECKED")
+    print("- note: live gateway health check is not implemented yet")
+    print()
+
+    print("Local runtimes:")
+    preferred_runtimes = local_runtimes.get("preferred", [])
+    fallback_runtimes = local_runtimes.get("fallback", [])
+
+    if preferred_runtimes:
+        for runtime in preferred_runtimes:
+            print(f"- {runtime}: NOT CHECKED")
+    else:
+        print("- preferred runtime: not defined")
+
+    if fallback_runtimes:
+        for runtime in fallback_runtimes:
+            print(f"- {runtime}: NOT CHECKED fallback")
+
+    print()
+
+    print("Runtime access:")
+    print(f"- default: {runtime_access.get('default', 'unknown')}")
+    print(f"- direct local fallback: {runtime_access.get('direct_local_fallback', False)}")
+    print(f"- direct frontier fallback: {runtime_access.get('direct_frontier_fallback', False)}")
+    print()
+
+    print("Secrets:")
+    print(f"- source: {secrets.get('source', 'unknown')}")
+    print(f"- fallback: {secrets.get('fallback', 'unknown')}")
+
+    required_secrets = secrets.get("required", [])
+    optional_secrets = secrets.get("optional", [])
+
+    print(f"- required secrets defined: {len(required_secrets)}")
+    print(f"- optional secrets defined: {len(optional_secrets)}")
+    print("- values: not displayed")
+    print("- availability: NOT CHECKED")
+    print()
+
+    print("Providers:")
+    if not providers:
+        print("- none defined")
+    else:
+        for group_name, provider_values in providers.items():
+            if isinstance(provider_values, list):
+                print(f"- {group_name}: {', '.join(provider_values)}")
+            else:
+                print(f"- {group_name}: {provider_values}")
+    print()
+
+    print("Approved workspaces:")
+    if approved_workspaces:
+        for workspace in approved_workspaces:
+            name = workspace.get("name", "unknown")
+            purpose = workspace.get("purpose", "unknown")
+            print(f"- {name}: {purpose}")
+    else:
+        print("- none")
+    print()
+
+    print("Context:")
+    print_list("Allowed", context.get("allowed", []))
+    print_list("Blocked", context.get("blocked", []))
+    print()
+
+    if args.verbose:
+        print("Validation expectations:")
+        validation = profile.get("validation", {})
+        print_list("Required", validation.get("required", []))
+        print_list("Optional", validation.get("optional", []))
+        print()
+
+    if missing_config:
+        print("Status: WARN")
+        print()
+        print("Next action:")
+        print("- create missing config files listed above")
+        return 0
+
+    print("Status: OK")
+    print()
+    print("Note:")
+    print("- This is an initial Milestone 1 status stub.")
+    print("- Live gateway, runtime and secret checks will be added later.")
+
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
