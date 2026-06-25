@@ -45,6 +45,19 @@ Selection criteria should include:
 | Replaceable | A better tool should be able to replace it without redesigning the workstation. |
 | Daily-use justified | Tools should support a real recurring workflow. |
 
+### Thin custom layer
+
+Custom CLI commands should explain and orchestrate project-specific workflows.
+
+They should not recreate generic routing, validation, task-running or health-check functionality where existing open-source tools are a good fit.
+
+Preferred pattern:
+
+```text
+custom CLI = project-specific interface
+open-source tools = generic execution capability
+```
+
 ---
 
 ## 3. Tool selection flow
