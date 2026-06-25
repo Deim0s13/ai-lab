@@ -58,6 +58,16 @@ custom CLI = project-specific interface
 open-source tools = generic execution capability
 ```
 
+### Tool evaluation records
+
+Detailed tool comparisons are captured in `docs/tool-evaluations/`.
+
+This keeps this document focused on selection principles and current posture, while individual tool assessments remain lightweight and reviewable.
+
+Tool evaluations should be used before introducing significant tools or expanding custom implementation.
+
+ADRs should only be created when a tool choice becomes a durable architecture decision.
+
 ---
 
 ## 3. Tool selection flow
