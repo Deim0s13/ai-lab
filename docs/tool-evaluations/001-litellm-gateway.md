@@ -2,7 +2,7 @@
 
 ## Status
 
-Proposed
+LiteLLM accepted as preferred Milestone 1 gateway candidate, subject to local proof.
 
 ## Date
 
