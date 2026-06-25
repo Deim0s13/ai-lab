@@ -1,17 +1,47 @@
 version: 1
 
 routing_defaults:
-  mode: local_first
+  local_first: true
   explain_routes: true
   log_decisions: true
   prompt_logging: false
+  execution_gateway: litellm
 
-sensitivity_levels:
-  - public
-  - internal
-  - customer
-  - personal
-  - restricted
+route_classes:
+  local_fast:
+    type: local
+    gateway_model_group: local-fast
+    description: Fast local route for lightweight prompts, summaries and simple rewrites.
+
+  local_capable:
+    type: local
+    gateway_model_group: local-capable
+    description: More capable local route for reasoning, summarisation and architecture support.
+
+  local_code:
+    type: local
+    gateway_model_group: local-code
+    description: Local coding route where practical.
+
+  approved_work:
+    type: approved_work
+    gateway_model_group: work-approved-reasoning
+    description: Approved work AI route for macos-work where policy allows.
+
+  frontier_reasoning:
+    type: frontier
+    gateway_model_group: frontier-reasoning
+    description: Frontier reasoning route where profile and sensitivity policy allow.
+
+  frontier_code:
+    type: frontier
+    gateway_model_group: frontier-code
+    description: Frontier coding route where profile and sensitivity policy allow.
+
+  blocked:
+    type: blocked
+    gateway_model_group: none
+    description: No model route is allowed for this profile, task or sensitivity combination.
 
 task_types:
   - quick_question
@@ -28,107 +58,246 @@ task_types:
 
 profiles:
   macos-work:
-    default_route: local_first
+    default_route_class: local_fast
     approved_tools_first: true
     require_confirmation_for_frontier: true
 
-    provider_priority:
-      approved_work:
-        - gemini
-        - cursor
-      frontier:
-        - anthropic
-        - openai
-      local:
-        - omlx
-        - ollama
+    allowed_route_classes:
+      - local_fast
+      - local_capable
+      - local_code
+      - approved_work
+      - frontier_reasoning
+      - frontier_code
+
+    blocked_route_classes: []
 
     sensitivity_policy:
       public:
-        allowed_routes:
+        allowed_route_classes:
           - local_fast
           - local_capable
+          - local_code
           - approved_work
+          - frontier_reasoning
+          - frontier_code
+        confirmation_required: false
+
       internal:
-        allowed_routes:
+        allowed_route_classes:
           - local_fast
           - local_capable
+          - local_code
           - approved_work
+          - frontier_reasoning
+          - frontier_code
+        confirmation_required: false
+
       customer:
-        allowed_routes:
-          - local_capable
-          - approved_work
-        requires_confirmation_for:
-          - frontier_reasoning
-          - frontier_code
-      restricted:
-        allowed_routes:
+        allowed_route_classes:
           - local_fast
           - local_capable
-        blocked_routes:
           - approved_work
-          - frontier_reasoning
-          - frontier_code
+        confirmation_required: true
+
+      restricted:
+        allowed_route_classes:
+          - local_fast
+          - local_capable
+          - local_code
+        confirmation_required: false
 
     task_policy:
+      quick_question:
+        preferred_route_class: local_fast
+
       summarise:
-        preferred_route: local_fast
+        preferred_route_class: local_fast
+
       rewrite:
-        preferred_route: local_fast
-      architecture_review:
-        preferred_route: approved_work
+        preferred_route_class: local_fast
+
+      coding_explain:
+        preferred_route_class: local_code
+
+      coding_generate:
+        preferred_route_class: local_code
+
       coding_debug:
-        preferred_route: local_code
+        preferred_route_class: local_code
+        escalation_route_class: approved_work
+
+      architecture_review:
+        preferred_route_class: local_capable
+        escalation_route_class: approved_work
+
+      writing_polish:
+        preferred_route_class: local_fast
+        escalation_route_class: approved_work
+
+      research_synthesis:
+        preferred_route_class: approved_work
+
+      model_selection:
+        preferred_route_class: local_capable
+        escalation_route_class: approved_work
+
+      agent_workflow:
+        preferred_route_class: local_capable
 
   windows-personal:
-    default_route: local_first
+    default_route_class: local_fast
     approved_tools_first: false
     require_confirmation_for_frontier: false
 
-    provider_priority:
-      frontier:
-        - openai
-        - anthropic
-        - gemini
-      local:
-        - ollama
+    allowed_route_classes:
+      - local_fast
+      - local_capable
+      - local_code
+      - frontier_reasoning
+      - frontier_code
+
+    blocked_route_classes:
+      - approved_work
 
     sensitivity_policy:
       public:
-        allowed_routes:
-          - local_fast
-          - local_capable
-          - frontier_reasoning
-      personal:
-        allowed_routes:
+        allowed_route_classes:
           - local_fast
           - local_capable
           - local_code
           - frontier_reasoning
           - frontier_code
-      restricted:
-        allowed_routes:
+        confirmation_required: false
+
+      personal:
+        allowed_route_classes:
           - local_fast
           - local_capable
-        blocked_routes:
+          - local_code
           - frontier_reasoning
           - frontier_code
+        confirmation_required: false
+
+      restricted:
+        allowed_route_classes:
+          - local_fast
+          - local_capable
+          - local_code
+        confirmation_required: false
+
+      work:
+        allowed_route_classes:
+          - blocked
+        confirmation_required: false
+
+      work-sensitive:
+        allowed_route_classes:
+          - blocked
+        confirmation_required: false
 
     task_policy:
       quick_question:
-        preferred_route: local_fast
+        preferred_route_class: local_fast
+
       summarise:
-        preferred_route: local_fast
+        preferred_route_class: local_fast
+
+      rewrite:
+        preferred_route_class: local_fast
+
+      coding_explain:
+        preferred_route_class: local_code
+        escalation_route_class: frontier_code
+
+      coding_generate:
+        preferred_route_class: local_code
+        escalation_route_class: frontier_code
+
       coding_debug:
-        preferred_route: local_code
-        escalation_route: frontier_code
+        preferred_route_class: local_code
+        escalation_route_class: frontier_code
+
       architecture_review:
-        preferred_route: local_capable
-        escalation_route: frontier_reasoning
+        preferred_route_class: local_capable
+        escalation_route_class: frontier_reasoning
+
+      writing_polish:
+        preferred_route_class: local_fast
+        escalation_route_class: frontier_reasoning
+
+      research_synthesis:
+        preferred_route_class: local_capable
+        escalation_route_class: frontier_reasoning
+
+      model_selection:
+        preferred_route_class: local_capable
+        escalation_route_class: frontier_reasoning
+
+      agent_workflow:
+        preferred_route_class: local_capable
 
   fedora-atomic:
     status: future_reference
-    default_route: local_first
-    notes:
-      - Future/reference only.
-      - Should not be required for Milestone 1 validation.
+    default_route_class: local_fast
+    approved_tools_first: false
+    require_confirmation_for_frontier: false
+
+    allowed_route_classes:
+      - local_fast
+      - local_capable
+      - local_code
+
+    blocked_route_classes:
+      - approved_work
+      - frontier_reasoning
+      - frontier_code
+
+    sensitivity_policy:
+      public:
+        allowed_route_classes:
+          - local_fast
+          - local_capable
+          - local_code
+        confirmation_required: false
+
+      restricted:
+        allowed_route_classes:
+          - local_fast
+          - local_capable
+          - local_code
+        confirmation_required: false
+
+    task_policy:
+      quick_question:
+        preferred_route_class: local_fast
+
+      summarise:
+        preferred_route_class: local_fast
+
+      rewrite:
+        preferred_route_class: local_fast
+
+      coding_explain:
+        preferred_route_class: local_code
+
+      coding_generate:
+        preferred_route_class: local_code
+
+      coding_debug:
+        preferred_route_class: local_code
+
+      architecture_review:
+        preferred_route_class: local_capable
+
+      writing_polish:
+        preferred_route_class: local_fast
+
+      research_synthesis:
+        preferred_route_class: local_capable
+
+      model_selection:
+        preferred_route_class: local_capable
+
+      agent_workflow:
+        preferred_route_class: local_capable
