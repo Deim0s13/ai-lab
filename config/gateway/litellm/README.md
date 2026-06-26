@@ -91,3 +91,20 @@ That proof should confirm:
 - LiteLLM can start with this config
 - a simple prompt can be sent through the LiteLLM gateway
 - no external provider or secret is required
+
+## Bootstrap Check
+
+The gateway-aware bootstrap check is implemented as a `just` recipe rather than custom Python.
+
+Run:
+
+just bootstrap-check
+
+The check validates:
+
+- config and profile YAML can be parsed
+- LiteLLM `/v1/models` lists `local-fast`
+- LiteLLM `/health` reports at least one healthy endpoint
+- `LITELLM_MASTER_KEY` is set locally without printing the value
+
+This keeps bootstrap validation tool-based and avoids building a custom health-check framework.
