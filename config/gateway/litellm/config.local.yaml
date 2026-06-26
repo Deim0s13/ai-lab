@@ -1,34 +1,16 @@
 # LiteLLM local gateway configuration
 #
-# Purpose:
-# - Provide the first concrete gateway model groups for Milestone 1.
-# - Keep the first proof local-only.
-# - Avoid committing secrets.
-#
-# Notes:
-# - This config is intentionally minimal.
-# - The model names below are gateway model groups used by this project.
-# - The actual Ollama model names may be adjusted during local proof.
-# - For Docker-based LiteLLM on macOS/Windows, host.docker.internal is commonly used
-#   to reach a service running on the host machine.
-# - If running LiteLLM directly on the host, api_base may need to be changed to
-#   http://localhost:11434.
+# Milestone 1 proof config:
+# - local-only
+# - one model group
+# - no frontier providers
+# - no committed secrets
 
 model_list:
   - model_name: local-fast
     litellm_params:
-      model: ollama/qwen2.5:3b
-      api_base: http://host.docker.internal:11434
-
-  - model_name: local-capable
-    litellm_params:
-      model: ollama/llama3.1:8b
-      api_base: http://host.docker.internal:11434
-
-  - model_name: local-code
-    litellm_params:
-      model: ollama/qwen2.5-coder:7b
-      api_base: http://host.docker.internal:11434
+      model: ollama/llama3.2:3b
+      api_base: http://host.containers.internal:11434
 
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY
