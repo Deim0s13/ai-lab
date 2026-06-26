@@ -68,5 +68,14 @@ ask prompt:
       -d "$(.venv/bin/python -c 'import json, sys; print(json.dumps({"model": "local-fast", "messages": [{"role": "user", "content": sys.argv[1]}]}))' '{{ prompt }}')" \
       | jq -r '.choices[0].message.content'
 
+ai-up: gateway-start
+    @echo "OK AI workstation gateway is up"
+
+ai-check: bootstrap-check
+    @echo "OK AI workstation checks passed"
+
+ai-down: gateway-stop
+    @echo "OK AI workstation gateway is down"
+
 bootstrap-check: check-yaml gateway-models gateway-health
     echo "OK bootstrap check passed"
