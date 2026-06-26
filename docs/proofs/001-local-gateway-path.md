@@ -136,3 +136,5 @@ Use this proof to support the gateway-aware bootstrap check.
 Consider adding a small Podman run helper or just recipe later.
 
 Reassess whether config.local.yaml should be expanded to local-capable and local-code after the initial gateway path remains stable.
+
+The proof used llama3.2:3b as the backend for local-fast. This proves the gateway path only. It does not make llama3.2:3b the permanent local-fast model.

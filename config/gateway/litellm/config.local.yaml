@@ -2,9 +2,15 @@
 #
 # Milestone 1 proof config:
 # - local-only
-# - one model group
+# - one proven model group
 # - no frontier providers
 # - no committed secrets
+#
+# Design note:
+# - The stable interface is model_name: local-fast.
+# - The backend model below is replaceable.
+# - llama3.2:3b is the current local proof backend, not a permanent architecture decision.
+# - Long-term model candidates are tracked in config/models/aliases.yaml.
 
 model_list:
   - model_name: local-fast
