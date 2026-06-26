@@ -108,3 +108,22 @@ The check validates:
 - `LITELLM_MASTER_KEY` is set locally without printing the value
 
 This keeps bootstrap validation tool-based and avoids building a custom health-check framework.
+
+## Asking the Local Gateway
+
+The first CLI habit workflow uses a `just` recipe rather than a custom wrapper.
+
+Run:
+
+just ask "Say hello"
+
+This sends the prompt to the LiteLLM gateway using the `local-fast` model group and prints the assistant response.
+
+The recipe uses:
+
+- LiteLLM `/v1/chat/completions`
+- `local-fast`
+- `curl`
+- `jq`
+
+It does not add custom Python and does not call frontier providers.
