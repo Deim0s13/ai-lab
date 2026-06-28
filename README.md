@@ -359,6 +359,7 @@ Start here:
 | `docs/09-tool-selection.md` | How tools are selected |
 | `docs/10-milestones.md` | Delivery roadmap |
 | `docs/11-cli-interface-contracts.md` | Initial CLI command contracts, flags, output and exit codes |
+| 'docs/12-cli-habit-layer.md' | Daily terminal workflow for starting the gateway, checking status, asking the local model, inspecting routing, and stopping the gateway. |
 
 Architecture decisions are recorded in:
 
