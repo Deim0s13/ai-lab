@@ -76,6 +76,12 @@ ask-model model prompt:
       -d "$(.venv/bin/python -c 'import json, sys; print(json.dumps({"model": sys.argv[1], "messages": [{"role": "user", "content": sys.argv[2]}]}))' '{{ model }}' '{{ prompt }}')" \
       | jq -r '.choices[0].message.content'
 
+ask-mlx model prompt:
+    @.venv/bin/python -m mlx_lm.generate \
+      --model "{{ model }}" \
+      --prompt "{{ prompt }}" \
+      --max-tokens 300
+
 ai-up: gateway-start
     @echo "OK AI workstation gateway is up"
 

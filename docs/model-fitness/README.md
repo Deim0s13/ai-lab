@@ -213,7 +213,7 @@ Installed models are baselines, not the full test universe.
 
 | Candidate | Runtime | Target role | Status | Decision |
 |---|---|---|---|---|
-| Qwen3 4B MLX quant | MLX / mlx-lm | local-fast / local-capable | Not installed | Select for first-pass MLX comparison on Apple silicon |
+| Qwen3 4B MLX quant | MLX / mlx-lm | local-fast / local-capable | Installed/proven| Select for first-pass MLX comparison on Apple silicon |
 | Qwen3 Coder practical local variant | MLX or Ollama | local-code | Not installed | Select only if a realistic local-size candidate is available |
 | Qwen3 8B MLX quant | MLX / mlx-lm | local-capable | Not installed | Park until 4B result shows whether MLX is worth expanding |
 | Gemma 3 4B Ollama or MLX | Ollama / MLX | local-fast / local-capable | Not installed | Park unless Qwen candidates disappoint |
