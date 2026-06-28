@@ -68,6 +68,14 @@ ask prompt:
       -d "$(.venv/bin/python -c 'import json, sys; print(json.dumps({"model": "local-fast", "messages": [{"role": "user", "content": sys.argv[1]}]}))' '{{ prompt }}')" \
       | jq -r '.choices[0].message.content'
 
+ask-model model prompt:
+    @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
+    @curl -fsS "{{ gateway_url }}/v1/chat/completions" \
+      -H "Authorization: Bearer {{ gateway_key }}" \
+      -H "Content-Type: application/json" \
+      -d "$(.venv/bin/python -c 'import json, sys; print(json.dumps({"model": sys.argv[1], "messages": [{"role": "user", "content": sys.argv[2]}]}))' '{{ model }}' '{{ prompt }}')" \
+      | jq -r '.choices[0].message.content'
+
 ai-up: gateway-start
     @echo "OK AI workstation gateway is up"
 

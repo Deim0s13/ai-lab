@@ -1,21 +1,38 @@
 # LiteLLM local gateway configuration
 #
-# Milestone 1 proof config:
-# - local-only
-# - one proven model group
-# - no frontier providers
-# - no committed secrets
+# Local-only development gateway config.
 #
-# Design note:
-# - The stable interface is model_name: local-fast.
-# - The backend model below is replaceable.
-# - llama3.2:3b is the current local proof backend, not a permanent architecture decision.
-# - Long-term model candidates are tracked in config/models/aliases.yaml.
+# Design notes:
+# - Gateway model groups are the stable project interface.
+# - Backend models are replaceable.
+# - local-fast remains the daily-use model group.
+# - candidate-* aliases are for model fitness testing only.
+# - Long-term model decisions are recorded in docs/model-fitness/README.md.
 
 model_list:
   - model_name: local-fast
     litellm_params:
       model: ollama/llama3.2:3b
+      api_base: http://host.containers.internal:11434
+
+  - model_name: candidate-llama32-3b
+    litellm_params:
+      model: ollama/llama3.2:3b
+      api_base: http://host.containers.internal:11434
+
+  - model_name: candidate-llama31-8b
+    litellm_params:
+      model: ollama/llama3.1:8b
+      api_base: http://host.containers.internal:11434
+
+  - model_name: candidate-mistral-7b
+    litellm_params:
+      model: ollama/mistral:7b
+      api_base: http://host.containers.internal:11434
+
+  - model_name: candidate-qwen35
+    litellm_params:
+      model: ollama/qwen3.5:latest
       api_base: http://host.containers.internal:11434
 
 general_settings:
