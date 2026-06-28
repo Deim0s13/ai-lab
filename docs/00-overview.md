@@ -187,6 +187,8 @@ docs/07-routing-strategy.md
 docs/08-rebuild-strategy.md
 docs/09-tool-selection.md
 docs/10-milestones.md
+docs/11-cli-interface-contracts.md
+docs/12-cli-habit-layer.md
 docs/adr/
 ```
 
