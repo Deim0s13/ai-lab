@@ -196,30 +196,37 @@ Do not download models only because they are popular.
 
 ## Candidate Shortlist
 
-Installed baseline candidates:
+Installed models are baselines, not the full test universe.
 
-| Candidate | Runtime | Target role | Status | Notes |
+### Installed baseline candidates
+
+| Candidate | Runtime | Target role | Status | Decision |
 |---|---|---|---|---|
-| llama3.2:3b | Ollama | local-fast | Installed | Current local-fast proof backend |
-| llama3.1:8b | Ollama | local-capable | Installed | Stronger installed baseline |
-| mistral:7b | Ollama | local-capable | Installed | General baseline |
-| mistral:latest | Ollama | local-capable | Installed | Check whether this duplicates mistral:7b |
-| qwen3.5:latest | Ollama | local-capable / local-code | Installed | Candidate for reasoning or code-oriented tasks |
+| llama3.2:3b | Ollama | local-fast | Installed | Baseline; keep as proven local-fast reference |
+| llama3.1:8b | Ollama | local-capable | Installed | Baseline; test as stronger general model |
+| mistral:7b | Ollama | local-capable | Installed | Baseline; test if time allows |
+| qwen3.5:latest | Ollama | local-capable / local-code | Installed | Baseline; test as likely stronger reasoning/code candidate |
+| mistral:latest | Ollama | local-capable | Installed | Likely duplicate/older baseline; review for decommissioning |
+| nomic-embed-text:latest | Ollama | embeddings | Installed | Not a chat candidate; keep only if embedding/RAG work needs it later |
 
-Do not test embedding-only models as chat candidates.
+### First-pass additional candidates
 
-Additional candidates to consider before download:
-
-| Candidate | Runtime | Target role | Status | Notes |
+| Candidate | Runtime | Target role | Status | Decision |
 |---|---|---|---|---|
-| Qwen3 4B MLX quant | MLX | local-fast / local-capable | Consider | Tests MLX efficiency for fast/capable role |
-| Qwen3 Coder MLX quant | MLX | local-code | Consider | Tests MLX for code-oriented role |
-| Qwen3 8B MLX quant | MLX | local-capable | Parked | Consider after smaller MLX candidate |
-| Gemma 3 4B Ollama or MLX | Ollama / MLX | local-fast / local-capable | Parked | Useful later if first candidates disappoint |
+| Qwen3 4B MLX quant | MLX / mlx-lm | local-fast / local-capable | Not installed | Select for first-pass MLX comparison on Apple silicon |
+| Qwen3 Coder practical local variant | MLX or Ollama | local-code | Not installed | Select only if a realistic local-size candidate is available |
+| Qwen3 8B MLX quant | MLX / mlx-lm | local-capable | Not installed | Park until 4B result shows whether MLX is worth expanding |
+| Gemma 3 4B Ollama or MLX | Ollama / MLX | local-fast / local-capable | Not installed | Park unless Qwen candidates disappoint |
 
-Initial rule:
+### Selection rules
 
-Download at most two additional candidates before the first test pass.
+- Download at most two additional candidates before the first test pass.
+- Do not download models only because they are popular.
+- Do not download models that are clearly too large for the hardware.
+- Installed Ollama models are baselines, not the final answer.
+- MLX candidates are included because the primary workstation is Apple silicon.
+- A model must have a target role before it is installed.
+- Models that are rejected, duplicate or obsolete should be removed later through the decommissioning workflow.
 
 ## Test Prompt Set
 
@@ -301,9 +308,9 @@ Recommended suitability decisions:
 
 | Gateway model group | Current backend | Decision status | Notes |
 |---|---|---|---|
-| local-fast | llama3.2:3b via Ollama | Provisional | Proven through LiteLLM; still needs fitness comparison |
-| local-capable | Not assigned | Pending | To be decided after testing |
-| local-code | Not assigned | Pending | To be decided after testing |
+| local-fast | llama3.2:3b via Ollama | Provisional baseline | Proven through LiteLLM; compare against Qwen3 4B MLX |
+| local-capable | Not assigned | Pending | Compare installed 8B/general candidates and selected MLX candidate |
+| local-code | Not assigned | Pending | Identify practical Qwen/code-focused local candidate before install |
 
 ## Review Triggers
 
