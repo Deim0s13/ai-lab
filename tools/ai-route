@@ -1,147 +1,93 @@
 #!/usr/bin/env python3
 
-"""
-ai-route
-
-Initial policy-route inspection stub for AI Dev Workstation as Code.
-
-This command does not select a final route.
-It does not call LiteLLM.
-It does not call any model provider.
-
-Its job is to show the configured route classes and intended gateway model groups
-so the routing model is visible before gateway execution is implemented.
-"""
-
-from __future__ import annotations
-
 import argparse
 import sys
 from pathlib import Path
-from typing import Any
 
-try:
-    import yaml
-except ModuleNotFoundError:
-    print("Error: PyYAML is required to run ai-route.")
-    print("Install inside the repo venv with: python -m pip install pyyaml")
-    sys.exit(1)
+import yaml
 
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-ROUTES_FILE = REPO_ROOT / "config" / "routing" / "routes.yaml"
+ROOT = Path(__file__).resolve().parents[1]
 
 
-def load_yaml(path: Path) -> dict[str, Any]:
+def load_yaml(path: Path):
     if not path.exists():
-        raise FileNotFoundError(path)
+        raise FileNotFoundError(str(path))
 
-    with path.open("r", encoding="utf-8") as file:
-        data = yaml.safe_load(file)
+    with path.open() as handle:
+        data = yaml.safe_load(handle)
 
-    if data is None:
-        return {}
+    return data or {}
 
-    if not isinstance(data, dict):
-        raise ValueError(f"{path} must contain a YAML mapping")
 
-    return data
+def format_list(values):
+    if not values:
+        return "none"
+    return ", ".join(str(value) for value in values)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Inspect configured AI route classes without calling providers."
+        description="Inspect AI workstation routing configuration without calling any provider."
     )
-    parser.add_argument("--profile", help="Profile name to show routing policy for.")
-    parser.add_argument("--task", help="Task type to inspect. Not evaluated yet.")
-    parser.add_argument("--sensitivity", help="Sensitivity level to inspect. Not evaluated yet.")
-    parser.add_argument("--explain", action="store_true", help="Explain current stub behaviour.")
+    parser.add_argument(
+        "--profile",
+        required=True,
+        help="Profile name, for example macos-work, windows-personal, or fedora-atomic.",
+    )
+    parser.add_argument(
+        "--explain",
+        action="store_true",
+        help="Explain configured route classes and selected profile posture.",
+    )
 
     args = parser.parse_args()
 
+    if not args.explain:
+        print("FAIL ai-route is inspection-only. Use --explain.", file=sys.stderr)
+        return 2
+
+    routes_path = ROOT / "config" / "routing" / "routes.yaml"
+    profile_path = ROOT / "profiles" / args.profile / "profile.yaml"
+
     try:
-        routes = load_yaml(ROUTES_FILE)
-    except Exception as exc:
-        print("AI Route")
-        print()
-        print("Status: FAIL")
-        print()
-        print(f"Error: could not load config/routing/routes.yaml: {exc}")
-        return 8
+        routes = load_yaml(routes_path)
+        profile = load_yaml(profile_path)
+    except FileNotFoundError as exc:
+        print(f"FAIL missing file: {exc}", file=sys.stderr)
+        return 3
+    except yaml.YAMLError as exc:
+        print(f"FAIL YAML parse error: {exc}", file=sys.stderr)
+        return 4
 
-    defaults = routes.get("routing_defaults", {})
     route_classes = routes.get("route_classes", {})
-    profiles = routes.get("profiles", {})
 
-    print("AI Route")
-    print()
-    print("Status: STUB")
-    print("Provider called: no")
-    print("Gateway called: no")
+    print(f"Profile: {args.profile}")
+    print(f"Profile file: {profile_path.relative_to(ROOT)}")
+    print(f"Profile status: {profile.get('status', 'unknown')}")
+    print(f"Risk posture: {profile.get('risk_posture', 'unknown')}")
     print()
 
-    print("Routing execution:")
-    print(f"- intended gateway: {defaults.get('execution_gateway', 'not configured')}")
-    print("- execution status: not implemented")
-    print("- model/provider routing: delegated to LiteLLM or equivalent gateway")
+    print("Profile context posture")
+    print(f"- allowed contexts: {format_list(profile.get('allowed_contexts'))}")
+    print(f"- blocked contexts: {format_list(profile.get('blocked_contexts'))}")
     print()
 
-    print("Configured route classes:")
-
+    print("Configured route classes")
     if not route_classes:
         print("- none")
     else:
-        for name, route in route_classes.items():
-            route_type = route.get("type", "unknown")
-            model_group = route.get("gateway_model_group", "unknown")
-            print(f"- {name}: type={route_type}, gateway_model_group={model_group}")
-
-    if args.profile:
-        print()
-        print(f"Profile requested: {args.profile}")
-
-        if args.profile not in profiles:
-            print("Profile routing policy: not found")
-            print()
-            print("Status: FAIL")
-            return 3
-
-        profile_policy = profiles[args.profile]
-        print(f"Default route class: {profile_policy.get('default_route_class', 'not configured')}")
-
-        allowed = profile_policy.get("allowed_route_classes", [])
-        blocked = profile_policy.get("blocked_route_classes", [])
-
-        print("Allowed route classes:")
-        for item in allowed or ["none"]:
-            print(f"- {item}")
-
-        print("Blocked route classes:")
-        for item in blocked or ["none"]:
-            print(f"- {item}")
-
-    if args.task:
-        print()
-        print(f"Task requested: {args.task}")
-        print("Task evaluation: not implemented in this stub")
-
-    if args.sensitivity:
-        print()
-        print(f"Sensitivity requested: {args.sensitivity}")
-        print("Sensitivity evaluation: not implemented in this stub")
-
-    if args.explain:
-        print()
-        print("Explanation:")
-        print("- This command currently inspects routing configuration only.")
-        print("- It does not decide the final route.")
-        print("- It does not call LiteLLM.")
-        print("- It does not call local or frontier model providers.")
-        print("- Route execution will be added after the gateway approach is proven.")
+        for name, details in route_classes.items():
+            route_type = details.get("type", "unknown")
+            gateway_model_group = details.get("gateway_model_group", "unknown")
+            print(f"- {name}: type={route_type}, gateway_model_group={gateway_model_group}")
 
     print()
-    print("Next step:")
-    print("- Evaluate LiteLLM gateway/model-group configuration before adding route execution logic.")
+    print("Execution")
+    print("- provider called: no")
+    print("- model called: no")
+    print("- gateway called: no")
+    print("- execution is delegated to LiteLLM or another configured gateway")
 
     return 0
 
