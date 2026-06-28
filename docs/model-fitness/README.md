@@ -16,3 +16,5 @@ The stable project interface is the gateway model group, not the specific local 
 
 - `criteria.md` defines how local model fitness is judged.
 - `test-prompts.md` defines the lightweight prompt set used to compare local models.
+
+- `candidates.md` records candidate local model/runtime combinations before downloading and testing additional models.
