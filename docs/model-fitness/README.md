@@ -11,3 +11,8 @@ Model fitness is used to decide which local models should back gateway model gro
 - local-code
 
 The stable project interface is the gateway model group, not the specific local model behind it.
+
+## Documents
+
+- `criteria.md` defines how local model fitness is judged.
+- `test-prompts.md` defines the lightweight prompt set used to compare local models.
