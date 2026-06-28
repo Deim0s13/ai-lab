@@ -323,6 +323,109 @@ Review model fitness decisions when:
 - gateway model groups change
 - local-fast, local-capable or local-code no longer match their intended roles
 
+## Model Lifecycle and Decommissioning
+
+The model fitness loop should prevent local model sprawl.
+
+Models should not remain installed simply because they were tested once. Each model should have a lifecycle state and a reason for being kept.
+
+### Lifecycle States
+
+| State | Meaning | Keep installed? |
+|---|---|---|
+| active | Backs a stable gateway model group such as local-fast, local-capable or local-code | Yes |
+| baseline | Installed reference model used for comparison | Yes, while useful |
+| candidate | Currently being tested for a defined role | Yes, temporarily |
+| parked | Not currently used, but kept for a specific reason | Maybe |
+| rejected | Tested or reviewed and not suitable | No |
+| duplicate | Functionally overlaps another installed model without adding value | No |
+| obsolete | Replaced by a better model/runtime choice | No |
+
+### Keep Rules
+
+Keep a model installed when:
+
+- it backs an active gateway model group
+- it is being tested as a current candidate
+- it is a useful baseline for comparison
+- it is deliberately parked with a clear reason
+
+Do not keep a model installed when:
+
+- it failed model fitness testing
+- it duplicates another installed model
+- it has been replaced by a better candidate
+- it is not attached to a current or future use case
+- it was installed only for curiosity
+
+### Active Model Safety Check
+
+Before removing a model, check whether it is referenced by the local gateway config.
+
+Check the LiteLLM config:
+
+    grep -n "ollama/" config/gateway/litellm/config.local.yaml
+
+Check installed Ollama models:
+
+    ollama list
+
+Do not remove a model if it backs:
+
+- local-fast
+- local-capable
+- local-code
+- an active candidate alias still being tested
+
+### Ollama Decommissioning
+
+Remove an unused Ollama model with:
+
+    ollama rm <model-name>
+
+Example:
+
+    ollama rm mistral:latest
+
+After removing a model, confirm the remaining local models:
+
+    ollama list
+
+Then restart and check the gateway if any aliases changed:
+
+    just ai-down
+    just ai-up
+    just ai-check
+
+### MLX Decommissioning
+
+MLX decommissioning is not fully defined yet.
+
+Until the MLX runtime path is proven, MLX cleanup should be handled carefully based on the actual installation method used.
+
+Do not add broad cache deletion commands until the project has confirmed where selected MLX models are installed and how they are referenced.
+
+### Current Decommissioning Review
+
+| Model | Runtime | Current state | Action |
+|---|---|---|---|
+| llama3.2:3b | Ollama | active / baseline | Keep |
+| llama3.1:8b | Ollama | baseline / candidate | Keep for testing |
+| mistral:7b | Ollama | baseline / candidate | Keep for testing |
+| qwen3.5:latest | Ollama | baseline / candidate | Keep for testing |
+| mistral:latest | Ollama | likely duplicate / obsolete | Review for removal |
+| nomic-embed-text:latest | Ollama | parked | Keep only if embedding/RAG work is expected later |
+
+Initial likely decommissioning candidate:
+
+    mistral:latest
+
+Reason:
+
+- older than mistral:7b in the current local model list
+- likely overlaps with the installed mistral:7b baseline
+- does not currently back a gateway model group
+
 ## Out of Scope
 
 This model fitness loop does not currently include:

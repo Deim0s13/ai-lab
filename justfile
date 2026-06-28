@@ -87,3 +87,9 @@ ai-down: gateway-stop
 
 bootstrap-check: check-yaml gateway-models gateway-health
     echo "OK bootstrap check passed"
+
+models:
+    @ollama list
+
+model-aliases:
+    @grep -n "ollama/" config/gateway/litellm/config.local.yaml

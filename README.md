@@ -359,10 +359,6 @@ Start here:
 | `docs/09-tool-selection.md` | How tools are selected |
 | `docs/10-milestones.md` | Delivery roadmap |
 | `docs/11-cli-interface-contracts.md` | Initial CLI command contracts, flags, output and exit codes |
-| `docs/model-fitness/criteria.md` | Defines lightweight criteria for assessing whether local models are suitable for local-fast, local-capable and local-code roles. |
-| `docs/model-fitness/test-prompts.md` | Provides a small repeatable prompt set for manually testing local model suitability. |
-| `docs/model-fitness/candidates.md` | Records candidate local model/runtime combinations before downloading and testing additional models. |
-
 
 Architecture decisions are recorded in:
 
