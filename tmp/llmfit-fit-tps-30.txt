@@ -1,0 +1,47 @@
+
+=== System Specifications ===
+CPU: Apple M4 Pro (14 cores)
+Total RAM: 48.00 GB
+Available RAM: 38.09 GB
+Backend: Metal
+GPU: Apple M4 Pro (unified memory, 48.00 GB shared, Metal)
+
+
+=== Model Compatibility Analysis ===
+Found 30 compatible model(s)
+
+╭────────────┬──────────────────────────────────────────────────────────┬────────────────────────────────┬──────┬───────┬────────────┬──────────┬─────────┬──────┬───────┬─────────┬─────────────╮
+│ Status     │ Model                                                    │ Provider                       │ Size │ Score │ tok/s est. │ Quant    │ Runtime │ Mode │ Mem % │ Context │ Added to HF │
+├────────────┼──────────────────────────────────────────────────────────┼────────────────────────────────┼──────┼───────┼────────────┼──────────┼─────────┼──────┼───────┼─────────┼─────────────┤
+│ 🟢 Perfect │ optimum-intel-internal-testing/phi-3.5-moe-tiny-random   │ optimum-intel-internal-testing │ 1M   │ 71    │ 82785.2    │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 131k    │ —           │
+│ 🟢 Perfect │ katuni4ka/tiny-random-deepseek-v3                        │ katuni4ka                      │ 2M   │ 73    │ 51961.8    │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 6553k   │ —           │
+│ 🟢 Perfect │ tiny-random/qwen3-next-moe                               │ tiny-random                    │ 3M   │ 73    │ 34209.5    │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 262k    │ —           │
+│ 🟢 Perfect │ optimum-intel-internal-testing/tiny-GptOssForCausalLM    │ optimum-intel-internal-testing │ 3M   │ 68    │ 26530.8    │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 131k    │ —           │
+│ 🟢 Perfect │ yujiepan/deepseek-v3-tiny-random                         │ yujiepan                       │ 4M   │ 73    │ 20552.1    │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 6553k   │ —           │
+│ 🟢 Perfect │ np-cr/testing-qwen3-moe                                  │ np-cr                          │ 5M   │ 72    │ 17376.3    │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 262k    │ —           │
+│ 🟢 Perfect │ np-cr/testing-glm4-moe                                   │ np-cr                          │ 14M  │ 68    │ 16427.7    │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 131k    │ —           │
+│ 🟢 Perfect │ np-cr/testing-gpt-oss                                    │ np-cr                          │ 6M   │ 68    │ 13250.6    │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 4194k   │ —           │
+│ 🟢 Perfect │ optimum-intel-internal-testing/tiny-random-llama4        │ optimum-intel-internal-testing │ 367M │ 74    │ 13158.2    │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 83886k  │ —           │
+│ 🟢 Perfect │ pruna-test/test-save-tiny-random-llama4-smashed          │ pruna-test                     │ 7M   │ 74    │ 13158.2    │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 83886k  │ —           │
+│ 🟢 Perfect │ optimum-intel-internal-testing/tiny-random-gpt-oss-mxfp4 │ optimum-intel-internal-testing │ 7M   │ 68    │ 6613.7     │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 4194k   │ —           │
+│ 🟢 Perfect │ optimum-internal-testing/tiny-random-gpt-oss             │ optimum-internal-testing       │ 7M   │ 68    │ 6613.7     │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 4194k   │ —           │
+│ 🟢 Perfect │ yujiepan/llama-4-tiny-random                             │ yujiepan                       │ 7M   │ 74    │ 6584.7     │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 1048k   │ —           │
+│ 🟢 Perfect │ microsoft/Dayhoff-170m-UR90                              │ Microsoft                      │ 170M │ 68    │ 5128.8     │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 262k    │ —           │
+│ 🟢 Perfect │ microsoft/Dayhoff-170m-GR                                │ Microsoft                      │ 170M │ 68    │ 5128.8     │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 262k    │ —           │
+│ 🟢 Perfect │ yujiepan/qwen3-moe-tiny-random                           │ yujiepan                       │ 10M  │ 72    │ 4374.1     │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 40k     │ —           │
+│ 🟢 Perfect │ optimum-internal-testing/tiny-random-qwen3_moe           │ optimum-internal-testing       │ 10M  │ 72    │ 4374.1     │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 40k     │ —           │
+│ 🟢 Perfect │ ggml-org/stories15M_MOE                                  │ ggml-org                       │ 36M  │ 62    │ 3722.5     │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 0k      │ —           │
+│ 🟢 Perfect │ ai21labs/Jamba-tiny-random                               │ ai21labs                       │ 128M │ 68    │ 1908.6     │ mlx-8bit │ MLX     │ GPU  │ 1.0%  │ 262k    │ —           │
+│ 🟢 Perfect │ ibm-granite/granite-embedding-30m-sparse                 │ ibm-granite                    │ 30M  │ 79    │ 1501.5     │ mlx-8bit │ MLX     │ GPU  │ 1.1%  │ 0k      │ —           │
+│ 🟢 Perfect │ farbodtavakkoli/OTel-Embedding-22M                       │ farbodtavakkoli                │ 23M  │ 79    │ 1501.5     │ mlx-8bit │ MLX     │ GPU  │ 1.1%  │ 0k      │ —           │
+│ 🟢 Perfect │ BAAI/bge-small-en                                        │ BAAI                           │ 33M  │ 79    │ 1501.5     │ mlx-8bit │ MLX     │ GPU  │ 1.1%  │ 0k      │ —           │
+│ 🟢 Perfect │ mixedbread-ai/mxbai-embed-xsmall-v1                      │ mixedbread-ai                  │ 24M  │ 79    │ 1501.5     │ mlx-8bit │ MLX     │ GPU  │ 1.2%  │ 4k      │ —           │
+│ 🟢 Perfect │ farbodtavakkoli/OTel-Embedding-33M                       │ farbodtavakkoli                │ 33M  │ 79    │ 1501.5     │ mlx-8bit │ MLX     │ GPU  │ 1.1%  │ 0k      │ —           │
+│ 🟢 Perfect │ farbodtavakkoli/OTel-Embedding-34M                       │ farbodtavakkoli                │ 33M  │ 79    │ 1501.5     │ mlx-8bit │ MLX     │ GPU  │ 1.1%  │ 0k      │ —           │
+│ 🟢 Perfect │ BAAI/bge-small-en-v1.5                                   │ BAAI                           │ 33M  │ 79    │ 1501.5     │ mlx-8bit │ MLX     │ GPU  │ 1.1%  │ 0k      │ —           │
+│ 🟢 Perfect │ AlignmentResearch/Llama-3.3-Tiny-Instruct-boolq          │ alignmentresearch              │ 75M  │ 76    │ 1501.5     │ mlx-8bit │ MLX     │ GPU  │ 1.3%  │ 1048k   │ —           │
+│ 🟢 Perfect │ mlx-community/gemma-4-E2B-it-assistant-bf16              │ mlx-community                  │ 78M  │ 73    │ 1501.5     │ mlx-8bit │ MLX     │ GPU  │ 1.3%  │ 131k    │ —           │
+│ 🟢 Perfect │ guardiangate1775/gemma-4-26B-A4B-it-assistant-4bit       │ guardiangate1775               │ 79M  │ 73    │ 1501.5     │ mlx-8bit │ MLX     │ GPU  │ 1.2%  │ 4k      │ —           │
+│ 🟢 Perfect │ guardiangate1775/gemma-4-31B-it-assistant-4bit           │ guardiangate1775               │ 73M  │ 73    │ 1501.5     │ mlx-8bit │ MLX     │ GPU  │ 1.2%  │ 4k      │ —           │
+╰────────────┴──────────────────────────────────────────────────────────┴────────────────────────────────┴──────┴───────┴────────────┴──────────┴─────────┴──────┴───────┴─────────┴─────────────╯
+  Note: tok/s values are baseline estimates; real runtime depends on engine/runtime.

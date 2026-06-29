@@ -1,0 +1,2357 @@
+{
+  "models": [
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 22.15,
+      "effective_context_length": 8192,
+      "estimated_tps": 6.8,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": true,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 24.65,
+      "moe_offloaded_gb": null,
+      "name": "mconcat/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-NVFP4",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 6.8 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "22.1B",
+      "params_b": 22.15,
+      "provider": "mconcat",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 89.1,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 100.0,
+        "speed": 27.1
+      },
+      "total_memory_gb": 24.65,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 51.3
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 22.15,
+      "effective_context_length": 8192,
+      "estimated_tps": 6.8,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": true,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 24.65,
+      "moe_offloaded_gb": null,
+      "name": "mconcat/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-NVFP4",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 6.8 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "22.1B",
+      "params_b": 22.15,
+      "provider": "mconcat",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 89.1,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 100.0,
+        "speed": 27.1
+      },
+      "total_memory_gb": 24.65,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 51.3
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Vision"
+      ],
+      "capability_ids": [
+        "vision"
+      ],
+      "category": "Reasoning",
+      "context_length": 32768,
+      "disk_size_gb": 15.12,
+      "effective_context_length": 8192,
+      "estimated_tps": 9.9,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 17.18,
+      "moe_offloaded_gb": null,
+      "name": "microsoft/Phi-4-reasoning-vision-15B",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 32768; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 9.9 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "15.1B",
+      "params_b": 15.12,
+      "provider": "Microsoft",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 88.8,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 96.0,
+        "speed": 39.7
+      },
+      "total_memory_gb": 17.18,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 35.8
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 24.35,
+      "effective_context_length": 8192,
+      "estimated_tps": 6.2,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 26.85,
+      "moe_offloaded_gb": null,
+      "name": "nightmedia/Qwen3.6-27B-Claude-Opus-Reasoning-Distill-v2-mxfp4-mlx",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 6.2 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "24.4B",
+      "params_b": 24.35,
+      "provider": "nightmedia",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 88.7,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 100.0,
+        "speed": 24.7
+      },
+      "total_memory_gb": 26.85,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 55.9
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 40960,
+      "disk_size_gb": 14.77,
+      "effective_context_length": 8192,
+      "estimated_tps": 10.2,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 16.52,
+      "moe_offloaded_gb": null,
+      "name": "TeichAI/Qwen3-14B-Claude-4.5-Opus-High-Reasoning-Distill",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 40960; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 10.2 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "14.8B",
+      "params_b": 14.77,
+      "provider": "teichai",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 88.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 95.0,
+        "speed": 40.7
+      },
+      "total_memory_gb": 16.52,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 34.4
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 26.9,
+      "effective_context_length": 8192,
+      "estimated_tps": 5.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 29.4,
+      "moe_offloaded_gb": null,
+      "name": "Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-8bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 5.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "26.9B",
+      "params_b": 26.9,
+      "provider": "jackrong",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 88.3,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 100.0,
+        "speed": 22.3
+      },
+      "total_memory_gb": 29.4,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 61.2
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 26.9,
+      "effective_context_length": 8192,
+      "estimated_tps": 5.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 29.4,
+      "moe_offloaded_gb": null,
+      "name": "DarthGrampus/Qwen3.6-27B-Claude-Opus-Reasoning-Distilled-mlx-8Bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 5.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "26.9B",
+      "params_b": 26.9,
+      "provider": "darthgrampus",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 88.3,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 100.0,
+        "speed": 22.3
+      },
+      "total_memory_gb": 29.4,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 61.2
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 27.36,
+      "effective_context_length": 8192,
+      "estimated_tps": 5.5,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": true,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 29.86,
+      "moe_offloaded_gb": null,
+      "name": "mconcat/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-FP8-Dynamic",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 5.5 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "27.4B",
+      "params_b": 27.36,
+      "provider": "mconcat",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 88.3,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 100.0,
+        "speed": 22.0
+      },
+      "total_memory_gb": 29.86,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 62.2
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 26.9,
+      "effective_context_length": 8192,
+      "estimated_tps": 5.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 29.4,
+      "moe_offloaded_gb": null,
+      "name": "Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 5.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "26.9B",
+      "params_b": 26.9,
+      "provider": "jackrong",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 88.3,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 100.0,
+        "speed": 22.3
+      },
+      "total_memory_gb": 29.4,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 61.2
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 27.78,
+      "effective_context_length": 8192,
+      "estimated_tps": 5.4,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 30.28,
+      "moe_offloaded_gb": null,
+      "name": "rico03/Qwen3.6-27B-Claude-Opus-Reasoning-Distilled",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 5.4 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "27.8B",
+      "params_b": 27.78,
+      "provider": "rico03",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 88.2,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 100.0,
+        "speed": 21.6
+      },
+      "total_memory_gb": 30.28,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 63.1
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Vision",
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "vision",
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 27.78,
+      "effective_context_length": 8192,
+      "estimated_tps": 5.4,
+      "fit_level": "Perfect",
+      "gguf_sources": [
+        {
+          "provider": "mradermacher",
+          "repo": "mradermacher/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-GGUF"
+        }
+      ],
+      "installed": true,
+      "is_moe": false,
+      "license": "apache-2.0",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 30.28,
+      "moe_offloaded_gb": null,
+      "name": "Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 5.4 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "27.8B",
+      "params_b": 27.78,
+      "provider": "jackrong",
+      "release_date": "2026-02-27",
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 88.2,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 100.0,
+        "speed": 21.6
+      },
+      "total_memory_gb": 30.28,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 63.1
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 27.78,
+      "effective_context_length": 8192,
+      "estimated_tps": 5.4,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": true,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 30.28,
+      "moe_offloaded_gb": null,
+      "name": "Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 5.4 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "27.8B",
+      "params_b": 27.78,
+      "provider": "jackrong",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 88.2,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 100.0,
+        "speed": 21.6
+      },
+      "total_memory_gb": 30.28,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 63.1
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 8.21,
+      "effective_context_length": 8192,
+      "estimated_tps": 18.3,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 9.71,
+      "moe_offloaded_gb": null,
+      "name": "Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 18.3 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "8.2B",
+      "params_b": 8.21,
+      "provider": "jackrong",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.5,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 84.5,
+        "speed": 73.2
+      },
+      "total_memory_gb": 9.71,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 20.2
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 8.21,
+      "effective_context_length": 8192,
+      "estimated_tps": 18.3,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 9.71,
+      "moe_offloaded_gb": null,
+      "name": "Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 18.3 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "8.2B",
+      "params_b": 8.21,
+      "provider": "jackrong",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.5,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 84.5,
+        "speed": 73.2
+      },
+      "total_memory_gb": 9.71,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 20.2
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4194304,
+      "disk_size_gb": 3.61,
+      "effective_context_length": 8192,
+      "estimated_tps": 41.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [
+        {
+          "provider": "mradermacher",
+          "repo": "mradermacher/Llama-3.2-3B-Instruct-abliterated-GGUF"
+        }
+      ],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.98,
+      "moe_offloaded_gb": null,
+      "name": "huihui-ai/Llama-3.2-3B-Instruct-abliterated",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 4194304; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 41.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.6B",
+      "params_b": 3.61,
+      "provider": "huihui-ai",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.98,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 10.4
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Chat",
+      "context_length": 4096,
+      "disk_size_gb": 3.21,
+      "effective_context_length": 4096,
+      "estimated_tps": 46.7,
+      "fit_level": "Perfect",
+      "gguf_sources": [
+        {
+          "provider": "mradermacher",
+          "repo": "mradermacher/llama3.2-typhoon2-3b-instruct-GGUF"
+        }
+      ],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 3.82,
+      "moe_offloaded_gb": null,
+      "name": "typhoon-ai/llama3.2-typhoon2-3b-instruct",
+      "notes": [
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 46.7 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.2B",
+      "params_b": 3.21,
+      "provider": "typhoon-ai",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 3.82,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 8.0
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4096,
+      "disk_size_gb": 3.61,
+      "effective_context_length": 4096,
+      "estimated_tps": 41.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.23,
+      "moe_offloaded_gb": null,
+      "name": "RedHatAI/Llama-3.2-3B-Instruct-FP8-dynamic",
+      "notes": [
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 41.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.6B",
+      "params_b": 3.61,
+      "provider": "redhatai",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.23,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 8.8
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4194304,
+      "disk_size_gb": 3.61,
+      "effective_context_length": 8192,
+      "estimated_tps": 41.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.98,
+      "moe_offloaded_gb": null,
+      "name": "RedHatAI/Llama-3.2-3B-Instruct-FP8",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 4194304; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 41.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.6B",
+      "params_b": 3.61,
+      "provider": "redhatai",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.98,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 10.4
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4194304,
+      "disk_size_gb": 3.61,
+      "effective_context_length": 8192,
+      "estimated_tps": 41.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.98,
+      "moe_offloaded_gb": null,
+      "name": "espressor/meta-llama.Llama-3.2-3B-Instruct_W4A16",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 4194304; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 41.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.6B",
+      "params_b": 3.61,
+      "provider": "espressor",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.98,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 10.4
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4096,
+      "disk_size_gb": 3.21,
+      "effective_context_length": 4096,
+      "estimated_tps": 46.7,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 3.82,
+      "moe_offloaded_gb": null,
+      "name": "MergeBench/Llama-3.2-3B_instruction",
+      "notes": [
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 46.7 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.2B",
+      "params_b": 3.21,
+      "provider": "mergebench",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 3.82,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 8.0
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4194304,
+      "disk_size_gb": 3.61,
+      "effective_context_length": 8192,
+      "estimated_tps": 41.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": "llama3.2",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.98,
+      "moe_offloaded_gb": null,
+      "name": "mlx-community/Llama-3.2-3B-Instruct-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 4194304; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 41.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.6B",
+      "params_b": 3.61,
+      "provider": "mlx-community",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.98,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 10.4
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4194304,
+      "disk_size_gb": 3.3,
+      "effective_context_length": 8192,
+      "estimated_tps": 45.5,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": "llama3.2",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.67,
+      "moe_offloaded_gb": null,
+      "name": "unsloth/Llama-3.2-3B-Instruct-unsloth-bnb-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 4194304; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 45.5 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.3B",
+      "params_b": 3.3,
+      "provider": "unsloth",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.67,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 9.7
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4096,
+      "disk_size_gb": 3.61,
+      "effective_context_length": 4096,
+      "estimated_tps": 41.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.23,
+      "moe_offloaded_gb": null,
+      "name": "neuralmagic/Llama-3.2-3B-Instruct-quantized.w8a8",
+      "notes": [
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 41.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.6B",
+      "params_b": 3.61,
+      "provider": "neuralmagic",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.23,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 8.8
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Chat",
+      "context_length": 4096,
+      "disk_size_gb": 3.21,
+      "effective_context_length": 4096,
+      "estimated_tps": 46.7,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 3.82,
+      "moe_offloaded_gb": null,
+      "name": "psychopenguin/indian_legal_llama3.2-3b-instruct",
+      "notes": [
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 46.7 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.2B",
+      "params_b": 3.21,
+      "provider": "psychopenguin",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 3.82,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 8.0
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4194304,
+      "disk_size_gb": 3.21,
+      "effective_context_length": 8192,
+      "estimated_tps": 46.7,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": "llama3.2",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.59,
+      "moe_offloaded_gb": null,
+      "name": "baseten/Llama-3.2-3B-Instruct-pythonic",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 4194304; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 46.7 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.2B",
+      "params_b": 3.21,
+      "provider": "baseten",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.59,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 9.6
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4194304,
+      "disk_size_gb": 3.61,
+      "effective_context_length": 8192,
+      "estimated_tps": 41.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.98,
+      "moe_offloaded_gb": null,
+      "name": "mlx-community/Llama-3.2-3B-Instruct-8bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 4194304; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 41.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.6B",
+      "params_b": 3.61,
+      "provider": "mlx-community",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.98,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 10.4
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4194304,
+      "disk_size_gb": 3.21,
+      "effective_context_length": 8192,
+      "estimated_tps": 46.7,
+      "fit_level": "Perfect",
+      "gguf_sources": [
+        {
+          "provider": "unsloth",
+          "repo": "unsloth/Llama-3.2-3B-Instruct-GGUF"
+        },
+        {
+          "provider": "bartowski",
+          "repo": "bartowski/Llama-3.2-3B-Instruct-GGUF"
+        },
+        {
+          "provider": "mradermacher",
+          "repo": "mradermacher/Llama-3.2-3B-Instruct-GGUF"
+        }
+      ],
+      "installed": true,
+      "is_moe": false,
+      "license": "llama3.2",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.59,
+      "moe_offloaded_gb": null,
+      "name": "meta-llama/Llama-3.2-3B-Instruct",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 4194304; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 46.7 tok/s"
+      ],
+      "ollama_name": "llama3.2:3b",
+      "parameter_count": "3.2B",
+      "params_b": 3.21,
+      "provider": "Meta",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.59,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 9.6
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 4194304,
+      "disk_size_gb": 3.3,
+      "effective_context_length": 8192,
+      "estimated_tps": 45.5,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": "llama3.2",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.68,
+      "moe_offloaded_gb": null,
+      "name": "unsloth/Llama-3.2-3B-Instruct-bnb-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 4194304; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 45.5 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.3B",
+      "params_b": 3.3,
+      "provider": "unsloth",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.4,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.6,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.68,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 9.7
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 262144,
+      "disk_size_gb": 33.36,
+      "effective_context_length": 8192,
+      "estimated_tps": 4.5,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 35.86,
+      "moe_offloaded_gb": null,
+      "name": "nvidia/Cosmos-Reason2-32B",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 4.5 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "33.4B",
+      "params_b": 33.36,
+      "provider": "nvidia",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.3,
+      "score_components": {
+        "context": 100.0,
+        "fit": 97.3,
+        "quality": 100.0,
+        "speed": 18.0
+      },
+      "total_memory_gb": 35.86,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 74.7
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 32768,
+      "disk_size_gb": 14.66,
+      "effective_context_length": 8192,
+      "estimated_tps": 10.2,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": "mit",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 16.72,
+      "moe_offloaded_gb": null,
+      "name": "microsoft/Phi-4-reasoning-plus",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 32768; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 10.2 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "14.7B",
+      "params_b": 14.66,
+      "provider": "Microsoft",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.3,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 93.0,
+        "speed": 41.0
+      },
+      "total_memory_gb": 16.72,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 34.8
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 32768,
+      "disk_size_gb": 14.66,
+      "effective_context_length": 8192,
+      "estimated_tps": 10.2,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": "mit",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 16.72,
+      "moe_offloaded_gb": null,
+      "name": "lmstudio-community/Phi-4-reasoning-plus-MLX-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 32768; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 10.2 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "14.7B",
+      "params_b": 14.66,
+      "provider": "lmstudio-community",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.3,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 93.0,
+        "speed": 41.0
+      },
+      "total_memory_gb": 16.72,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 34.8
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 32768,
+      "disk_size_gb": 14.66,
+      "effective_context_length": 8192,
+      "estimated_tps": 10.2,
+      "fit_level": "Perfect",
+      "gguf_sources": [
+        {
+          "provider": "unsloth",
+          "repo": "unsloth/Phi-4-reasoning-GGUF"
+        },
+        {
+          "provider": "mradermacher",
+          "repo": "mradermacher/Phi-4-reasoning-GGUF"
+        }
+      ],
+      "installed": false,
+      "is_moe": false,
+      "license": "mit",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 16.72,
+      "moe_offloaded_gb": null,
+      "name": "microsoft/Phi-4-reasoning",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 32768; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 10.2 tok/s"
+      ],
+      "ollama_name": "phi4-reasoning",
+      "parameter_count": "14.7B",
+      "params_b": 14.66,
+      "provider": "Microsoft",
+      "release_date": "2025-04-09",
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.3,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 93.0,
+        "speed": 41.0
+      },
+      "total_memory_gb": 16.72,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 34.8
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Chat",
+      "context_length": 262144,
+      "disk_size_gb": 3.13,
+      "effective_context_length": 8192,
+      "estimated_tps": 48.0,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": "apache-2.0",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.75,
+      "moe_offloaded_gb": null,
+      "name": "unsloth/Qwen3-4B-Instruct-2507-unsloth-bnb-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 48.0 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.1B",
+      "params_b": 3.13,
+      "provider": "unsloth",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.2,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.0,
+        "speed": 100.0
+      },
+      "total_memory_gb": 4.75,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 9.9
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Chat",
+      "context_length": 4096,
+      "disk_size_gb": 3.76,
+      "effective_context_length": 4096,
+      "estimated_tps": 39.9,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 4.38,
+      "moe_offloaded_gb": null,
+      "name": "Polygl0t/Tucano2-qwen-3.7B-Instruct",
+      "notes": [
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 39.9 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "3.8B",
+      "params_b": 3.76,
+      "provider": "polygl0t",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.1,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 68.0,
+        "speed": 99.9
+      },
+      "total_memory_gb": 4.38,
+      "use_case": "Instruction following, chat",
+      "utilization_pct": 9.1
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 131072,
+      "disk_size_gb": 32.76,
+      "effective_context_length": 8192,
+      "estimated_tps": 4.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 35.26,
+      "moe_offloaded_gb": null,
+      "name": "huihui-ai/DeepSeek-R1-Distill-Qwen-32B-abliterated",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 131072; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 4.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "32.8B",
+      "params_b": 32.76,
+      "provider": "huihui-ai",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.0,
+      "score_components": {
+        "context": 100.0,
+        "fit": 98.5,
+        "quality": 99.0,
+        "speed": 18.3
+      },
+      "total_memory_gb": 35.26,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 73.5
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 131072,
+      "disk_size_gb": 32.76,
+      "effective_context_length": 8192,
+      "estimated_tps": 4.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [
+        {
+          "provider": "unsloth",
+          "repo": "unsloth/DeepSeek-R1-Distill-Qwen-32B-GGUF"
+        },
+        {
+          "provider": "bartowski",
+          "repo": "bartowski/DeepSeek-R1-Distill-Qwen-32B-GGUF"
+        },
+        {
+          "provider": "mradermacher",
+          "repo": "mradermacher/DeepSeek-R1-Distill-Qwen-32B-GGUF"
+        }
+      ],
+      "installed": false,
+      "is_moe": false,
+      "license": "mit",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 35.26,
+      "moe_offloaded_gb": null,
+      "name": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 131072; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 4.6 tok/s"
+      ],
+      "ollama_name": "deepseek-r1:32b",
+      "parameter_count": "32.8B",
+      "params_b": 32.76,
+      "provider": "DeepSeek",
+      "release_date": "2025-01-20",
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.0,
+      "score_components": {
+        "context": 100.0,
+        "fit": 98.5,
+        "quality": 99.0,
+        "speed": 18.3
+      },
+      "total_memory_gb": 35.26,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 73.5
+    },
+    {
+      "best_quant": "mlx-4bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 1048576,
+      "disk_size_gb": 33.06,
+      "effective_context_length": 8192,
+      "estimated_tps": 5.0,
+      "fit_level": "Good",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": "llama3.3",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 36.06,
+      "moe_offloaded_gb": null,
+      "name": "unsloth/DeepSeek-R1-Distill-Llama-70B-GGUF",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 1048576; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-4bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 5.0 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "60.1B",
+      "params_b": 60.11,
+      "provider": "unsloth",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.0,
+      "score_components": {
+        "context": 100.0,
+        "fit": 96.8,
+        "quality": 99.0,
+        "speed": 20.0
+      },
+      "total_memory_gb": 36.06,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 75.1
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 131072,
+      "disk_size_gb": 32.77,
+      "effective_context_length": 8192,
+      "estimated_tps": 4.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 35.27,
+      "moe_offloaded_gb": null,
+      "name": "RedHatAI/DeepSeek-R1-Distill-Qwen-32B-FP8-dynamic",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 131072; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 4.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "32.8B",
+      "params_b": 32.77,
+      "provider": "redhatai",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.0,
+      "score_components": {
+        "context": 100.0,
+        "fit": 98.5,
+        "quality": 99.0,
+        "speed": 18.3
+      },
+      "total_memory_gb": 35.27,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 73.5
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 131072,
+      "disk_size_gb": 32.76,
+      "effective_context_length": 8192,
+      "estimated_tps": 4.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 35.26,
+      "moe_offloaded_gb": null,
+      "name": "Outlier-Ai/DeepSeek-R1-Distill-Qwen-32B-MLX-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 131072; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 4.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "32.8B",
+      "params_b": 32.76,
+      "provider": "outlier-ai",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.0,
+      "score_components": {
+        "context": 100.0,
+        "fit": 98.5,
+        "quality": 99.0,
+        "speed": 18.3
+      },
+      "total_memory_gb": 35.26,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 73.5
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 131072,
+      "disk_size_gb": 32.76,
+      "effective_context_length": 8192,
+      "estimated_tps": 4.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 35.26,
+      "moe_offloaded_gb": null,
+      "name": "mlx-community/DeepSeek-R1-Distill-Qwen-32B-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 131072; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 4.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "32.8B",
+      "params_b": 32.76,
+      "provider": "mlx-community",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.0,
+      "score_components": {
+        "context": 100.0,
+        "fit": 98.5,
+        "quality": 99.0,
+        "speed": 18.3
+      },
+      "total_memory_gb": 35.26,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 73.5
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 131072,
+      "disk_size_gb": 32.77,
+      "effective_context_length": 8192,
+      "estimated_tps": 4.6,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 35.27,
+      "moe_offloaded_gb": null,
+      "name": "RedHatAI/DeepSeek-R1-Distill-Qwen-32B-quantized.w8a8",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 131072; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 4.6 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "32.8B",
+      "params_b": 32.77,
+      "provider": "redhatai",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 87.0,
+      "score_components": {
+        "context": 100.0,
+        "fit": 98.5,
+        "quality": 99.0,
+        "speed": 18.3
+      },
+      "total_memory_gb": 35.27,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 73.5
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 40960,
+      "disk_size_gb": 12.1,
+      "effective_context_length": 8192,
+      "estimated_tps": 12.4,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": "apache-2.0",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 13.85,
+      "moe_offloaded_gb": null,
+      "name": "TeichAI/Qwen3-14B-Claude-4.5-Opus-High-Reasoning-Distill-GGUF",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 40960; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 12.4 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "12.1B",
+      "params_b": 12.1,
+      "provider": "teichai",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 86.9,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 90.0,
+        "speed": 49.6
+      },
+      "total_memory_gb": 13.85,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 28.9
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 131072,
+      "disk_size_gb": 14.77,
+      "effective_context_length": 8192,
+      "estimated_tps": 10.2,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 16.77,
+      "moe_offloaded_gb": null,
+      "name": "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 131072; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 10.2 tok/s"
+      ],
+      "ollama_name": "deepseek-r1:14b",
+      "parameter_count": "14.8B",
+      "params_b": 14.77,
+      "provider": "DeepSeek",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 86.7,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 92.0,
+        "speed": 40.7
+      },
+      "total_memory_gb": 16.77,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 34.9
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 131072,
+      "disk_size_gb": 14.77,
+      "effective_context_length": 8192,
+      "estimated_tps": 10.2,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 16.77,
+      "moe_offloaded_gb": null,
+      "name": "Outlier-Ai/DeepSeek-R1-Distill-Qwen-14B-MLX-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 131072; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 10.2 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "14.8B",
+      "params_b": 14.77,
+      "provider": "outlier-ai",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 86.7,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 92.0,
+        "speed": 40.7
+      },
+      "total_memory_gb": 16.77,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 34.9
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Coding",
+      "context_length": 262144,
+      "disk_size_gb": 30.53,
+      "effective_context_length": 8192,
+      "estimated_tps": 39.1,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": true,
+      "license": "apache-2.0",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 15.6,
+      "moe_offloaded_gb": null,
+      "name": "Qwen/Qwen3-Coder-30B-A3B-Instruct-FP8",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "MoE: 8/128 experts active (all share unified memory pool)",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 39.1 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "30.5B",
+      "params_b": 30.53,
+      "provider": "Alibaba",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 86.6,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 74.0,
+        "speed": 97.8
+      },
+      "total_memory_gb": 15.6,
+      "use_case": "Code generation and completion",
+      "utilization_pct": 32.5
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [],
+      "capability_ids": [],
+      "category": "Reasoning",
+      "context_length": 131072,
+      "disk_size_gb": 15.09,
+      "effective_context_length": 8192,
+      "estimated_tps": 9.9,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": null,
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 17.09,
+      "moe_offloaded_gb": null,
+      "name": "unsloth/DeepSeek-R1-Distill-Qwen-14B-unsloth-bnb-4bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 131072; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 9.9 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "15.1B",
+      "params_b": 15.09,
+      "provider": "unsloth",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 86.6,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 92.0,
+        "speed": 39.8
+      },
+      "total_memory_gb": 17.09,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 35.6
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Coding",
+      "context_length": 262144,
+      "disk_size_gb": 30.53,
+      "effective_context_length": 8192,
+      "estimated_tps": 39.1,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": true,
+      "license": "apache-2.0",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 15.6,
+      "moe_offloaded_gb": null,
+      "name": "lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-8bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "MoE: 8/128 experts active (all share unified memory pool)",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 39.1 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "30.5B",
+      "params_b": 30.53,
+      "provider": "lmstudio-community",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 86.6,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 74.0,
+        "speed": 97.8
+      },
+      "total_memory_gb": 15.6,
+      "use_case": "Code generation and completion",
+      "utilization_pct": 32.5
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Coding",
+      "context_length": 262144,
+      "disk_size_gb": 30.53,
+      "effective_context_length": 8192,
+      "estimated_tps": 39.1,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": true,
+      "license": "apache-2.0",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 15.6,
+      "moe_offloaded_gb": null,
+      "name": "lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "MoE: 8/128 experts active (all share unified memory pool)",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 39.1 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "30.5B",
+      "params_b": 30.53,
+      "provider": "lmstudio-community",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 86.6,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 74.0,
+        "speed": 97.8
+      },
+      "total_memory_gb": 15.6,
+      "use_case": "Code generation and completion",
+      "utilization_pct": 32.5
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Reasoning",
+      "context_length": 524288,
+      "disk_size_gb": 8.19,
+      "effective_context_length": 8192,
+      "estimated_tps": 18.3,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": false,
+      "license": "mit",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 9.82,
+      "moe_offloaded_gb": null,
+      "name": "deepseek-ai/DeepSeek-R1-0528-Qwen3-8B",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 524288; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 18.3 tok/s"
+      ],
+      "ollama_name": null,
+      "parameter_count": "8.2B",
+      "params_b": 8.19,
+      "provider": "DeepSeek",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 86.6,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 83.0,
+        "speed": 73.3
+      },
+      "total_memory_gb": 9.82,
+      "use_case": "Advanced reasoning, chain-of-thought",
+      "utilization_pct": 20.4
+    },
+    {
+      "best_quant": "mlx-8bit",
+      "capabilities": [
+        "Tool Use"
+      ],
+      "capability_ids": [
+        "tool_use"
+      ],
+      "category": "Coding",
+      "context_length": 262144,
+      "disk_size_gb": 30.53,
+      "effective_context_length": 8192,
+      "estimated_tps": 39.1,
+      "fit_level": "Perfect",
+      "gguf_sources": [],
+      "installed": false,
+      "is_moe": true,
+      "license": "apache-2.0",
+      "memory_available_gb": 48.0,
+      "memory_required_gb": 15.6,
+      "moe_offloaded_gb": null,
+      "name": "unsloth/Qwen3-Coder-30B-A3B-Instruct",
+      "notes": [
+        "Context capped at 8192 tokens for estimation (model supports up to 262144; use --max-context to override)",
+        "Unified memory: GPU and CPU share the same pool",
+        "MoE: 8/128 experts active (all share unified memory pool)",
+        "Best quantization for hardware: mlx-8bit (model default: Q4_K_M)",
+        "Baseline estimated speed: 39.1 tok/s"
+      ],
+      "ollama_name": "qwen3-coder",
+      "parameter_count": "30.5B",
+      "params_b": 30.53,
+      "provider": "unsloth",
+      "release_date": null,
+      "run_mode": "GPU",
+      "runtime": "MLX",
+      "runtime_label": "MLX",
+      "score": 86.6,
+      "score_components": {
+        "context": 100.0,
+        "fit": 100.0,
+        "quality": 74.0,
+        "speed": 97.8
+      },
+      "total_memory_gb": 15.6,
+      "use_case": "Code generation and completion",
+      "utilization_pct": 32.5
+    }
+  ],
+  "system": {
+    "available_ram_gb": 38.33,
+    "backend": "Metal",
+    "cpu_cores": 14,
+    "cpu_name": "Apple M4 Pro",
+    "gpu_count": 1,
+    "gpu_name": "Apple M4 Pro",
+    "gpu_vram_gb": 48.0,
+    "gpus": [
+      {
+        "backend": "Metal",
+        "count": 1,
+        "name": "Apple M4 Pro",
+        "unified_memory": true,
+        "vram_gb": 48.0
+      }
+    ],
+    "has_gpu": true,
+    "total_ram_gb": 48.0,
+    "unified_memory": true
+  }
+}

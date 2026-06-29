@@ -1,0 +1,23 @@
+{
+  "system": {
+    "available_ram_gb": 37.92,
+    "backend": "Metal",
+    "cpu_cores": 14,
+    "cpu_name": "Apple M4 Pro",
+    "gpu_count": 1,
+    "gpu_name": "Apple M4 Pro",
+    "gpu_vram_gb": 48.0,
+    "gpus": [
+      {
+        "backend": "Metal",
+        "count": 1,
+        "name": "Apple M4 Pro",
+        "unified_memory": true,
+        "vram_gb": 48.0
+      }
+    ],
+    "has_gpu": true,
+    "total_ram_gb": 48.0,
+    "unified_memory": true
+  }
+}

@@ -99,3 +99,16 @@ models:
 
 model-aliases:
     @grep -n "ollama/" config/gateway/litellm/config.local.yaml
+
+eval-model-fitness:
+    @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
+    @mkdir -p tmp
+    @PROMPTFOO_EVAL_TIMEOUT_MS=1200000 promptfoo eval \
+      -c config/evals/model-fitness/promptfooconfig.yaml \
+      --max-concurrency 1 \
+      --no-cache \
+      -o tmp/model-fitness-results.json
+
+eval-model-fitness-mlx:
+    @mkdir -p tmp
+    @.venv/bin/python tools/evals/run_mlx_model_fitness.py

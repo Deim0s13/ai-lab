@@ -1,0 +1,47 @@
+
+=== System Specifications ===
+CPU: Apple M4 Pro (14 cores)
+Total RAM: 48.00 GB
+Available RAM: 38.05 GB
+Backend: Metal
+GPU: Apple M4 Pro (unified memory, 48.00 GB shared, Metal)
+
+
+=== Model Compatibility Analysis ===
+Found 30 compatible model(s)
+
+╭──────────────┬──────────────────────────────────────────────────────────────────────┬────────────────────┬───────┬───────┬────────────┬──────────┬─────────┬──────┬───────┬─────────┬─────────────╮
+│ Status       │ Model                                                                │ Provider           │ Size  │ Score │ tok/s est. │ Quant    │ Runtime │ Mode │ Mem % │ Context │ Added to HF │
+├──────────────┼──────────────────────────────────────────────────────────────────────┼────────────────────┼───────┼───────┼────────────┼──────────┼─────────┼──────┼───────┼─────────┼─────────────┤
+│ ✓ 🟢 Perfect │ mconcat/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-NVFP4     │ mconcat            │ 22.1B │ 89    │ 6.8        │ mlx-8bit │ MLX     │ GPU  │ 51.3% │ 262k    │ —           │
+│ ✓ 🟢 Perfect │ mconcat/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-NVFP4        │ mconcat            │ 22.1B │ 89    │ 6.8        │ mlx-8bit │ MLX     │ GPU  │ 51.3% │ 262k    │ —           │
+│ 🟢 Perfect   │ nightmedia/Qwen3.6-27B-Claude-Opus-Reasoning-Distill-v2-mxfp4-mlx    │ nightmedia         │ 24.4B │ 89    │ 6.2        │ mlx-8bit │ MLX     │ GPU  │ 55.9% │ 262k    │ —           │
+│ 🟢 Perfect   │ TeichAI/Qwen3-14B-Claude-4.5-Opus-High-Reasoning-Distill             │ teichai            │ 14.8B │ 88    │ 10.2       │ mlx-8bit │ MLX     │ GPU  │ 34.4% │ 40k     │ —           │
+│ ✓ 🟢 Perfect │ mconcat/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-FP8-Dynamic  │ mconcat            │ 27.4B │ 88    │ 5.5        │ mlx-8bit │ MLX     │ GPU  │ 62.2% │ 262k    │ —           │
+│ 🟢 Perfect   │ Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-8bit │ jackrong           │ 26.9B │ 88    │ 5.6        │ mlx-8bit │ MLX     │ GPU  │ 61.2% │ 262k    │ —           │
+│ 🟢 Perfect   │ DarthGrampus/Qwen3.6-27B-Claude-Opus-Reasoning-Distilled-mlx-8Bit    │ darthgrampus       │ 26.9B │ 88    │ 5.6        │ mlx-8bit │ MLX     │ GPU  │ 61.2% │ 262k    │ —           │
+│ 🟢 Perfect   │ Jackrong/MLX-Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit │ jackrong           │ 26.9B │ 88    │ 5.6        │ mlx-8bit │ MLX     │ GPU  │ 61.2% │ 262k    │ —           │
+│ ✓ 🟢 Perfect │ Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled             │ jackrong           │ 27.8B │ 88    │ 5.4        │ mlx-8bit │ MLX     │ GPU  │ 63.1% │ 262k    │ 2026-02-27  │
+│ 🟢 Perfect   │ rico03/Qwen3.6-27B-Claude-Opus-Reasoning-Distilled                   │ rico03             │ 27.8B │ 88    │ 5.4        │ mlx-8bit │ MLX     │ GPU  │ 63.1% │ 262k    │ —           │
+│ ✓ 🟢 Perfect │ Jackrong/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-v2          │ jackrong           │ 27.8B │ 88    │ 5.4        │ mlx-8bit │ MLX     │ GPU  │ 63.1% │ 262k    │ —           │
+│ 🟢 Perfect   │ Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit  │ jackrong           │ 8.2B  │ 88    │ 18.3       │ mlx-8bit │ MLX     │ GPU  │ 20.2% │ 262k    │ —           │
+│ 🟢 Perfect   │ Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-4bit     │ jackrong           │ 8.2B  │ 88    │ 18.3       │ mlx-8bit │ MLX     │ GPU  │ 20.2% │ 262k    │ —           │
+│ 🟢 Perfect   │ baseten/Llama-3.2-3B-Instruct-pythonic                               │ baseten            │ 3.2B  │ 87    │ 46.7       │ mlx-8bit │ MLX     │ GPU  │ 9.6%  │ 4194k   │ —           │
+│ 🟢 Perfect   │ huihui-ai/Llama-3.2-3B-Instruct-abliterated                          │ huihui-ai          │ 3.6B  │ 87    │ 41.6       │ mlx-8bit │ MLX     │ GPU  │ 10.4% │ 4194k   │ —           │
+│ 🟢 Perfect   │ unsloth/Llama-3.2-3B-Instruct-unsloth-bnb-4bit                       │ unsloth            │ 3.3B  │ 87    │ 45.5       │ mlx-8bit │ MLX     │ GPU  │ 9.7%  │ 4194k   │ —           │
+│ 🟢 Perfect   │ RedHatAI/Llama-3.2-3B-Instruct-FP8                                   │ redhatai           │ 3.6B  │ 87    │ 41.6       │ mlx-8bit │ MLX     │ GPU  │ 10.4% │ 4194k   │ —           │
+│ ✓ 🟢 Perfect │ meta-llama/Llama-3.2-3B-Instruct                                     │ Meta               │ 3.2B  │ 87    │ 46.7       │ mlx-8bit │ MLX     │ GPU  │ 9.6%  │ 4194k   │ —           │
+│ 🟢 Perfect   │ MergeBench/Llama-3.2-3B_instruction                                  │ mergebench         │ 3.2B  │ 87    │ 46.7       │ mlx-8bit │ MLX     │ GPU  │ 8.0%  │ 4k      │ —           │
+│ 🟢 Perfect   │ unsloth/Llama-3.2-3B-Instruct-bnb-4bit                               │ unsloth            │ 3.3B  │ 87    │ 45.5       │ mlx-8bit │ MLX     │ GPU  │ 9.7%  │ 4194k   │ —           │
+│ 🟢 Perfect   │ RedHatAI/Llama-3.2-3B-Instruct-FP8-dynamic                           │ redhatai           │ 3.6B  │ 87    │ 41.6       │ mlx-8bit │ MLX     │ GPU  │ 8.8%  │ 4k      │ —           │
+│ 🟢 Perfect   │ mlx-community/Llama-3.2-3B-Instruct-8bit                             │ mlx-community      │ 3.6B  │ 87    │ 41.6       │ mlx-8bit │ MLX     │ GPU  │ 10.4% │ 4194k   │ —           │
+│ 🟢 Perfect   │ neuralmagic/Llama-3.2-3B-Instruct-quantized.w8a8                     │ neuralmagic        │ 3.6B  │ 87    │ 41.6       │ mlx-8bit │ MLX     │ GPU  │ 8.8%  │ 4k      │ —           │
+│ 🟢 Perfect   │ mlx-community/Llama-3.2-3B-Instruct-4bit                             │ mlx-community      │ 3.6B  │ 87    │ 41.6       │ mlx-8bit │ MLX     │ GPU  │ 10.4% │ 4194k   │ —           │
+│ 🟢 Perfect   │ espressor/meta-llama.Llama-3.2-3B-Instruct_W4A16                     │ espressor          │ 3.6B  │ 87    │ 41.6       │ mlx-8bit │ MLX     │ GPU  │ 10.4% │ 4194k   │ —           │
+│ 🟢 Perfect   │ unsloth/Qwen3-4B-Instruct-2507-unsloth-bnb-4bit                      │ unsloth            │ 3.1B  │ 87    │ 48.0       │ mlx-8bit │ MLX     │ GPU  │ 9.9%  │ 262k    │ —           │
+│ 🟢 Perfect   │ TeichAI/Qwen3-14B-Claude-4.5-Opus-High-Reasoning-Distill-GGUF        │ teichai            │ 12.1B │ 87    │ 12.4       │ mlx-8bit │ MLX     │ GPU  │ 28.9% │ 40k     │ —           │
+│ 🟢 Perfect   │ unsloth/Qwen3-Coder-30B-A3B-Instruct                                 │ unsloth            │ 30.5B │ 87    │ 39.1       │ mlx-8bit │ MLX     │ GPU  │ 32.5% │ 262k    │ —           │
+│ 🟢 Perfect   │ lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit             │ lmstudio-community │ 30.5B │ 87    │ 39.1       │ mlx-8bit │ MLX     │ GPU  │ 32.5% │ 262k    │ —           │
+│ ✓ 🟢 Perfect │ Jackrong/Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2           │ jackrong           │ 9.7B  │ 87    │ 15.6       │ mlx-8bit │ MLX     │ GPU  │ 23.2% │ 262k    │ 2026-03-16  │
+╰──────────────┴──────────────────────────────────────────────────────────────────────┴────────────────────┴───────┴───────┴────────────┴──────────┴─────────┴──────┴───────┴─────────┴─────────────╯
+  Note: tok/s values are baseline estimates; real runtime depends on engine/runtime.

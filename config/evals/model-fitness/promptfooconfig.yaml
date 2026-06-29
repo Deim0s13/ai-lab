@@ -1,0 +1,48 @@
+description: AI Dev Workstation model fitness eval
+
+prompts:
+  - "{{prompt}}"
+
+providers:
+  - id: litellm:chat:candidate-llama32-3b
+    label: candidate-llama32-3b
+    config:
+      apiBaseUrl: http://localhost:4000
+      apiKeyEnvar: LITELLM_MASTER_KEY
+
+  - id: litellm:chat:candidate-llama31-8b
+    label: candidate-llama31-8b
+    config:
+      apiBaseUrl: http://localhost:4000
+      apiKeyEnvar: LITELLM_MASTER_KEY
+
+  - id: litellm:chat:candidate-qwen35
+    label: candidate-qwen35
+    config:
+      apiBaseUrl: http://localhost:4000
+      apiKeyEnvar: LITELLM_MASTER_KEY
+
+tests:
+  - description: quick general assistance
+    vars:
+      prompt: "In three bullets, explain what this AI workstation is trying to achieve: local-first, gateway-first, CLI-native."
+
+  - description: short summary
+    vars:
+      prompt: "Summarise this in four bullets: LiteLLM is being used as the local AI gateway. The daily CLI workflow uses just recipes. The local-fast model group currently routes to Ollama. The project avoids custom wrappers unless there is a clear need."
+
+  - description: command-line help
+    vars:
+      prompt: "Explain what this command does, including any risks: podman rm -f ai-lab-litellm >/dev/null 2>&1 || true"
+
+  - description: troubleshooting
+    vars:
+      prompt: 'LiteLLM starts in a Podman container, but curl to localhost:4000 immediately returns "connection reset by peer". The container is still starting. What is the likely cause and what small change should I make to the justfile?'
+
+  - description: code/config review
+    vars:
+      prompt: 'Review this just recipe line and explain what might go wrong: curl -fsS "$gateway_url/v1/chat/completions" -d "{model: local-fast, messages: [{role: user, content: $prompt}]}"'
+
+  - description: unsuitable model signal
+    vars:
+      prompt: "A local model gives fast responses but often ignores requested structure, invents project files, and produces broken shell commands. Which gateway model group should it be used for, if any?"

@@ -342,14 +342,24 @@ Recommended suitability decisions:
 
 ## Current Test Results
 
+## Current Test Results
+
 | Model | Runtime | Intended role | Prompt result | Decision |
 |---|---|---|---|---|
-| llama3.2:3b | Ollama | local-fast baseline | Pending | Baseline |
-| llama3.1:8b | Ollama | local-capable baseline | Pending | Test |
-| qwen3.5:latest | Ollama | local-capable / local-code baseline | Pending | Test |
-| mlx-community/Llama-3.2-3B-Instruct-4bit | MLX | local-fast | Pending | Test |
-| Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX | local-capable | Pending | Test |
-| lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit | MLX | local-code | Pending | Test |
+| llama3.2:3b | Ollama via LiteLLM | local-fast baseline | 6/6 ran successfully through promptfoo | Keep as baseline; quality caveats |
+| llama3.1:8b | Ollama via LiteLLM | local-capable baseline | 6/6 ran successfully through promptfoo | Keep as baseline; compare |
+| qwen3.5:latest | Ollama via LiteLLM | local-capable / local-code baseline | 6/6 ran successfully through promptfoo | Stronger but slower; compare carefully |
+| mlx-community/Llama-3.2-3B-Instruct-4bit | MLX | local-fast | 6/6 ran successfully through direct MLX eval | Strong candidate for local-fast |
+| Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX | local-capable | 6/6 ran successfully through direct MLX eval | Strong candidate for local-capable |
+| lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit | MLX | local-code | 6/6 ran successfully through direct MLX eval | Strong candidate for local-code |
+
+Notes:
+
+- promptfoo is used for LiteLLM/Ollama gateway-backed model fitness testing.
+- Direct MLX testing uses `just eval-model-fitness-mlx`.
+- A promptfoo Python provider for MLX was attempted but parked because it caused macOS Python crash dialogs and noisy/unstable provider behaviour.
+- MLX candidates are not yet routed through LiteLLM.
+- Results currently confirm execution and first-pass usefulness; final model group promotion is handled in Issue #29.
 
 ## Current Model Group Decisions
 
