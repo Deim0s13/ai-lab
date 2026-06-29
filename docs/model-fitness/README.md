@@ -155,6 +155,15 @@ Strengths:
 - broad model availability
 - good baseline runtime
 
+```text
+MLX proof note:
+
+- mlx-lm is installed in the project venv
+- mlx-community/Qwen3-4B-4bit has been run locally
+- MLX testing currently uses just ask-mlx directly
+- MLX is not yet routed through LiteLLM
+```
+
 Considerations:
 
 - may not always be the most Apple-silicon-optimised path
@@ -227,6 +236,48 @@ Installed models are baselines, not the full test universe.
 - MLX candidates are included because the primary workstation is Apple silicon.
 - A model must have a target role before it is installed.
 - Models that are rejected, duplicate or obsolete should be removed later through the decommissioning workflow.
+
+## Hardware-Aware Candidate Selection
+
+Tool evaluated:
+
+- llmfit
+
+Decision:
+
+- Accepted as the hardware-aware candidate discovery tool for the model fitness loop.
+
+Detected hardware:
+
+- CPU: Apple M4 Pro, 14 cores
+- RAM: 48 GB unified memory
+- Available RAM during test: approximately 38 GB
+- Backend: Metal
+- GPU: Apple M4 Pro unified memory
+
+Observed recommendation pattern:
+
+- MLX is the dominant recommended runtime for this hardware.
+- 3B–4B MLX models are strong candidates for local-fast.
+- 9B–15B MLX models are strong candidates for local-capable.
+- Qwen3-Coder-30B-A3B appears to be a strong local-code candidate, subject to install and prompt testing.
+- 22B–30B reasoning/distill models fit the hardware but should not be installed blindly.
+
+First-pass candidate shortlist:
+
+| Role | Candidate | Runtime | Reason | Status |
+|---|---|---|---|---|
+| local-fast | mlx-community/Llama-3.2-3B-Instruct-4bit | MLX | Fast, low memory, comparable to current Ollama baseline | Shortlisted |
+| local-fast | unsloth/Qwen3-4B-Instruct-2507-unsloth-bnb-4bit | MLX | Fast 4B Qwen candidate with long context | Alternate |
+| local-capable | microsoft/Phi-4-reasoning | MLX | Strong reasoning candidate with reasonable memory use | Shortlisted |
+| local-capable | Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX | Faster 9B reasoning/distill option | Alternate |
+| local-code | lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-8bit | MLX | Code-focused candidate with strong estimated throughput | Shortlisted |
+
+Selection rule:
+
+- Install at most one candidate per role for the first pass.
+- Keep installed Ollama models as baselines.
+- Do not install large reasoning/distill models unless smaller candidates fail to meet the role.
 
 ## Test Prompt Set
 
