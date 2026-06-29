@@ -1,14 +1,14 @@
 # Model Fitness
 
-This document defines how local models are assessed, selected and mapped for the AI Dev Workstation.
+This document defines how local models are assessed, selected, tested, promoted and decommissioned for the AI Dev Workstation.
 
-The goal is not to create a formal benchmark suite. The goal is to decide which local models are good enough for the real tasks this workstation needs to support.
+The goal is not to create a formal benchmark suite. The goal is to maintain a practical model fitness loop so the workstation runs models that are well suited to the hardware, use cases and gateway roles.
 
-The stable project interface is the gateway model group, not the specific local model behind it.
+The stable project interface is the gateway model group, not the specific model behind it.
 
 ## Purpose
 
-Model fitness helps decide which local model/runtime combinations should back gateway model groups such as:
+Model fitness helps decide which local model/runtime combinations should back these gateway model groups:
 
 - local-fast
 - local-capable
@@ -18,19 +18,37 @@ The model behind a gateway group can change over time without changing the daily
 
 ## Documentation Boundary
 
-Model fitness documentation should stay compact.
+This document should stay compact and durable.
 
-This document should contain durable decisions and current operating practice.
+It should contain:
 
-Issues can hold temporary investigation detail, test notes and working discussion.
+- current model fitness criteria
+- current candidate shortlist
+- current testing approach
+- current model group decisions
+- current decommissioning rules
+
+Temporary investigation detail, raw test output and working discussion should stay in GitHub issues or local scratch files.
 
 Create additional model fitness documents only when there is a clear long-term maintenance reason.
+
+## Model Fitness Loop
+
+The intended loop is:
+
+1. Detect hardware and identify suitable model candidates.
+2. Apply project role criteria.
+3. Install only selected candidates.
+4. Test selected candidates against workstation prompts.
+5. Promote winners into gateway model groups.
+6. Park, reject or decommission models that are not useful.
+7. Re-run the process periodically.
 
 ## Gateway Model Groups
 
 ### local-fast
 
-local-fast is for quick, low-friction assistance.
+local-fast is for quick, low-friction daily assistance.
 
 Typical tasks:
 
@@ -134,7 +152,7 @@ A model should not be selected for a gateway model group if it commonly:
 - is too slow for the intended role
 - requires repeated correction for routine tasks
 
-## Runtime Candidates
+## Runtime Position
 
 ### Ollama
 
@@ -155,23 +173,21 @@ Strengths:
 - broad model availability
 - good baseline runtime
 
-```text
-MLX proof note:
-
-- mlx-lm is installed in the project venv
-- mlx-community/Qwen3-4B-4bit has been run locally
-- MLX testing currently uses just ask-mlx directly
-- MLX is not yet routed through LiteLLM
-```
-
 Considerations:
 
 - may not always be the most Apple-silicon-optimised path
+- installed Ollama models should be treated as baselines, not the full candidate universe
 - runtime efficiency should be compared with MLX where practical
 
 ### MLX / mlx-lm
 
-MLX / mlx-lm is a candidate runtime for Apple silicon.
+MLX / mlx-lm is the current Apple silicon candidate runtime.
+
+Current proof path:
+
+    just ask-mlx
+      -> mlx-lm
+      -> MLX model
 
 Strengths:
 
@@ -182,60 +198,17 @@ Strengths:
 
 Considerations:
 
-- not yet proven through this project's LiteLLM gateway path
-- may need additional local setup
+- MLX is not yet routed through LiteLLM
 - operational workflow may be less simple than Ollama initially
 - integration path needs to be decided before becoming a daily runtime
 
-## Candidate Selection Criteria
+Current MLX proof status:
 
-Candidate models should be selected based on:
-
-- target gateway model group
-- expected quality for the role
-- expected speed on Apple silicon
-- memory footprint
-- availability in Ollama or MLX format
-- runtime maturity
-- ease of operation
-- whether the model adds useful diversity over already installed models
-- whether testing it would inform a real project decision
-
-Do not download models only because they are popular.
-
-## Candidate Shortlist
-
-Installed models are baselines, not the full test universe.
-
-### Installed baseline candidates
-
-| Candidate | Runtime | Target role | Status | Decision |
-|---|---|---|---|---|
-| llama3.2:3b | Ollama | local-fast | Installed | Baseline; keep as proven local-fast reference |
-| llama3.1:8b | Ollama | local-capable | Installed | Baseline; test as stronger general model |
-| mistral:7b | Ollama | local-capable | Installed | Baseline; test if time allows |
-| qwen3.5:latest | Ollama | local-capable / local-code | Installed | Baseline; test as likely stronger reasoning/code candidate |
-| mistral:latest | Ollama | local-capable | Installed | Likely duplicate/older baseline; review for decommissioning |
-| nomic-embed-text:latest | Ollama | embeddings | Installed | Not a chat candidate; keep only if embedding/RAG work needs it later |
-
-### First-pass additional candidates
-
-| Candidate | Runtime | Target role | Status | Decision |
-|---|---|---|---|---|
-| Qwen3 4B MLX quant | MLX / mlx-lm | local-fast / local-capable | Installed/proven| Select for first-pass MLX comparison on Apple silicon |
-| Qwen3 Coder practical local variant | MLX or Ollama | local-code | Not installed | Select only if a realistic local-size candidate is available |
-| Qwen3 8B MLX quant | MLX / mlx-lm | local-capable | Not installed | Park until 4B result shows whether MLX is worth expanding |
-| Gemma 3 4B Ollama or MLX | Ollama / MLX | local-fast / local-capable | Not installed | Park unless Qwen candidates disappoint |
-
-### Selection rules
-
-- Download at most two additional candidates before the first test pass.
-- Do not download models only because they are popular.
-- Do not download models that are clearly too large for the hardware.
-- Installed Ollama models are baselines, not the final answer.
-- MLX candidates are included because the primary workstation is Apple silicon.
-- A model must have a target role before it is installed.
-- Models that are rejected, duplicate or obsolete should be removed later through the decommissioning workflow.
+- mlx-lm is installed in the project virtual environment
+- mlx-community/Llama-3.2-3B-Instruct-4bit runs locally through mlx-lm
+- Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit runs locally through mlx-lm
+- lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit runs locally through mlx-lm
+- just ask-mlx is available for direct MLX candidate testing
 
 ## Hardware-Aware Candidate Selection
 
@@ -257,27 +230,46 @@ Detected hardware:
 
 Observed recommendation pattern:
 
-- MLX is the dominant recommended runtime for this hardware.
-- 3B–4B MLX models are strong candidates for local-fast.
-- 9B–15B MLX models are strong candidates for local-capable.
-- Qwen3-Coder-30B-A3B appears to be a strong local-code candidate, subject to install and prompt testing.
-- 22B–30B reasoning/distill models fit the hardware but should not be installed blindly.
+- MLX is the dominant recommended runtime for this Apple silicon workstation.
+- 3B-4B MLX instruction models are strong candidates for local-fast.
+- 9B-15B MLX reasoning/instruction models are strong candidates for local-capable.
+- Qwen3-Coder-30B-A3B MLX variants appear to be strong local-code candidates.
+- Raw tokens-per-second sorting is not sufficient because it surfaces tiny, random, internal-test and embedding models.
+- Project criteria must filter llmfit results before install.
 
-First-pass candidate shortlist:
-
-| Role | Candidate | Runtime | Reason | Status |
-|---|---|---|---|---|
-| local-fast | mlx-community/Llama-3.2-3B-Instruct-4bit | MLX | Fast, low memory, comparable to current Ollama baseline | Shortlisted |
-| local-fast | unsloth/Qwen3-4B-Instruct-2507-unsloth-bnb-4bit | MLX | Fast 4B Qwen candidate with long context | Alternate |
-| local-capable | microsoft/Phi-4-reasoning | MLX | Strong reasoning candidate with reasonable memory use | Shortlisted |
-| local-capable | Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX | Faster 9B reasoning/distill option | Alternate |
-| local-code | lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-8bit | MLX | Code-focused candidate with strong estimated throughput | Shortlisted |
-
-Selection rule:
+Selection rules:
 
 - Install at most one candidate per role for the first pass.
 - Keep installed Ollama models as baselines.
-- Do not install large reasoning/distill models unless smaller candidates fail to meet the role.
+- Do not install tiny-random, internal-testing or embedding-only models as chat candidates.
+- Do not install large reasoning/distill models just because they top the score table.
+- Use llmfit for hardware-aware discovery, then apply project role criteria before installation.
+
+## Installed Baselines
+
+Installed Ollama models are baselines, not the full test universe.
+
+| Candidate | Runtime | Target role | Status | Decision |
+|---|---|---|---|---|
+| llama3.2:3b | Ollama | local-fast | Installed | Baseline; proven behind LiteLLM |
+| llama3.1:8b | Ollama | local-capable | Installed | Baseline; test as stronger general model |
+| mistral:7b | Ollama | local-capable | Installed | Baseline; test if useful |
+| qwen3.5:latest | Ollama | local-capable / local-code | Installed | Baseline; test as reasoning/code candidate |
+| mistral:latest | Ollama | local-capable | Installed | Likely duplicate or older baseline; review for decommissioning |
+| nomic-embed-text:latest | Ollama | embeddings | Installed | Not a chat candidate; keep only if embedding/RAG work needs it later |
+
+## Selected MLX Candidates
+
+These candidates were selected through llmfit output plus project role criteria.
+
+| Role | Candidate | Runtime | Reason | Status |
+|---|---|---|---|---|
+| local-fast | mlx-community/Llama-3.2-3B-Instruct-4bit | MLX | Fast, low memory, comparable to current Ollama llama3.2:3b baseline | Installed/proven |
+| local-fast alternate | unsloth/Qwen3-4B-Instruct-2507-unsloth-bnb-4bit | MLX | Fast Qwen 4B candidate with long context | Not installed; alternate |
+| local-capable | Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX | Higher capability than 3B/4B while still relatively fast | Installed/proven |
+| local-capable alternate | microsoft/Phi-4-reasoning | MLX | Strong reasoning candidate with moderate memory use | Not installed; alternate |
+| local-code | lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit | MLX | Code-focused candidate with strong estimated throughput | Installed/proven |
+| local-code alternate | unsloth/Qwen3-Coder-30B-A3B-Instruct | MLX | Same code-focused family; use if easier to install/run | Not installed; alternate |
 
 ## Test Prompt Set
 
@@ -309,21 +301,25 @@ Use this minimum prompt set for first-pass testing.
 
 ## Test Method
 
-Start the local gateway:
+Start the local gateway for Ollama-backed testing:
 
     export LITELLM_MASTER_KEY=sk-local-dev
     just ai-up
     just ai-check
 
-Run each prompt with:
+Run Ollama/LiteLLM candidates with:
 
-    just ask "PROMPT TEXT HERE"
+    just ask-model <model-alias> "PROMPT TEXT HERE"
+
+Run MLX candidates with:
+
+    just ask-mlx <model-name> "PROMPT TEXT HERE"
 
 For each candidate model, record:
 
 - model name
 - runtime
-- gateway model group tested
+- intended gateway role
 - prompt result
 - strengths
 - weaknesses
@@ -346,33 +342,22 @@ Recommended suitability decisions:
 
 ## Current Test Results
 
-| Model | Runtime | local-fast | local-capable | local-code | Decision |
-|---|---|---|---|---|---|
-| llama3.2:3b | Ollama | Pending | Pending | Pending | Baseline |
-| llama3.1:8b | Ollama | Pending | Pending | Pending | Test |
-| mistral:7b | Ollama | Pending | Pending | Pending | Test |
-| qwen3.5:latest | Ollama | Pending | Pending | Pending | Test |
-| Qwen3 4B MLX quant | MLX | Pending | Pending | Pending | Consider download |
-| Qwen3 Coder MLX quant | MLX | Pending | Pending | Pending | Consider download |
+| Model | Runtime | Intended role | Prompt result | Decision |
+|---|---|---|---|---|
+| llama3.2:3b | Ollama | local-fast baseline | Pending | Baseline |
+| llama3.1:8b | Ollama | local-capable baseline | Pending | Test |
+| qwen3.5:latest | Ollama | local-capable / local-code baseline | Pending | Test |
+| mlx-community/Llama-3.2-3B-Instruct-4bit | MLX | local-fast | Pending | Test |
+| Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX | local-capable | Pending | Test |
+| lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit | MLX | local-code | Pending | Test |
 
 ## Current Model Group Decisions
 
 | Gateway model group | Current backend | Decision status | Notes |
 |---|---|---|---|
-| local-fast | llama3.2:3b via Ollama | Provisional baseline | Proven through LiteLLM; compare against Qwen3 4B MLX |
-| local-capable | Not assigned | Pending | Compare installed 8B/general candidates and selected MLX candidate |
-| local-code | Not assigned | Pending | Identify practical Qwen/code-focused local candidate before install |
-
-## Review Triggers
-
-Review model fitness decisions when:
-
-- a model performs poorly in daily use
-- a better local candidate becomes available
-- hardware changes
-- runtime support improves
-- gateway model groups change
-- local-fast, local-capable or local-code no longer match their intended roles
+| local-fast | llama3.2:3b via Ollama | Provisional baseline | Proven through LiteLLM; compare against MLX Llama 3.2 3B |
+| local-capable | Not assigned | Pending | Compare Ollama baselines and selected MLX capable candidate |
+| local-code | Not assigned | Pending | Compare Ollama qwen3.5 baseline and selected Qwen3-Coder MLX candidate |
 
 ## Model Lifecycle and Decommissioning
 
@@ -452,7 +437,7 @@ Then restart and check the gateway if any aliases changed:
 
 MLX decommissioning is not fully defined yet.
 
-Until the MLX runtime path is proven, MLX cleanup should be handled carefully based on the actual installation method used.
+Until the MLX runtime path is promoted, MLX cleanup should be handled carefully based on the actual installation method used.
 
 Do not add broad cache deletion commands until the project has confirmed where selected MLX models are installed and how they are referenced.
 
@@ -466,6 +451,9 @@ Do not add broad cache deletion commands until the project has confirmed where s
 | qwen3.5:latest | Ollama | baseline / candidate | Keep for testing |
 | mistral:latest | Ollama | likely duplicate / obsolete | Review for removal |
 | nomic-embed-text:latest | Ollama | parked | Keep only if embedding/RAG work is expected later |
+| mlx-community/Llama-3.2-3B-Instruct-4bit | MLX | candidate | Keep for testing |
+| Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX | candidate | Keep for testing |
+| lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit | MLX | candidate | Keep for testing |
 
 Initial likely decommissioning candidate:
 
@@ -476,6 +464,18 @@ Reason:
 - older than mistral:7b in the current local model list
 - likely overlaps with the installed mistral:7b baseline
 - does not currently back a gateway model group
+
+## Review Triggers
+
+Review model fitness decisions when:
+
+- a model performs poorly in daily use
+- llmfit identifies a better hardware-fit candidate
+- a better local candidate becomes available
+- hardware changes
+- runtime support improves
+- gateway model groups change
+- local-fast, local-capable or local-code no longer match their intended roles
 
 ## Out of Scope
 
