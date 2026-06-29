@@ -26,4 +26,4 @@ data/
 
 # Runtime container data
 containers/**/data/
-~/containers/
+~/containers/tmp/
