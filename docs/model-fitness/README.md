@@ -363,11 +363,24 @@ Notes:
 
 ## Current Model Group Decisions
 
-| Gateway model group | Current backend | Decision status | Notes |
-|---|---|---|---|
-| local-fast | llama3.2:3b via Ollama | Provisional baseline | Proven through LiteLLM; compare against MLX Llama 3.2 3B |
-| local-capable | Not assigned | Pending | Compare Ollama baselines and selected MLX capable candidate |
-| local-code | Not assigned | Pending | Compare Ollama qwen3.5 baseline and selected Qwen3-Coder MLX candidate |
+## Current Model Group Decisions
+
+| Gateway model group | Provisional selected model | Runtime | Proven path | Active gateway route status | Decision status |
+|---|---|---|---|---|---|
+| local-fast | mlx-community/Llama-3.2-3B-Instruct-4bit | MLX | just ask-mlx / mlx-lm | Not yet routed through LiteLLM | Provisional winner |
+| local-capable | Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX | just ask-mlx / mlx-lm | Not yet routed through LiteLLM | Provisional winner |
+| local-code | lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit | MLX | just ask-mlx / mlx-lm | Not yet routed through LiteLLM | Provisional winner |
+
+Routing note:
+
+The selected models are proven through direct MLX execution, not through the LiteLLM gateway.
+
+The active gateway-backed route remains Ollama until MLX is routed through LiteLLM or an equivalent OpenAI-compatible gateway path is implemented.
+
+This keeps the decision layer and executable routing layer separate:
+
+- selected model = the preferred model for the role
+- active route = the model currently reachable through the gateway-backed daily workflow
 
 ## Model Lifecycle and Decommissioning
 
