@@ -435,6 +435,7 @@ Notes:
 - MLX gateway routing now uses `mlx-lm server` behind LiteLLM.
 - Results currently confirm execution, first-pass usefulness and gateway compatibility status.
 - Stable model group promotion should happen only after the selected backend is both useful and gateway-routable.
+- `qwen3.5:latest` is parked from the standard monthly review because it timed out during the repeatable review workflow. It can still be tested manually if needed, but should not block the monthly model fitness check.
 
 ## Current Model Group Decisions
 
