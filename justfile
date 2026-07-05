@@ -178,8 +178,12 @@ model-fitness-review:
     @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
     @echo "== Checking MLX servers =="
     @just mlx-check
-    @echo "== Checking LiteLLM gateway =="
-    @just ai-check
+    @echo "== Checking YAML config =="
+    @just check-yaml
+    @echo "== Checking LiteLLM gateway routes =="
+    @just gateway-models
+    @just gateway-mlx-models
+    @just gateway-routes
     @echo "== Checking gateway model routes =="
     @just gateway-routes
     @echo "== Checking MLX candidate routes =="
