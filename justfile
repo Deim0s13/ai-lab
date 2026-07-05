@@ -121,7 +121,7 @@ bootstrap-check: check-yaml gateway-models gateway-health
     @echo "OK bootstrap check passed"
 
 # ------------------------------------------------------------------------------
-# Ask helpers
+# User-facing AI commands
 # ------------------------------------------------------------------------------
 
 ask prompt:
@@ -145,6 +145,15 @@ ask-mlx model prompt:
       --model "{{ model }}" \
       --prompt "{{ prompt }}" \
       --max-tokens 300
+
+ai-fast prompt:
+    @just ask-model local-fast-mlx "{{ prompt }}"
+
+ai-capable prompt:
+    @just ask-model local-capable-mlx "{{ prompt }}"
+
+ai-code prompt:
+    @just ask-model local-code-mlx "{{ prompt }}"
 
 # ------------------------------------------------------------------------------
 # Ollama model helpers
@@ -184,10 +193,6 @@ model-fitness-review:
     @just gateway-models
     @just gateway-mlx-models
     @just gateway-routes
-    @echo "== Checking gateway model routes =="
-    @just gateway-routes
-    @echo "== Checking MLX candidate routes =="
-    @just gateway-mlx-models
     @echo "== Running Ollama/LiteLLM model fitness eval =="
     @just eval-model-fitness
     @echo "== Running direct MLX model fitness eval =="
@@ -211,6 +216,7 @@ mlx-wait:
     echo "FAIL MLX servers did not all become ready"; \
     just mlx-logs; \
     exit 8
+
 mlx-up:
     @just mlx-down
     @mkdir -p tmp
