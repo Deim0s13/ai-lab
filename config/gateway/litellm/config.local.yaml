@@ -41,6 +41,18 @@ model_list:
       model: ollama/qwen3.5:latest
       api_base: http://host.containers.internal:11434
 
+  - model_name: local-capable-mlx
+    litellm_params:
+      model: openai/Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit
+      api_base: http://host.containers.internal:8081/v1
+      api_key: sk-local-mlx
+
+  - model_name: local-code-mlx
+    litellm_params:
+      model: openai/lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit
+      api_base: http://host.containers.internal:8082/v1
+      api_key: sk-local-mlx
+
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY
 
