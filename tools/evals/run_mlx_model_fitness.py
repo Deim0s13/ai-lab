@@ -13,11 +13,11 @@ MODELS = [
         "timeout": 900,
     },
     {
-        "label": "mlx-qwen35-9b-reasoning",
-        "model": "Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit",
+        "label": "mlx-qwen3-30b-instruct",
+        "model": "lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit",
         "role": "local-capable",
         "max_tokens": "500",
-        "timeout": 900,
+        "timeout": 1200,
     },
     {
         "label": "mlx-qwen3-coder-30b",

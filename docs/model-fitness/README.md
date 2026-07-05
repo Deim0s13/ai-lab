@@ -416,16 +416,16 @@ Recommended suitability decisions:
 
 ## Current Test Results
 
-| Model                                                               | Runtime            | Intended role                       | Prompt result                                                                              | Decision                                                               |
-| ------------------------------------------------------------------- | ------------------ | ----------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
-| llama3.2:3b                                                         | Ollama via LiteLLM | local-fast baseline                 | 6/6 ran successfully through promptfoo                                                     | Keep as baseline; quality caveats                                      |
-| llama3.1:8b                                                         | Ollama via LiteLLM | local-capable baseline              | 6/6 ran successfully through promptfoo                                                     | Keep as baseline; compare                                              |
-| qwen3.5:latest                                                      | Ollama via LiteLLM | local-capable / local-code baseline | 6/6 ran successfully through promptfoo                                                     | Stronger but slower; compare carefully                                 |
-| mlx-community/Llama-3.2-3B-Instruct-4bit                            | MLX                | local-fast                          | 6/6 ran successfully through direct MLX eval; gateway route proven                         | Strong candidate for local-fast                                        |
-| Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX                | local-capable                       | 6/6 ran successfully through direct MLX eval; gateway route returns null `message.content` | Park for direct use only; not suitable as gateway-backed local-capable |
-| microsoft/Phi-4-reasoning                                           | MLX                | local-capable                       | Server starts; returns reasoning-only output and null `message.content`                    | Reject as gateway-backed local-capable                                 |
-| lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit             | MLX                | local-capable                       | Gateway route proven through `mlx-lm server` and LiteLLM                                   | Strong candidate for local-capable                                     |
-| lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit            | MLX                | local-code                          | 6/6 ran successfully through direct MLX eval; gateway route proven                         | Strong candidate for local-code                                        |
+| Model                                                               | Runtime            | Intended role                       | Prompt result                                                                              | Decision                                                                |
+| ------------------------------------------------------------------- | ------------------ | ----------------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| llama3.2:3b                                                         | Ollama via LiteLLM | local-fast baseline                 | 6/6 ran successfully through promptfoo                                                     | Keep as baseline; quality caveats                                       |
+| llama3.1:8b                                                         | Ollama via LiteLLM | local-capable baseline              | 6/6 ran successfully through promptfoo                                                     | Keep as baseline; compare                                               |
+| qwen3.5:latest                                                      | Ollama via LiteLLM | local-capable / local-code baseline | Previously ran through promptfoo; later timed out during monthly review promptfoo          | Park from standard monthly review; too slow/unreliable for routine eval |
+| mlx-community/Llama-3.2-3B-Instruct-4bit                            | MLX                | local-fast                          | 6/6 ran successfully through direct MLX eval; gateway route proven                         | Strong candidate for local-fast                                         |
+| Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX                | local-capable                       | 6/6 ran successfully through direct MLX eval; gateway route returns null `message.content` | Park for direct use only; not suitable as gateway-backed local-capable  |
+| microsoft/Phi-4-reasoning                                           | MLX                | local-capable                       | Server starts; returns reasoning-only output and null `message.content`                    | Reject as gateway-backed local-capable                                  |
+| lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit             | MLX                | local-capable                       | Gateway route proven through `mlx-lm server` and LiteLLM                                   | Strong candidate for local-capable                                      |
+| lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit            | MLX                | local-code                          | 6/6 ran successfully through direct MLX eval; gateway route proven                         | Strong candidate for local-code                                         |
 
 Notes:
 
@@ -512,6 +512,76 @@ Do not remove a model if it backs:
 - local-code
 - an active candidate alias still being tested
 - a proven `*-mlx` candidate route still under evaluation
+
+## Monthly Model Fitness Revalidation
+
+Model fitness should be reviewed monthly to make sure the active and candidate local models still suit the workstation hardware, gateway roles and daily workflow.
+
+At this stage, monthly revalidation is a manual operator workflow. It should be simple, repeatable and documented before automation is added.
+
+The monthly review should check:
+
+- active gateway routes still start correctly
+- candidate MLX servers still start correctly
+- LiteLLM still exposes the expected routes
+- selected models still return usable assistant content
+- model responses remain suitable for their intended role
+- any parked, duplicate or rejected models can be removed
+- llmfit has not identified a clearly better hardware-fit candidate
+
+Recommended monthly workflow:
+
+    export LITELLM_MASTER_KEY=sk-local-dev
+
+    just mlx-down
+    just mlx-up
+    just mlx-check
+
+    just ai-down
+    just ai-up
+    just ai-check
+
+    just eval-model-fitness
+    just eval-model-fitness-mlx
+
+Review the outputs and update this document if any model decisions change.
+
+Monthly review outcomes should be one of:
+
+- no change
+- promote candidate
+- keep candidate
+- park candidate
+- reject candidate
+- decommission unused model
+- investigate new candidate
+
+### Future Automation Requirement
+
+The monthly model fitness workflow should eventually be automated.
+
+The future automated workflow should be able to:
+
+- run the model fitness prompt set on a schedule
+- check gateway route availability
+- check MLX server availability
+- capture model responses and basic pass/fail results
+- write timestamped result files
+- compare current results with the previous run
+- highlight regressions or route failures
+- avoid automatically promoting or deleting models without human review
+
+Automation should not be added until the manual workflow is stable and the expected outputs are clear.
+
+The intended future direction is:
+
+    manual monthly checklist
+      -> repeatable just recipe
+      -> timestamped result artefacts
+      -> scheduled local automation
+      -> optional notification or GitHub issue update
+
+Promotion, rejection and decommissioning decisions should remain human-reviewed unless a later project milestone explicitly changes that policy.
 
 ### Ollama Decommissioning
 

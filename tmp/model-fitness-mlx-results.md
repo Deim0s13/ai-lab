@@ -4,27 +4,27 @@
 
 - Role: local-fast
 - Status: pass
-- Duration: 3.94s
+- Duration: 3.69s
 
 Output:
 
 Based on the description of the AI workstation, here are three bullets explaining its goals:
 
-• **Local-First Approach**: The AI workstation aims to prioritize local processing and computation, reducing reliance on external gateways or cloud services. This approach focuses on utilizing the workstation's local resources and capabilities to perform tasks efficiently.
+• **Local-first approach**: The AI workstation aims to prioritize local processing and computation, reducing reliance on external gateways or cloud services. This approach focuses on optimizing performance, security, and data sovereignty within the local environment.
 
-• **Gateway-First Strategy**: In contrast, the workstation also considers a gateway-first approach, where it leverages external gateways or cloud services to access more powerful computing resources, specialized hardware, or additional data storage. This strategy acknowledges the limitations of local resources and seeks to augment them with external capabilities.
+• **Gateway-first strategy**: In contrast, the workstation also considers a gateway-first approach, which involves leveraging external gateways or cloud services to augment local capabilities. This strategy can provide access to more powerful computing resources, specialized software, or global data sources.
 
-• **CLI-Native Interface**: The AI workstation strives to develop a Command-Line Interface (CLI)-native interface, allowing users to interact with the system using text-based commands and scripts. This interface enables users to work efficiently with the system, leveraging the power of local processing and external gateways to achieve their goals.
+• **CLI-native interface**: The AI workstation seeks to integrate a Command-Line Interface (CLI) that is native to the system, allowing users to interact with the AI in a familiar and intuitive way. This CLI-native interface enables seamless integration with local tools and applications, enhancing the overall user experience and productivity.
 ==========
-Prompt: 58 tokens, 556.392 tokens-per-sec
-Generation: 187 tokens, 117.426 tokens-per-sec
-Peak memory: 2.065 GB
+Prompt: 58 tokens, 623.829 tokens-per-sec
+Generation: 174 tokens, 117.886 tokens-per-sec
+Peak memory: 2.049 GB
 
 ## mlx-llama32-3b / short-summary
 
 - Role: local-fast
 - Status: pass
-- Duration: 2.31s
+- Duration: 2.26s
 
 Output:
 
@@ -33,13 +33,48 @@ Here are four bullets summarizing the text:
 • LiteLLM is being used as the local AI gateway.
 • The daily CLI workflow relies solely on recipes.
 • The local-fast model group currently routes to Ollama.
-• The project aims to avoid custom wrappers unless necessary.
+• The project aims to avoid custom wrappers unless a clear need arises.
 ==========
-Prompt: 87 tokens, 689.459 tokens-per-sec
-Generation: 57 tokens, 119.413 tokens-per-sec
-Peak memory: 2.051 GB
+Prompt: 87 tokens, 728.630 tokens-per-sec
+Generation: 60 tokens, 119.611 tokens-per-sec
+Peak memory: 2.070 GB
 
 ## mlx-llama32-3b / command-line-help
+
+- Role: local-fast
+- Status: pass
+- Duration: 5.35s
+
+Output:
+
+This command is used to remove a Docker container named "ai-lab-litellm" using the Podman command-line tool.
+
+Here's a breakdown of the command:
+
+- `podman rm`: This is the Podman command to remove a container.
+- `-f`: The `-f` flag stands for "force". It forces the removal of the container without prompting for confirmation.
+- `ai-lab-litellm`: This is the name of the container to be removed.
+- `>/dev/null 2>&1`: This redirects the output of the command to `/dev/null` (which discards the output) and also redirects the error messages to the same place. This is done to prevent the command from printing any output or error messages to the console.
+- `|| true`: This is a conditional statement that checks if the command before it (in this case, `podman rm`) fails. If the command fails, the `|| true` part will execute the command `true`, which does nothing but succeed. This is a common idiom in shell scripting to ensure that a command is executed even if the previous one fails.
+
+In summary, this command removes the "ai-lab-litellm" container using Podman, forces the removal without prompting, and suppresses any output or error messages.
+
+Risks:
+
+- If the container is not running or does not exist, this command will fail and the `|| true` part will execute, which does nothing. However, if the container is running, this command will forcibly remove it without warning, which could lead to data loss or other issues.
+- If the container is not properly stopped before removal, this could lead to errors or unexpected behavior.
+- If the system is not properly configured to handle the removal of containers, this could lead to system instability or crashes.
+
+To mitigate these risks, it's recommended to:
+
+- Ensure that the container is properly stopped before removal.
+- Use a more robust way
+==========
+Prompt: 67 tokens, 567.271 tokens-per-sec
+Generation: 400 tokens, 111.119 tokens-per-sec
+Peak memory: 2.016 GB
+
+## mlx-llama32-3b / troubleshooting
 
 - Role: local-fast
 - Status: pass
@@ -47,471 +82,403 @@ Peak memory: 2.051 GB
 
 Output:
 
-This command is used to remove a Docker container named "ai-lab-litellm" using Podman. Here's a breakdown of what the command does:
+The "connection reset by peer" error when trying to connect to a localhost:4000 endpoint from within a Podman container is often related to the container's network configuration and the way the container is started.
 
-- `podman rm`: This is the command to remove a Docker container.
+One likely cause of this issue is that the container is not yet fully initialized when you try to establish a connection to localhost:4000. This can happen if the container is started with a command that takes some time to execute, such as a long-running initialization script.
 
-- `-f`: The `-f` flag stands for "force". It forces the removal of the container without prompting for confirmation.
+To resolve this issue, you can try making a small change to the `Dockerfile` to ensure that the container is fully initialized before trying to establish a connection to localhost:4000.
 
-- `ai-lab-litellm`: This is the name of the container to be removed.
+Here's an example of how you can modify the `Dockerfile` to achieve this:
 
-- `/dev/null 2>&1`: This is a redirection of the output. `/dev/null` is a special file in Unix-like systems that discards any input it receives. `2>&1` redirects the standard error (stderr) to the standard output (stdout), so any error messages are printed to the console.
+```dockerfile
+# Use an official Python image as a base
+FROM python:3.9-slim
 
-- `|| true`: This is a conditional statement. If the command before the `||` fails (i.e., the container does not exist or there's an error), the `true` command will be executed. This means that if the container does not exist or there's an error, the command will simply do nothing and continue running.
+# Set the working directory to /app
+WORKDIR /app
 
-In summary, this command removes the "ai-lab-litellm" container using Podman, forces the removal, and discards any output. If the container does not exist or there's an error, it will do nothing and continue running.
+# Copy the current directory contents into the container at /app
+COPY. /app
 
-Risks:
+# Install any needed packages
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-- If the container does not exist, the command will simply do nothing and continue running.
-- If there's an error during the removal process, the error message will be printed to the console.
-- If the container is not running, the command will fail and the `true` command will not be executed.
-- If the container is running, the command will force its removal, which may cause data loss if the container is not properly cleaned up before removal.
+# Expose the port
+EXPOSE 4000
 
-To mitigate these risks, you could modify the command to:
+# Run the command to start the service
+CMD ["python", "app.py"]
+```
 
-- Check if the container exists before trying to remove it
+In this modified `Dockerfile`, the `CMD` instruction is changed to run the `python` command with the `app.py` file as an argument. This ensures that the container is fully initialized before trying to establish a connection to localhost:4000.
+
+Additionally, you can also try to add a sleep command before trying to establish the connection to give the container some time to initialize:
+
+```dockerfile
+# Use an official Python image as a base
+FROM python:3.9-slim
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY. /app
+
+# Install any needed packages
 ==========
-Prompt: 67 tokens, 547.183 tokens-per-sec
-Generation: 400 tokens, 115.974 tokens-per-sec
-Peak memory: 2.016 GB
-
-## mlx-llama32-3b / troubleshooting
-
-- Role: local-fast
-- Status: pass
-- Duration: 5.54s
-
-Output:
-
-The "connection reset by peer" error when trying to connect to a localhost:4000 endpoint from within a container is often related to the container's network configuration and the way the container is started.
-
-Here are a few possible causes:
-
-1.  The container is not yet fully started when you try to connect to localhost:4000. This can happen if the container takes a while to start or if there are issues with the network configuration.
-
-2.  The container's network configuration might not be set up correctly, causing the container to not be reachable from within the container.
-
-3.  The container might be running in a detached mode, which can cause issues with the connection.
-
-To resolve this issue, you can try the following changes to your Dockerfile:
-
-1.  Make sure the container is started in a non-detached mode. You can do this by adding the following command to the `CMD` section of your Dockerfile:
-
-    ```dockerfile
-CMD ["sh", "-c", "sleep 10 && podman start -a $1"]
-```
-
-    This will start the container in a non-detached mode and wait for 10 seconds before starting the container.
-
-2.  Ensure that the container is reachable from within the container. You can do this by adding the following command to the `CMD` section of your Dockerfile:
-
-    ```dockerfile
-CMD ["sh", "-c", "sleep 10 && podman ip $1"]
-```
-
-    This will print the IP address of the container, which you can use to connect to it.
-
-3.  Make sure the container is not running in a detached mode. You can do this by adding the following command to the `CMD` section of your Dockerfile:
-
-    ```dockerfile
-CMD ["sh", "-c", "sleep 10 && podman attach $1"]
-```
-
-    This will attach to the container and wait for 10 seconds before attaching.
-
-Here's an example of how
-==========
-Prompt: 83 tokens, 648.290 tokens-per-sec
-Generation: 400 tokens, 115.886 tokens-per-sec
+Prompt: 83 tokens, 696.358 tokens-per-sec
+Generation: 400 tokens, 115.643 tokens-per-sec
 Peak memory: 2.059 GB
 
 ## mlx-llama32-3b / code-config-review
 
 - Role: local-fast
 - Status: pass
-- Duration: 5.29s
+- Duration: 5.23s
 
 Output:
 
-This is a Bash script using the `curl` command to make a POST request to a Just Recipe API endpoint. Here's a breakdown of the command:
+This is a Bash script that uses the `curl` command to make a POST request to a server. Here's a breakdown of the command:
 
-- `curl`: The command to make an HTTP request.
+- `curl`: The command to make a HTTP request.
 - `-fsS`: The options used:
-  - `-f`: Forces the request to be sent even if the output is redirected.
+  - `-f`: Forces the request to be sent even if the server indicates that it cannot process the request.
   - `-s`: Suppresses the progress meter.
-  - `-S`: Turns off the screen output, which can be useful for long-running commands.
-- `"$gateway_url/v1/chat/completions"`: The URL of the API endpoint to make the request to. The `$` symbol is used to indicate that this is a variable, which will be replaced with the actual URL when the script is run.
-- `-d`: The option to specify the data to be sent in the request body.
-- `{model: local-fast, messages: [{role: user, content: $prompt}]}`: The JSON data to be sent in the request body. This data is expected to be in the format of a JSON object.
+  - `-S`: Turns off the progress meter and displays the progress in a more human-readable format.
 
-Here are some potential issues that might go wrong with this script:
+- `"$gateway_url/v1/chat/completions"`: The URL of the server endpoint to which the request is being made. The `$` symbol is used to indicate that this is a variable, which is likely set elsewhere in the script.
 
-1. **API endpoint URL**: If the `$gateway_url` variable is not set or is empty, the script will fail. Make sure this variable is set to the correct URL of the Just Recipe API endpoint.
-2. **JSON data format**: The JSON data format is expected to be in a specific format. If the data is not in this format, the API endpoint will likely return an error response.
-3. **Missing or invalid data**: If the `$prompt` variable is not set or is empty, the script will fail. Also, if the data is missing or invalid, the API endpoint may return an error response.
-4. **API endpoint rate limiting**: If the API endpoint has rate limiting in place, making too many requests in a short period of time may result in the API returning an error response or blocking the IP address
+- `-d`: The option to specify the data to be sent with the request.
+
+- `{model: local-fast, messages: [{role: user, content: $prompt}]}`: The data being sent with the request. This is a JSON object with two properties:
+  - `model`: Set to `local-fast`.
+  - `messages`: An array with one element, which is another JSON object with three properties:
+    - `role`: Set to `user`.
+    - `content`: Set to the value of the `$prompt` variable.
+
+As for what might go wrong, here are a few possibilities:
+
+1. **Invalid JSON**: If the `$prompt` variable is not a valid JSON string, the server may return an error response. This could be due to the variable being a string that is not properly formatted, or due to the variable being a string that contains invalid characters.
+
+2. **Server error**: The server may return an error response if the request is invalid or if the server is down. This could be due to the server being unable to process the request, or due to the server being down for maintenance.
+
+3. **Gateway URL issue**: If the `$gateway_url` variable is
 ==========
-Prompt: 82 tokens, 666.117 tokens-per-sec
-Generation: 400 tokens, 115.651 tokens-per-sec
+Prompt: 82 tokens, 711.982 tokens-per-sec
+Generation: 400 tokens, 115.436 tokens-per-sec
 Peak memory: 2.058 GB
 
 ## mlx-llama32-3b / unsuitable-model-signal
 
 - Role: local-fast
 - Status: pass
-- Duration: 3.38s
+- Duration: 3.97s
 
 Output:
 
-Based on the characteristics you described, the local model would be most suitable for a "quick and dirty" or "proof-of-concept" type of project. This could include:
+Based on the characteristics you've described, the local model group that might be a good fit is the "Scripting" or "Scripting and Automation" group.
 
-1. Prototyping: The local model's fast response time would be beneficial for rapid prototyping, allowing developers to quickly test and validate their ideas.
-2. Research and Development: The model's ability to ignore requested structure and invent project files could be advantageous in research and development environments where the focus is on exploring new ideas and technologies.
-3. Educational purposes: The local model's behavior could be used to teach students about the limitations and potential pitfalls of local models, such as ignoring requested structure and producing broken shell commands.
+This group typically involves creating scripts to automate tasks, which can be beneficial for tasks that require fast responses, such as data processing, file management, or automation of repetitive tasks.
 
-In general, the local model would be most suitable for projects that require rapid development, prototyping, or research, and where the focus is on exploring new ideas and technologies rather than producing high-quality, production-ready results.
+However, the local model's tendency to ignore requested structure, invent project files, and produce broken shell commands might be a sign that it's not well-suited for tasks that require a high degree of structure, organization, or attention to detail.
+
+If you're looking for a gateway model group that can help bridge the gap between the local model's strengths and the needs of more complex projects, you might consider the "Data Analysis" or "Data Science" group.
+
+These groups typically involve working with data, which can be structured and organized in a way that's more conducive to the local model's strengths. Additionally, data analysis and science often involve working with scripts and automation tools, which could help mitigate the local model's tendency to ignore requested structure and invent project files.
+
+Ultimately, the best gateway model group will depend on the specific needs and requirements of your project. It's worth exploring different options and seeing which one works best for you.
 ==========
-Prompt: 71 tokens, 562.742 tokens-per-sec
-Generation: 185 tokens, 116.487 tokens-per-sec
+Prompt: 71 tokens, 603.988 tokens-per-sec
+Generation: 257 tokens, 116.197 tokens-per-sec
 Peak memory: 2.027 GB
 
-## mlx-qwen35-9b-reasoning / quick-general-assistance
+## mlx-qwen3-30b-instruct / quick-general-assistance
 
 - Role: local-capable
 - Status: pass
-- Duration: 13.12s
+- Duration: 6.19s
 
 Output:
 
-Thinking Process:
+- **Local-first**: The AI workstation prioritizes running models and processing data directly on the user’s device, ensuring privacy, low latency, and offline functionality by keeping sensitive information and computation local.
 
-1.  **Analyze the Request:**
-    *   Target: Explain what "this AI workstation" is trying to achieve.
-    *   Constraints: Exactly three bullets.
-    *   Key Concepts: "local-first", "gateway-first", "CLI-native".
-    *   Implicit Context: The user is referring to a specific tool or architecture described by these three adjectives, likely a hypothetical or specific open-source project (e.g., something like `ollama`, `lm-studio`, or a conceptual framework for running LLMs). However, without a specific link or name provided in the prompt, I must interpret the *meaning* of these three principles in the context of AI workstations.
-    *   Goal: Provide a concise explanation of the objectives behind each principle.
+- **Gateway-first**: It uses a secure, lightweight gateway to mediate connections between local systems and external services (like cloud APIs or remote models), enabling controlled, authenticated access while maintaining user sovereignty over data.
 
-2.  **Deconstruct the Principles:**
-    *   **Local-first:**
-        *   Meaning: Data and models reside on the user's device, not in the cloud.
-        *   Objective: Privacy, offline capability, reduced latency, data sovereignty.
-    *   **Gateway-first:**
-        *   Meaning: The system acts as a central hub or router for AI services (local or remote).
-        *   Objective: Unified access, orchestration, seamless switching between local models and external APIs, managing connections.
-    *   **CLI-native:**
-        *   Meaning: Built primarily as a command-line interface tool.
-        *   Objective: Automation, scripting, developer workflow integration, lightweight footprint, flexibility.
-
-3.  **Drafting the Bullets (Iterative Process):**
-
-    *   *Draft 1:*
-        *   Local-first ensures your data stays private and works offline without needing internet.
-        *   Gateway-first means it connects to different AI models easily like a router.
-        *   CLI-native makes it easy to use with commands instead of a pretty app.
-
-    *   *Critique 1:* A bit too simple. Needs to sound more professional and capture the "achievement" aspect.
-
-    *   *Draft 2:*
-        *   **Local-first:** Prioritizes on-device model execution to guarantee data privacy and ensure functionality during internet outages.
-        *   **Gateway-first:** Establishes a central routing layer that seamlessly switches between local models and remote cloud APIs for optimal performance.
-        *   **CLI-native:** Focuses
+- **CLI-native**: Designed from the ground up for command-line interaction, it offers powerful, scriptable, and efficient workflows tailored for developers and power users who value automation, reproducibility, and seamless integration into existing development pipelines.
 ==========
-Prompt: 33 tokens, 192.589 tokens-per-sec
-Generation: 500 tokens, 49.151 tokens-per-sec
-Peak memory: 5.261 GB
+Prompt: 31 tokens, 51.622 tokens-per-sec
+Generation: 129 tokens, 92.255 tokens-per-sec
+Peak memory: 17.273 GB
 
-## mlx-qwen35-9b-reasoning / short-summary
+## mlx-qwen3-30b-instruct / short-summary
 
 - Role: local-capable
 - Status: pass
-- Duration: 12.83s
+- Duration: 4.22s
 
 Output:
 
-Thinking Process:
-
-1.  **Analyze the Request:**
-    *   Input text: "LiteLLM is being used as the local AI gateway. The daily CLI workflow uses just recipes. The local-fast model group currently routes to Ollama. The project avoids custom wrappers unless there is a clear need."
-    *   Task: Summarize the text.
-    *   Constraint: Use exactly four bullets.
-
-2.  **Analyze the Input Text (Sentence by Sentence):**
-    *   Sentence 1: "LiteLLM is being used as the local AI gateway." -> Key point: LiteLLM serves as the central interface/gateway for local AI.
-    *   Sentence 2: "The daily CLI workflow uses just recipes." -> Key point: Daily command-line operations rely on predefined recipes (no custom code).
-    *   Sentence 3: "The local-fast model group currently routes to Ollama." -> Key point: Specific model group ("local-fast") directs traffic to Ollama.
-    *   Sentence 4: "The project avoids custom wrappers unless there is a clear need." -> Key point: Philosophy of minimizing custom code/wrappers.
-
-3.  **Draft Initial Bullets:**
-    *   LiteLLM acts as the local AI gateway.
-    *   Daily CLI workflows utilize only recipes.
-    *   The local-fast model group routes to Ollama.
-    *   Custom wrappers are avoided unless necessary.
-
-4.  **Refine for Conciseness and Clarity:**
-    *   Bullet 1: LiteLLM functions as the local AI gateway.
-    *   Bullet 2: Daily CLI workflows rely exclusively on recipes.
-    *   Bullet 3: The local-fast model group routes requests to Ollama.
-    *   Bullet 4: Custom wrappers are avoided unless clearly needed.
-
-5.  **Check Constraints:**
-    *   Four bullets? Yes.
-    *   Summarizes the text? Yes.
-    *   Accurate? Yes.
-
-6.  **Final Polish:**
-    *   Make sure they flow well as a summary.
-    *   Ensure no information is lost or hallucinated.
-
-    *   *Draft 2:*
-        *   LiteLLM serves as the primary local AI gateway.
-        *   Daily CLI operations utilize only
+- LiteLLM serves as the local AI gateway for unified model access.  
+- The daily CLI workflow relies solely on pre-defined recipes for simplicity and consistency.  
+- The local-fast model group currently routes inference requests to Ollama.  
+- Custom wrappers are avoided unless there is a clear and justified need.
 ==========
-Prompt: 62 tokens, 255.641 tokens-per-sec
-Generation: 500 tokens, 48.332 tokens-per-sec
-Peak memory: 5.325 GB
+Prompt: 60 tokens, 88.767 tokens-per-sec
+Generation: 64 tokens, 93.066 tokens-per-sec
+Peak memory: 17.313 GB
 
-## mlx-qwen35-9b-reasoning / command-line-help
+## mlx-qwen3-30b-instruct / command-line-help
 
 - Role: local-capable
 - Status: pass
-- Duration: 12.61s
+- Duration: 8.72s
 
 Output:
 
-Let me analyze this command step by step:
-
-**Command breakdown:**
-1. `podman rm` - Removes a container
-2. `-f` - Force removal (removes container even if it's running)
-3. `ai-lab-litellm` - The container name to remove
-4. `>/dev/null 2>&1` - Redirects stdout and stderr to /dev/null (silences output)
-5. `|| true` - If the command fails, returns success anyway
-
-**What it does:**
-- Attempts to forcefully remove a container named "ai-lab-litellm"
-- Suppresses all output (both standard output and error messages)
-- Always returns exit code 0 (success) regardless of whether the container existed or removal succeeded
-
-**Risks and concerns:**
-
-1. **Silent failures**: With `>/dev/null 2>&1`, you won't see any error messages if:
-   - The container doesn't exist
-   - The container is in an unexpected state
-   - There are permission issues
-   - The container name is slightly different
-
-2. **`|| true` masks problems**: This makes it appear successful even when the container wasn't removed, which can hide real issues
-
-3. **Force removal risks**: `-f` can cause:
-   - Data loss if the container has uncommitted changes
-   - Orphaned volumes if they weren't properly cleaned up
-   - Potential issues with dependent containers
-
-4. **No verification**: You have no way to confirm the container was actually removed
-
-5. **Potential for cascading issues**: If this container is part of a larger system, removing it without proper cleanup could break other services
-</think>
-
-## Command Explanation
+Let's break down the command:
 
 ```bash
 podman rm -f ai-lab-litellm >/dev/null 2>&1 || true
 ```
 
-### What it does:
-1. **`podman rm`** - Removes a container from Podman
-2. **`-f`** - Force removal (removes running containers without warning)
-3. **`ai-lab-litellm`** - The specific container name to remove
-4. **`>/dev/null 2>&1`** - Discards all output (both stdout and stderr)
-5. **`|| true`** - Forces exit code 0 even if the command fails
+---
 
-###
+### 🔍 **What Each Part Does:**
+
+1. **`podman rm -f ai-lab-litellm`**
+   - `podman`: A container management tool (like Docker), used to manage containers, images, and pods.
+   - `rm`: The command to remove (delete) a container.
+   - `-f`: The "force" flag. This forces the removal of a container even if it's running. It's equivalent to `docker rm -f`.
+   - `ai-lab-litellm`: The name of the container you want to remove.
+
+   → This part attempts to **force-remove** a Podman container named `ai-lab-litellm`.
+
+2. **`>/dev/null 2>&1`**
+   - Redirects **standard output (stdout)** to `/dev/null` (discards it).
+   - Redirects **standard error (stderr)** to the same place (via `2>&1`).
+   - So, **no output** from the command (success or error) will be shown.
+
+   → This suppresses all messages, whether the container was removed successfully or not.
+
+3. **`|| true`**
+   - The `||` operator means "if the previous command fails, run the next one".
+   - `true` is a command that always succeeds (returns exit code 0).
+   - So, if `podman rm -f ai-lab-litellm` fails (e.g., container doesn't exist, permission denied, etc.), the `|| true` ensures the **entire command still exits with success (0)**.
+
+   → This makes the command **non-failing even if the container doesn't exist or can't be removed**.
+
+---
+
+### ✅ **Overall Purpose:**
+This command **tries to remove a Podman container named `ai-lab-litellm` forcefully**, but:
+- It **silently ignores any errors** (no output shown).
+- It **always returns success**, even if the container doesn’t exist or removal failed.
+
+It's commonly used in scripts to **ensure a container is removed, but not fail the script if it's already gone or inaccessible**.
+
+---
+
+### ⚠️ **Risks and Consider
 ==========
-Prompt: 42 tokens, 176.736 tokens-per-sec
-Generation: 500 tokens, 49.206 tokens-per-sec
-Peak memory: 5.266 GB
+Prompt: 40 tokens, 74.503 tokens-per-sec
+Generation: 500 tokens, 90.187 tokens-per-sec
+Peak memory: 17.275 GB
 
-## mlx-qwen35-9b-reasoning / troubleshooting
+## mlx-qwen3-30b-instruct / troubleshooting
 
 - Role: local-capable
 - Status: pass
-- Duration: 13.58s
+- Duration: 9.43s
 
 Output:
 
-Let me analyze this problem step by step:
+The error `"connection reset by peer"` when `curl`ing `localhost:4000` from inside a Podman container — especially when the container is still starting — strongly suggests that **the LiteLLM server hasn't fully started or is not listening on port 4000 yet**, and the `curl` command is being executed too early.
 
-1. **The Problem**: A Podman container running LiteLLM returns "connection reset by peer" when curling localhost:4000, even though the container is still starting.
+### Likely Cause:
+- Your `justfile` likely starts the container and immediately runs `curl http://localhost:4000` **before** LiteLLM has finished initializing and binding to port 4000.
+- The connection is reset because the server process hasn't started, so the OS rejects the connection (no listener on that port).
+- This is a **timing issue**: the `curl` command runs too early.
 
-2. **Understanding "connection reset by peer"**: This error means the TCP connection was actively closed by the receiving end (the server), not that the client couldn't connect. The server is rejecting the connection.
+---
 
-3. **Why this happens during container startup**:
-   - The container is still starting up
-   - LiteLLM needs to initialize its server process
-   - The server process needs to bind to the port (4000)
-   - The server process needs to complete its startup sequence
+### ✅ Small Fix in the `justfile`:
+Add a **delay or a retry loop** to wait until the server is actually ready before running `curl`.
 
-4. **The root cause**: The LiteLLM server process inside the container hasn't finished starting up yet when the curl request arrives. The port might be in a state where it's listening but the application isn't ready to accept connections, or the process hasn't fully initialized.
+Here’s a small, effective change:
 
-5. **The solution**: Add a delay to allow the container and LiteLLM server to fully start before attempting to curl the endpoint.
+```makefile
+# Example justfile
+start-litellm:
+	podman run -d --name litellm -p 4000:4000 ghcr.io/ollama/ollama:latest
+	# Wait for server to start (simple retry loop)
+	while ! curl -f http://localhost:4000/health > /dev/null 2>&1; do
+		echo "Waiting for LiteLLM server to start..."
+		sleep 2
+	done
+	curl http://localhost:4000/health
+```
 
-6. **The specific change**: In the justfile, add a `sleep` command after the container start command and before the curl command.
+> 🔥 **Key change**: Replace the immediate `curl` with a `while` loop that retries until the server responds.
 
-7. **How long to wait**: LiteLLM startup can take a few seconds to a minute depending on the model loading and initialization. A 5-10 second delay is typically sufficient.
+---
 
-8. **Verification**: After adding the delay, the curl should succeed because the server will have completed its startup sequence.
-</think>
+### Why This Works:
+- `curl -f` returns non-zero if the server doesn't respond (e.g., connection reset).
+- The loop waits 2 seconds between retries.
+- Once LiteLLM is up and serving, `curl` will succeed.
 
-## Analysis
+---
 
-**The Problem:** "Connection reset by peer" means the server actively closed the connection, not that the client couldn't reach it.
+### Optional Improvements:
+- Use a health check endpoint (e.g., `/health`, `/ready`) if LiteLLM supports it.
+- Use `timeout` to avoid infinite waits:
+  ```bash
+  timeout 30s while ! curl -f http://localhost:4000/health > /dev/null 2>&1; do
+    sleep 2
+  done
+  ```
 
-**The Root Cause:** LiteLLM's server process inside the container hasn't finished starting up yet when your curl request arrives. The container may be running, but the LiteLLM application itself is still initializing.
+---
 
-**Why This Happens:**
-- Container startup ≠ Application startup
-- LiteLLM needs time to:
-  - Load models (if configured)
-  - Initialize the server process
-  - Bind to the port properly
-  - Complete all startup checks
-
-## The Solution
-
-Add a **delay** in your justfile between starting the container and curling the endpoint.
-
-### Change to Make in Your
+### Summary:
+✅ **
 ==========
-Prompt: 60 tokens, 240.775 tokens-per-sec
-Generation: 500 tokens, 46.965 tokens-per-sec
-Peak memory: 5.318 GB
+Prompt: 58 tokens, 97.641 tokens-per-sec
+Generation: 500 tokens, 82.201 tokens-per-sec
+Peak memory: 17.309 GB
 
-## mlx-qwen35-9b-reasoning / code-config-review
+## mlx-qwen3-30b-instruct / code-config-review
 
 - Role: local-capable
 - Status: pass
-- Duration: 13.06s
+- Duration: 9.16s
 
 Output:
 
-Let me analyze this recipe line carefully for potential issues.
+The `curl` command you've provided has several issues that could cause it to fail or behave unexpectedly. Let's break it down and explain what might go wrong.
 
-The line is:
+### 🔍 The Command:
 ```bash
 curl -fsS "$gateway_url/v1/chat/completions" -d "{model: local-fast, messages: [{role: user, content: $prompt}]}"
 ```
 
-Let me break down each component and identify issues:
+---
 
-1. **`-d` flag with JSON**: The `-d` flag sends data to the server, but the way it's structured is problematic.
+## ❌ Problems and What Might Go Wrong:
 
-2. **JSON syntax errors**:
-   - `model: local-fast` - missing quotes around the key and value
-   - `messages: [{role: user, content: $prompt}]` - missing quotes around keys and values
-   - The entire JSON structure is malformed
+### 1. **Incorrect JSON Format in `-d` Data**
+The `-d` flag sends data as `application/x-www-form-urlencoded` by default unless you specify `--data-binary` or set the `Content-Type` header.
 
-3. **Variable expansion**: `$prompt` will be expanded by the shell, which is fine, but it needs to be properly quoted
+But more critically:  
+You're passing a **raw string** that looks like JSON but isn't valid JSON.
 
-4. **`-fsS` flags**:
-   - `-f`: fail on HTTP errors (4xx, 5xx)
-   - `-s`: silent (don't show progress)
-   - `-S`: show output even on error
-   - These are actually fine
+- **Invalid JSON**: You're using `:` instead of `"` for keys and values.
+- **Missing quotes around strings**: `model: local-fast` should be `"model": "local-fast"`, and `content: $prompt` should be `"content": "..."`.
 
-5. **URL structure**: The URL looks reasonable for an OpenAI-compatible API
+✅ **Correct JSON** would be:
+```json
+{"model": "local-fast", "messages": [{"role": "user", "content": "Hello, world!"}]}
+```
 
-6. **Content type**: The `-d` flag with JSON should work, but it's better to use `-d @-` or `-d @file` for cleaner JSON, or use `-H "Content-Type: application/json"`
+❌ Your current version:
+```json
+{model: local-fast, messages: [{role: user, content: $prompt}]}
+```
+This is **not valid JSON**, so the server will reject it with a `400 Bad Request` error.
 
-Let me think about what would actually go wrong:
+---
 
-**Major Issues:**
-1. **JSON syntax is completely broken** - keys and string values need to be quoted
-2. **The `-d` flag will try to send the literal string** including the unquoted parts, which will cause JSON parsing errors on the server side
-3. **Variable expansion** - `$prompt` needs to be properly quoted to prevent word splitting
-
-**What would fail:**
-- The server would return a 400 Bad Request error because the JSON is invalid
-- The shell might interpret special characters in `$prompt` incorrectly
-- The `-f` flag would cause curl to exit with an error code
-</think>
-
-## Review of the Recipe Line
-
+### 2. **Shell Variable Expansion in Unquoted String**
+You have:
 ```bash
-curl -fsS "$gateway_url/v1/chat/completions" -d "{model: local-fast, messages: [{role: user, content: $prompt
-==========
-Prompt: 57 tokens, 210.772 tokens-per-sec
-Generation: 500 tokens, 48.216 tokens-per-sec
-Peak memory: 5.307 GB
+content: $prompt
+```
+But `$prompt` is not quoted, and it's inside a string that's not properly escaped.
 
-## mlx-qwen35-9b-reasoning / unsuitable-model-signal
+- If `$prompt` contains spaces, special characters, or shell metacharacters (like `|`, `&`, `<`, `>`, etc.), they will be interpreted by the shell.
+- If `$prompt` is empty or contains a newline, the JSON becomes malformed.
+
+✅ Fix: Quote the variable and properly escape the JSON.
+
+---
+
+### 3. **Missing `Content-Type` Header**
+Even if you fix the JSON, you must tell the server that you're sending JSON data.
+
+- Without `Content-Type: application/json`, the server may not parse the body correctly.
+
+---
+
+### 4. **No `--data-binary` or Proper JSON Handling**
+`-d` sends data as
+==========
+Prompt: 55 tokens, 86.550 tokens-per-sec
+Generation: 500 tokens, 86.797 tokens-per-sec
+Peak memory: 17.303 GB
+
+## mlx-qwen3-30b-instruct / unsuitable-model-signal
 
 - Role: local-capable
 - Status: pass
-- Duration: 12.78s
+- Duration: 8.99s
 
 Output:
 
-Let me analyze this question carefully.
+The local model you're describing—fast responses but prone to ignoring structure, inventing project files, and generating broken shell commands—should **not** be used as a primary gateway model in a production or reliable workflow.
 
-The question asks about a "local model" that has specific characteristics:
-1. Fast responses
-2. Often ignores requested structure
-3. Invents project files
-4. Produces broken shell commands
+Here’s why, and what you should do instead:
 
-The question asks which "gateway model group" it should be used for, if any.
+### Why It Should Not Be Used as a Gateway Model:
+- **Gateway models** are responsible for handling user requests, routing them appropriately, and ensuring reliable, structured, and safe outputs—especially when interacting with systems, files, or execution environments.
+- This local model:
+  - **Ignores structure** → violates the core requirement of a gateway to maintain input/output consistency.
+  - **Invents project files** → introduces unsafe or unintended side effects (e.g., creating files not requested).
+  - **Produces broken shell commands** → can cause system errors or security risks if executed.
 
-First, I need to understand what "gateway model group" means in the context of AI/LLM systems. In AI gateway architectures, there are typically different model groups or tiers:
+These behaviors make it **unreliable and unsafe** for use as a gateway, which must be predictable and secure.
 
-1. **Gateway/Entry models** - First line of defense, handle routing, basic queries, filtering
-2. **Tier 1/Primary models** - Main workhorses for most tasks
-3. **Tier 2/Secondary models** - Specialized or backup models
-4. **Tier 3/Tertiary models** - Fallback, experimental, or specialized use cases
+---
 
-Given the characteristics described:
-- **Fast responses** - This is a positive attribute
-- **Ignores requested structure** - This is a reliability/quality issue
-- **Invents project files** - This is a hallucination problem
-- **Produces broken shell commands** - This is a technical accuracy problem
+### Recommended Approach:
+Instead, use this local model **only for ideation or drafting**, not for execution or routing.
 
-The model has significant reliability issues. It's fast but unreliable.
+#### ✅ Best Use Case:
+- **Internal brainstorming or rough draft generation** (e.g., "Here’s a possible structure for your script").
+- **Low-stakes, non-executable tasks** where errors are acceptable and can be manually corrected.
 
-In gateway architectures, models with known reliability issues are typically:
-- **NOT used for critical production tasks**
-- **NOT used as primary models**
-- **NOT used for tasks requiring high accuracy**
+#### ❌ Avoid:
+- **As a gateway model** (e.g., in a system that routes to code execution, file creation, or shell command generation).
+- **In any automated pipeline** where correctness, safety, or structure matters.
 
-They might be used for:
-- **Testing/development** - Where speed matters more than accuracy
-- **Non-critical tasks** - Where errors are tolerable
-- **Fallback scenarios** - Only when other models are unavailable
-- **Learning/evaluation** - To understand model behavior
+---
 
-The most appropriate answer would be that this model should **NOT be used for critical production workloads** and should only be used in **non-critical, testing, or fallback scenarios**.
+### Alternative: Use a More Reliable Model for the Gateway
+For a proper gateway model, you should use:
+- A **well-structured, safety-aware model** (e.g., a fine-tuned version of a model like Llama 3, CodeLlama, or a specialized agent model).
+- One that:
+  - Enforces output format (e.g., JSON, YAML, structured code).
+  - Validates shell commands before output.
+  - Avoids creating files unless explicitly instructed and verified.
 
-In terms of "gateway model group" terminology, this would typically be classified as a **Tier 3/Tertiary model** or **fallback model** - models that are available but not trusted for primary work.
-</think>
+---
 
-## Answer
+### Summary:
+> **Do not use this local model as a gateway model.**  
+> It lacks the structure, safety, and reliability required for gateway responsibilities.  
+> Use it only for informal, non-executable brainstorming, and route actual tasks to a more robust, structured model.
 
-Based on the characteristics described, this local model should **NOT be used for critical production workloads** and should only be assigned to **non-critical, testing, or fallback scenarios**.
-
-### Reasoning:
-
-| Characteristic
+If you must use it in a system, **add
 ==========
-Prompt: 46 tokens, 190.828 tokens-per-sec
-Generation: 500 tokens, 48.555 tokens-per-sec
-Peak memory: 5.277 GB
+Prompt: 44 tokens, 80.400 tokens-per-sec
+Generation: 500 tokens, 87.312 tokens-per-sec
+Peak memory: 17.282 GB
 
 ## mlx-qwen3-coder-30b / quick-general-assistance
 
 - Role: local-code
 - Status: pass
-- Duration: 11.06s
+- Duration: 7.51s
 
 Output:
 
@@ -521,15 +488,15 @@ Output:
 
 • **CLI-native**: The workstation is optimized for command-line interface usage, providing powerful, scriptable access to AI tools and workflows through terminal-based interactions rather than relying on graphical user interfaces.
 ==========
-Prompt: 31 tokens, 10.745 tokens-per-sec
-Generation: 115 tokens, 77.514 tokens-per-sec
+Prompt: 31 tokens, 33.766 tokens-per-sec
+Generation: 115 tokens, 74.354 tokens-per-sec
 Peak memory: 21.089 GB
 
 ## mlx-qwen3-coder-30b / short-summary
 
 - Role: local-code
 - Status: pass
-- Duration: 9.47s
+- Duration: 7.38s
 
 Output:
 
@@ -538,15 +505,15 @@ Output:
 • The local-fast model group is configured to route through Ollama
 • Custom wrappers are avoided unless absolutely necessary for specific functionality
 ==========
-Prompt: 60 tokens, 22.800 tokens-per-sec
-Generation: 53 tokens, 78.738 tokens-per-sec
+Prompt: 60 tokens, 33.632 tokens-per-sec
+Generation: 53 tokens, 75.305 tokens-per-sec
 Peak memory: 21.130 GB
 
 ## mlx-qwen3-coder-30b / command-line-help
 
 - Role: local-code
 - Status: pass
-- Duration: 14.86s
+- Duration: 12.88s
 
 Output:
 
@@ -600,15 +567,15 @@ fi
 ## Use Case:
 This pattern is typically used in **automated scripts** where you want to ensure a container is removed without interrupting the script flow, but it should be used with extreme caution.
 ==========
-Prompt: 40 tokens, 16.304 tokens-per-sec
-Generation: 482 tokens, 73.830 tokens-per-sec
+Prompt: 40 tokens, 26.716 tokens-per-sec
+Generation: 482 tokens, 72.739 tokens-per-sec
 Peak memory: 21.091 GB
 
 ## mlx-qwen3-coder-30b / troubleshooting
 
 - Role: local-code
 - Status: pass
-- Duration: 12.88s
+- Duration: 10.75s
 
 Output:
 
@@ -634,15 +601,15 @@ The key changes:
 
 If LiteLLM has a specific flag for binding (like `--host 0.0.0.0`), add that to your command as well. The "connection reset by peer" error typically occurs when the server isn't properly listening on the exposed port or the network configuration blocks the connection.
 ==========
-Prompt: 58 tokens, 23.027 tokens-per-sec
-Generation: 322 tokens, 71.379 tokens-per-sec
+Prompt: 58 tokens, 34.410 tokens-per-sec
+Generation: 322 tokens, 75.922 tokens-per-sec
 Peak memory: 21.126 GB
 
 ## mlx-qwen3-coder-30b / code-config-review
 
 - Role: local-code
 - Status: pass
-- Duration: 13.11s
+- Duration: 9.99s
 
 Output:
 
@@ -672,15 +639,15 @@ curl -fsS "$gateway_url/v1/chat/completions" \
 
 Or better yet, use a here-document or proper JSON escaping to avoid shell quoting issues.
 ==========
-Prompt: 55 tokens, 17.265 tokens-per-sec
-Generation: 265 tokens, 71.540 tokens-per-sec
+Prompt: 55 tokens, 33.689 tokens-per-sec
+Generation: 265 tokens, 69.515 tokens-per-sec
 Peak memory: 21.120 GB
 
 ## mlx-qwen3-coder-30b / unsuitable-model-signal
 
 - Role: local-code
 - Status: pass
-- Duration: 12.18s
+- Duration: 9.49s
 
 Output:
 
@@ -707,6 +674,6 @@ Here's why:
 
 The key is using it as a "first draft" tool rather than a final output tool.
 ==========
-Prompt: 44 tokens, 18.192 tokens-per-sec
-Generation: 269 tokens, 76.580 tokens-per-sec
+Prompt: 44 tokens, 30.577 tokens-per-sec
+Generation: 269 tokens, 76.227 tokens-per-sec
 Peak memory: 21.099 GB
