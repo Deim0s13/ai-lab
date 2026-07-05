@@ -244,10 +244,11 @@ Observed recommendation pattern:
 
 - MLX is the dominant recommended runtime for this Apple silicon workstation.
 - 3B-4B MLX instruction models are strong candidates for local-fast.
-- 9B-15B MLX reasoning/instruction models are strong candidates for local-capable.
+- larger non-reasoning MLX instruction models are strong candidates for local-capable.
 - Qwen3-Coder-30B-A3B MLX variants appear to be strong local-code candidates.
 - Raw tokens-per-second sorting is not sufficient because it surfaces tiny, random, internal-test and embedding models.
 - Project criteria must filter llmfit results before install.
+- Reasoning-style models require additional gateway compatibility checks because some return reasoning-only output instead of normal assistant content.
 
 Selection rules:
 
@@ -256,6 +257,7 @@ Selection rules:
 - Do not install tiny-random, internal-testing or embedding-only models as chat candidates.
 - Do not install large reasoning/distill models just because they top the score table.
 - Use llmfit for hardware-aware discovery, then apply project role criteria before installation.
+- For gateway-backed routes, prefer models that return normal assistant content in `message.content`.
 
 ## Installed Baselines
 
@@ -274,14 +276,15 @@ Installed Ollama models are baselines, not the full test universe.
 
 These candidates were selected through llmfit output plus project role criteria.
 
-| Role                      | Candidate                                                           | Runtime | Reason                                                                                              | Status                                             |
-| ------------------------- | ------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| local-fast                | mlx-community/Llama-3.2-3B-Instruct-4bit                            | MLX     | Fast, low memory, comparable to current Ollama llama3.2:3b baseline                                 | Installed; direct MLX proven; gateway route proven |
-| local-fast alternate      | unsloth/Qwen3-4B-Instruct-2507-unsloth-bnb-4bit                     | MLX     | Fast Qwen 4B candidate with long context                                                            | Not installed; alternate                           |
-| local-capable             | Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX     | Strong direct-generation candidate, but returns reasoning-only/null content through `mlx-lm server` | Parked for gateway route                           |
-| local-capable replacement | microsoft/Phi-4-reasoning                                           | MLX     | Alternate capable model selected for gateway-route testing                                          | Candidate                                          |
-| local-code                | lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit            | MLX     | Code-focused candidate with strong estimated throughput                                             | Installed; direct MLX proven; gateway route proven |
-| local-code alternate      | unsloth/Qwen3-Coder-30B-A3B-Instruct                                | MLX     | Same code-focused family; use if easier to install/run                                              | Not installed; alternate                           |
+| Role                   | Candidate                                                           | Runtime | Reason                                                                                                                    | Status                                             |
+| ---------------------- | ------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| local-fast             | mlx-community/Llama-3.2-3B-Instruct-4bit                            | MLX     | Fast, low memory, comparable to current Ollama llama3.2:3b baseline                                                       | Installed; direct MLX proven; gateway route proven |
+| local-fast alternate   | unsloth/Qwen3-4B-Instruct-2507-unsloth-bnb-4bit                     | MLX     | Fast Qwen 4B candidate with long context                                                                                  | Not installed; alternate                           |
+| local-capable          | lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit             | MLX     | Non-reasoning instruct model selected after reasoning models returned reasoning-only/null content through `mlx-lm server` | Installed; gateway route proven                    |
+| local-capable parked   | Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX     | Strong direct-generation candidate, but returns reasoning-only/null content through `mlx-lm server`                       | Parked for direct use only                         |
+| local-capable rejected | microsoft/Phi-4-reasoning                                           | MLX     | Server starts, but returns reasoning-only output through `mlx-lm server`                                                  | Rejected for gateway route                         |
+| local-code             | lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit            | MLX     | Code-focused candidate with strong estimated throughput                                                                   | Installed; direct MLX proven; gateway route proven |
+| local-code alternate   | unsloth/Qwen3-Coder-30B-A3B-Instruct                                | MLX     | Same code-focused family; use if easier to install/run                                                                    | Not installed; alternate                           |
 
 ## MLX Gateway Routing
 
@@ -296,11 +299,21 @@ Accepted routing pattern:
 
 Current route status:
 
-| Gateway route     | Backend model                                                       | Runtime               | Port | Status                                       |
-| ----------------- | ------------------------------------------------------------------- | --------------------- | ---- | -------------------------------------------- |
-| local-fast-mlx    | mlx-community/Llama-3.2-3B-Instruct-4bit                            | MLX via mlx-lm server | 8080 | Proven                                       |
-| local-capable-mlx | Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX via mlx-lm server | 8081 | Not suitable; returns null `message.content` |
-| local-code-mlx    | lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit            | MLX via mlx-lm server | 8082 | Proven                                       |
+| Gateway route     | Backend model                                            | Runtime               | Port | Status |
+| ----------------- | -------------------------------------------------------- | --------------------- | ---- | ------ |
+| local-fast-mlx    | mlx-community/Llama-3.2-3B-Instruct-4bit                 | MLX via mlx-lm server | 8080 | Proven |
+| local-capable-mlx | lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit  | MLX via mlx-lm server | 8081 | Proven |
+| local-code-mlx    | lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit | MLX via mlx-lm server | 8082 | Proven |
+
+Decision:
+
+Use non-reasoning MLX instruction models for gateway-backed capable routes unless reasoning-field handling is explicitly added later.
+
+Gateway-backed MLX candidates must return usable assistant content in `message.content`. Reasoning-only output is not sufficient, even when the server starts and the model generates text.
+
+Security note:
+
+`mlx-lm server` is suitable here as a local workstation service only. It should not be exposed beyond the local workstation without further security review.
 
 ### MLX Gateway Compatibility Finding
 
@@ -310,21 +323,19 @@ A model must also return usable OpenAI-compatible chat content through `mlx-lm s
 
 Finding:
 
-| Model                                                               | Direct MLX generation | mlx-lm server route           | LiteLLM route             | Decision                                                             |
-| ------------------------------------------------------------------- | --------------------- | ----------------------------- | ------------------------- | -------------------------------------------------------------------- |
-| Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | Works                 | Returns reasoning-only output | `message.content` is null | Park for direct use only; do not use as gateway-backed local-capable |
+| Model                                                               | Direct MLX generation | mlx-lm server route              | LiteLLM route                  | Decision                                                             |
+| ------------------------------------------------------------------- | --------------------- | -------------------------------- | ------------------------------ | -------------------------------------------------------------------- |
+| Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | Works                 | Returns reasoning-only output    | `message.content` is null      | Park for direct use only; do not use as gateway-backed local-capable |
+| microsoft/Phi-4-reasoning                                           | Server starts         | Returns reasoning-only output    | `message.content` is null      | Reject as gateway-backed local-capable                               |
+| lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit             | Works                 | Returns normal assistant content | `message.content` is populated | Use as gateway-backed local-capable candidate                        |
 
 Reason:
 
-The model returns reasoning fields such as `reasoning` / `reasoning_content`, but does not populate the normal OpenAI-compatible `message.content` field. This makes it unsuitable as a LiteLLM-backed gateway route without additional adaptation.
+Some reasoning-style MLX models return reasoning fields such as `reasoning` / `reasoning_content`, but do not populate the normal OpenAI-compatible `message.content` field. This makes them unsuitable as LiteLLM-backed gateway routes without additional adaptation.
 
-Decision:
+The working `local-capable-mlx` route is:
 
-Use `microsoft/Phi-4-reasoning` as the next `local-capable-mlx` gateway candidate.
-
-Security note:
-
-`mlx-lm server` is suitable here as a local workstation service only. It should not be exposed beyond the local workstation without further security review.
+    lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit
 
 ## Test Prompt Set
 
@@ -412,7 +423,8 @@ Recommended suitability decisions:
 | qwen3.5:latest                                                      | Ollama via LiteLLM | local-capable / local-code baseline | 6/6 ran successfully through promptfoo                                                     | Stronger but slower; compare carefully                                 |
 | mlx-community/Llama-3.2-3B-Instruct-4bit                            | MLX                | local-fast                          | 6/6 ran successfully through direct MLX eval; gateway route proven                         | Strong candidate for local-fast                                        |
 | Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX                | local-capable                       | 6/6 ran successfully through direct MLX eval; gateway route returns null `message.content` | Park for direct use only; not suitable as gateway-backed local-capable |
-| microsoft/Phi-4-reasoning                                           | MLX                | local-capable                       | Pending gateway test                                                                       | Candidate replacement for local-capable                                |
+| microsoft/Phi-4-reasoning                                           | MLX                | local-capable                       | Server starts; returns reasoning-only output and null `message.content`                    | Reject as gateway-backed local-capable                                 |
+| lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit             | MLX                | local-capable                       | Gateway route proven through `mlx-lm server` and LiteLLM                                   | Strong candidate for local-capable                                     |
 | lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit            | MLX                | local-code                          | 6/6 ran successfully through direct MLX eval; gateway route proven                         | Strong candidate for local-code                                        |
 
 Notes:
@@ -426,11 +438,11 @@ Notes:
 
 ## Current Model Group Decisions
 
-| Gateway model group | Provisional selected model                               | Runtime | Proven path                                 | Active gateway route status                                                                      | Decision status    |
-| ------------------- | -------------------------------------------------------- | ------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------ |
-| local-fast          | mlx-community/Llama-3.2-3B-Instruct-4bit                 | MLX     | direct MLX and LiteLLM via `local-fast-mlx` | Candidate route proven; stable `local-fast` not yet repointed                                    | Provisional winner |
-| local-capable       | microsoft/Phi-4-reasoning                                | MLX     | pending gateway test                        | Replacement candidate required; original Qwen3.5 reasoning model returned null `message.content` | Pending            |
-| local-code          | lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit | MLX     | direct MLX and LiteLLM via `local-code-mlx` | Candidate route proven; stable `local-code` not yet repointed                                    | Provisional winner |
+| Gateway model group | Provisional selected model                               | Runtime | Proven path                                 | Active gateway route status                                      | Decision status    |
+| ------------------- | -------------------------------------------------------- | ------- | ------------------------------------------- | ---------------------------------------------------------------- | ------------------ |
+| local-fast          | mlx-community/Llama-3.2-3B-Instruct-4bit                 | MLX     | direct MLX and LiteLLM via `local-fast-mlx` | Candidate route proven; stable `local-fast` not yet repointed    | Provisional winner |
+| local-capable       | lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit  | MLX     | LiteLLM via `local-capable-mlx`             | Candidate route proven; stable `local-capable` not yet repointed | Provisional winner |
+| local-code          | lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit | MLX     | direct MLX and LiteLLM via `local-code-mlx` | Candidate route proven; stable `local-code` not yet repointed    | Provisional winner |
 
 Routing note:
 
@@ -531,18 +543,19 @@ Do not add broad cache deletion commands until the project has confirmed where s
 
 ### Current Decommissioning Review
 
-| Model                                                               | Runtime | Current state                   | Action                                            |
-| ------------------------------------------------------------------- | ------- | ------------------------------- | ------------------------------------------------- |
-| llama3.2:3b                                                         | Ollama  | active / baseline               | Keep                                              |
-| llama3.1:8b                                                         | Ollama  | baseline / candidate            | Keep for testing                                  |
-| mistral:7b                                                          | Ollama  | baseline / candidate            | Keep for testing                                  |
-| qwen3.5:latest                                                      | Ollama  | baseline / candidate            | Keep for testing                                  |
-| mistral:latest                                                      | Ollama  | likely duplicate / obsolete     | Review for removal                                |
-| nomic-embed-text:latest                                             | Ollama  | parked                          | Keep only if embedding/RAG work is expected later |
-| mlx-community/Llama-3.2-3B-Instruct-4bit                            | MLX     | candidate; gateway route proven | Keep for testing                                  |
-| Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX     | parked for gateway route        | Keep only if direct testing remains useful        |
-| microsoft/Phi-4-reasoning                                           | MLX     | candidate replacement           | Keep for gateway testing                          |
-| lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit            | MLX     | candidate; gateway route proven | Keep for testing                                  |
+| Model                                                               | Runtime | Current state                   | Action                                                         |
+| ------------------------------------------------------------------- | ------- | ------------------------------- | -------------------------------------------------------------- |
+| llama3.2:3b                                                         | Ollama  | active / baseline               | Keep                                                           |
+| llama3.1:8b                                                         | Ollama  | baseline / candidate            | Keep for testing                                               |
+| mistral:7b                                                          | Ollama  | baseline / candidate            | Keep for testing                                               |
+| qwen3.5:latest                                                      | Ollama  | baseline / candidate            | Keep for testing                                               |
+| mistral:latest                                                      | Ollama  | likely duplicate / obsolete     | Review for removal                                             |
+| nomic-embed-text:latest                                             | Ollama  | parked                          | Keep only if embedding/RAG work is expected later              |
+| mlx-community/Llama-3.2-3B-Instruct-4bit                            | MLX     | candidate; gateway route proven | Keep for testing                                               |
+| Jackrong/MLX-Qwen3.5-9B-Claude-4.6-Opus-Reasoning-Distilled-v2-4bit | MLX     | parked for direct use only      | Keep only if direct testing remains useful                     |
+| microsoft/Phi-4-reasoning                                           | MLX     | rejected for gateway route      | Remove unless needed for further reasoning-model investigation |
+| lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit             | MLX     | candidate; gateway route proven | Keep for testing                                               |
+| lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit            | MLX     | candidate; gateway route proven | Keep for testing                                               |
 
 Initial likely decommissioning candidate:
 
