@@ -1,8 +1,8 @@
 {
-  "evalId": "eval-i1w-2026-07-05T09:58:27",
+  "evalId": "eval-vdP-2026-07-05T10:55:12",
   "results": {
     "version": 3,
-    "timestamp": "2026-07-05T09:58:27.618Z",
+    "timestamp": "2026-07-05T10:55:12.294Z",
     "prompts": [
       {
         "id": "effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982",
@@ -16,12 +16,12 @@
           "testErrorCount": 0,
           "assertPassCount": 0,
           "assertFailCount": 0,
-          "totalLatencyMs": 82391,
+          "totalLatencyMs": 28514,
           "tokenUsage": {
             "prompt": 408,
-            "completion": 1689,
+            "completion": 1888,
             "cached": 0,
-            "total": 2097,
+            "total": 2296,
             "numRequests": 6,
             "completionDetails": {
               "reasoning": 0,
@@ -63,60 +63,13 @@
           "testErrorCount": 0,
           "assertPassCount": 0,
           "assertFailCount": 0,
-          "totalLatencyMs": 474139,
+          "totalLatencyMs": 52411,
           "tokenUsage": {
             "prompt": 318,
-            "completion": 1993,
+            "completion": 2109,
             "cached": 0,
-            "total": 2311,
+            "total": 2427,
             "numRequests": 6,
-            "completionDetails": {
-              "reasoning": 0,
-              "acceptedPrediction": 0,
-              "rejectedPrediction": 0,
-              "cacheReadInputTokens": 0,
-              "cacheCreationInputTokens": 0
-            },
-            "assertions": {
-              "total": 0,
-              "prompt": 0,
-              "completion": 0,
-              "cached": 0,
-              "numRequests": 0,
-              "completionDetails": {
-                "reasoning": 0,
-                "acceptedPrediction": 0,
-                "rejectedPrediction": 0,
-                "cacheReadInputTokens": 0,
-                "cacheCreationInputTokens": 0
-              }
-            }
-          },
-          "namedScores": {},
-          "namedScoresCount": {},
-          "namedScoreWeights": {},
-          "cost": 0
-        }
-      },
-      {
-        "id": "effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982",
-        "raw": "{{prompt}}",
-        "label": "{{prompt}}",
-        "provider": "candidate-qwen35",
-        "metrics": {
-          "score": 5,
-          "testPassCount": 5,
-          "testFailCount": 0,
-          "testErrorCount": 1,
-          "assertPassCount": 0,
-          "assertFailCount": 0,
-          "totalLatencyMs": 1710534,
-          "tokenUsage": {
-            "prompt": 260,
-            "completion": 14019,
-            "cached": 0,
-            "total": 14279,
-            "numRequests": 5,
             "completionDetails": {
               "reasoning": 0,
               "acceptedPrediction": 0,
@@ -161,8 +114,8 @@
             "numRequests": 0
           }
         },
-        "id": "54ac4605-62f1-4532-84fb-df0fbc04f761",
-        "latencyMs": 3969,
+        "id": "e75dc4d1-d711-4d59-9f45-dc0827f3c781",
+        "latencyMs": 5630,
         "namedScores": {},
         "prompt": {
           "raw": "In three bullets, explain what this AI workstation is trying to achieve: local-first, gateway-first, CLI-native.",
@@ -176,15 +129,15 @@
           "label": "candidate-llama32-3b"
         },
         "response": {
-          "output": "Unfortunately, you haven't provided any code or information about the AI workstation. Can you please provide more context or clarify which AI workstation you are referring to? I'll do my best to answer your question in three bullets once I have more information.",
+          "output": "Based on the term \"local-first, gateway-first, CLI-native\", here are three bullet points explaining what the AI workstation is trying to achieve:\n\n• **Local-first**: The AI workstation prioritizes processing and working with data locally on the user's device before considering remote connections or cloud services. This approach aims to reduce latency, improve security, and enhance overall performance by minimizing the need for network connectivity.\n\n• **Gateway-first**: If local processing is not sufficient or if specific tasks require external resources, the AI workstation then focuses on connecting to a gateway – likely a centralized server or cloud-based platform. The gateway acts as an intermediary, providing access to specialized tools, services, and expertise that extend the capabilities of the local environment.\n\n• **CLI-native**: Finally, the AI workstation aims to integrate with Command-Line Interface (CLI) tools, allowing users to leverage their existing skills and workflows within the AI-powered workspace. By making CLI interfaces more accessible and intuitive, the system enhances productivity, reduces learning curves, and facilitates a smoother transition for users accustomed to working with command-line applications.",
           "tokenUsage": {
-            "total": 101,
+            "total": 267,
             "prompt": 51,
-            "completion": 50,
+            "completion": 216,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 3969,
+          "latencyMs": 5630,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -194,27 +147,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "557",
+                "content-length": "1561",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 09:58:27 GMT",
+                "date": "Sun, 05 Jul 2026 10:55:12 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "3e25ec7b-6178-4b93-a255-02acab9a120d",
+                "x-litellm-call-id": "ba0116e1-c60c-493b-b999-26d866361eb3",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama32-3b",
                 "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-                "x-litellm-overhead-duration-ms": "7.952",
+                "x-litellm-overhead-duration-ms": "26.741",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "2388.154",
+                "x-litellm-response-duration-ms": "5586.425",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -234,9 +187,9 @@
         "testIdx": 0,
         "tokenUsage": {
           "prompt": 51,
-          "completion": 50,
+          "completion": 216,
           "cached": 0,
-          "total": 101,
+          "total": 267,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -268,27 +221,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "557",
+              "content-length": "1561",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 09:58:27 GMT",
+              "date": "Sun, 05 Jul 2026 10:55:12 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "3e25ec7b-6178-4b93-a255-02acab9a120d",
+              "x-litellm-call-id": "ba0116e1-c60c-493b-b999-26d866361eb3",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama32-3b",
               "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-              "x-litellm-overhead-duration-ms": "7.952",
+              "x-litellm-overhead-duration-ms": "26.741",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "2388.154",
+              "x-litellm-response-duration-ms": "5586.425",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -310,8 +263,8 @@
             "numRequests": 0
           }
         },
-        "id": "29835d4c-beac-4b08-a44a-242b5d679b0b",
-        "latencyMs": 10485,
+        "id": "0fd228ab-d41a-4e32-ab22-e110457f4b9f",
+        "latencyMs": 11328,
         "namedScores": {},
         "prompt": {
           "raw": "In three bullets, explain what this AI workstation is trying to achieve: local-first, gateway-first, CLI-native.",
@@ -325,15 +278,15 @@
           "label": "candidate-llama31-8b"
         },
         "response": {
-          "output": "Based on the context of a typical AI workstation or collaboration platform, here's an interpretation of what \"local-first,\" \"gateway-first,\" and \"CLI-native\" might imply:\n\n*   **Local-First:** This approach prioritizes the user's own device as the primary location for data processing, computation, or storage. It ensures that sensitive information is processed on-premise, without relying heavily on cloud services. By doing so, local-first solutions can enhance security and reduce reliance on internet connectivity.\n*   **Gateway-First:** The gateway-first strategy involves creating a central hub or gateway that connects multiple devices, systems, or applications. This centralized approach allows for efficient data exchange, synchronization, and management between different components of the workstation or collaboration platform. It can facilitate seamless integration and communication among various tools and services.\n*   **CLI-Native:** CLI-native refers to an application or service being built around command-line interfaces (CLI). Such a design focuses on providing users with a text-based interface for executing commands, managing data, or accessing features. This approach is often associated with developer-centric workspaces or environments where users are comfortable working with the terminal and typing commands to achieve specific tasks.",
+          "output": "I'd be happy to explain the concepts of \"local-first,\" \"gateway-first,\" and \"CLI-native\" as they relate to an AI workstation. Here are three brief points for each concept:\n\n**Local-First**\n\n*   **Data autonomy**: The local-first approach prioritizes data ownership and control, allowing users to store and process their own data on their devices rather than relying on cloud services.\n*   **Offline capabilities**: By processing data locally, the AI workstation can function even when disconnected from the internet, providing a more reliable and resilient experience.\n*   **Security**: Keeping sensitive data on local devices reduces the risk of unauthorized access or data breaches that could occur with cloud-based storage.\n\n**Gateway-First**\n\n*   **API-driven architecture**: The gateway-first approach focuses on developing APIs (Application Programming Interfaces) to facilitate communication between different components, services, and systems.\n*   **Service-oriented design**: This approach enables a modular and scalable system by breaking down complex tasks into smaller, independent services that can be easily integrated or replaced.\n*   **Interoperability**: Gateway-First architecture promotes seamless interactions among various tools, platforms, and devices, fostering collaboration and data exchange.\n\n**CLI-Native**\n\n*   **Command-line interface (CLI)**: A CLI-native AI workstation prioritizes the command line as its primary interface for user interaction, mirroring traditional development environments.\n*   **Programmatic control**: This approach allows users to manage the AI workstation through scripts, code, or other automation tools, providing fine-grained control over workflows and processes.\n*   **Developer-centric design**: CLI-Native architecture is often designed with developers in mind, offering features like extensibility, modularity, and customization options that cater to their needs.",
           "tokenUsage": {
-            "total": 275,
+            "total": 388,
             "prompt": 36,
-            "completion": 239,
+            "completion": 352,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 10485,
+          "latencyMs": 11328,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -343,27 +296,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "1668",
+                "content-length": "2245",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 09:58:31 GMT",
+                "date": "Sun, 05 Jul 2026 10:55:17 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "30537012-eb26-429e-9e91-aa8a3acffb93",
+                "x-litellm-call-id": "e63c763a-0f56-44b1-ad6e-21c9f8c7db3e",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama31-8b",
                 "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-                "x-litellm-overhead-duration-ms": "2.312",
+                "x-litellm-overhead-duration-ms": "4.886",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "10475.787",
+                "x-litellm-response-duration-ms": "11317.27",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -383,9 +336,9 @@
         "testIdx": 0,
         "tokenUsage": {
           "prompt": 36,
-          "completion": 239,
+          "completion": 352,
           "cached": 0,
-          "total": 275,
+          "total": 388,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -417,27 +370,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "1668",
+              "content-length": "2245",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 09:58:31 GMT",
+              "date": "Sun, 05 Jul 2026 10:55:17 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "30537012-eb26-429e-9e91-aa8a3acffb93",
+              "x-litellm-call-id": "e63c763a-0f56-44b1-ad6e-21c9f8c7db3e",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama31-8b",
               "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-              "x-litellm-overhead-duration-ms": "2.312",
+              "x-litellm-overhead-duration-ms": "4.886",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "10475.787",
+              "x-litellm-response-duration-ms": "11317.27",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -459,157 +412,8 @@
             "numRequests": 0
           }
         },
-        "id": "e23d20e8-294c-404f-be26-ead37d1fb110",
-        "latencyMs": 80121,
-        "namedScores": {},
-        "prompt": {
-          "raw": "In three bullets, explain what this AI workstation is trying to achieve: local-first, gateway-first, CLI-native.",
-          "label": "{{prompt}}",
-          "config": {}
-        },
-        "promptId": "effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982",
-        "promptIdx": 2,
-        "provider": {
-          "id": "litellm:candidate-qwen35",
-          "label": "candidate-qwen35"
-        },
-        "response": {
-          "output": "*   It prioritizes user data privacy and autonomy by keeping sensitive computations and models on local hardware whenever possible, ensuring information never leaves your machine without explicit permission or network trust.\n*   It enables secure orchestration of external resources through a managed gateway that controls API access and model routing while preventing direct exposure of local context to the broader internet until necessary.\n*   It maximizes developer workflow integration by designing entirely within standard terminal environments, allowing for seamless scripting, automation pipelines, and compatibility with existing command-line tooling without requiring new GUI adoption.",
-          "tokenUsage": {
-            "total": 2734,
-            "prompt": 37,
-            "completion": 2697,
-            "numRequests": 1
-          },
-          "cached": false,
-          "latencyMs": 80121,
-          "finishReason": "stop",
-          "guardrails": {
-            "flagged": false
-          },
-          "metadata": {
-            "http": {
-              "status": 200,
-              "statusText": "OK",
-              "headers": {
-                "content-length": "991",
-                "content-security-policy": "frame-ancestors 'none'",
-                "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 09:58:41 GMT",
-                "server": "uvicorn",
-                "x-content-type-options": "nosniff",
-                "x-frame-options": "DENY",
-                "x-litellm-attempted-fallbacks": "0",
-                "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "e08e70a8-ffad-465b-9be3-095508c395ea",
-                "x-litellm-callback-duration-ms": "0.0",
-                "x-litellm-key-spend": "0.0",
-                "x-litellm-model-api-base": "http://host.containers.internal:11434",
-                "x-litellm-model-group": "candidate-qwen35",
-                "x-litellm-model-id": "086a79be56f19d4d523968f336a8c0a4af11b178d9550d757c17ba9a0f76fac7",
-                "x-litellm-overhead-duration-ms": "4.286",
-                "x-litellm-response-cost-discount-amount": "0.0",
-                "x-litellm-response-cost-margin-amount": "0.0",
-                "x-litellm-response-cost-margin-percent": "0.0",
-                "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "80111.44799999999",
-                "x-litellm-version": "1.90.0"
-              }
-            }
-          }
-        },
-        "score": 1,
-        "success": true,
-        "testCase": {
-          "description": "quick general assistance",
-          "vars": {
-            "prompt": "In three bullets, explain what this AI workstation is trying to achieve: local-first, gateway-first, CLI-native."
-          },
-          "assert": [],
-          "options": {},
-          "metadata": {}
-        },
-        "testIdx": 0,
-        "tokenUsage": {
-          "prompt": 37,
-          "completion": 2697,
-          "cached": 0,
-          "total": 2734,
-          "numRequests": 1,
-          "completionDetails": {
-            "reasoning": 0,
-            "acceptedPrediction": 0,
-            "rejectedPrediction": 0,
-            "cacheReadInputTokens": 0,
-            "cacheCreationInputTokens": 0
-          },
-          "assertions": {
-            "total": 0,
-            "prompt": 0,
-            "completion": 0,
-            "cached": 0,
-            "numRequests": 1,
-            "completionDetails": {
-              "reasoning": 0,
-              "acceptedPrediction": 0,
-              "rejectedPrediction": 0,
-              "cacheReadInputTokens": 0,
-              "cacheCreationInputTokens": 0
-            }
-          }
-        },
-        "vars": {
-          "prompt": "In three bullets, explain what this AI workstation is trying to achieve: local-first, gateway-first, CLI-native."
-        },
-        "metadata": {
-          "http": {
-            "status": 200,
-            "statusText": "OK",
-            "headers": {
-              "content-length": "991",
-              "content-security-policy": "frame-ancestors 'none'",
-              "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 09:58:41 GMT",
-              "server": "uvicorn",
-              "x-content-type-options": "nosniff",
-              "x-frame-options": "DENY",
-              "x-litellm-attempted-fallbacks": "0",
-              "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "e08e70a8-ffad-465b-9be3-095508c395ea",
-              "x-litellm-callback-duration-ms": "0.0",
-              "x-litellm-key-spend": "0.0",
-              "x-litellm-model-api-base": "http://host.containers.internal:11434",
-              "x-litellm-model-group": "candidate-qwen35",
-              "x-litellm-model-id": "086a79be56f19d4d523968f336a8c0a4af11b178d9550d757c17ba9a0f76fac7",
-              "x-litellm-overhead-duration-ms": "4.286",
-              "x-litellm-response-cost-discount-amount": "0.0",
-              "x-litellm-response-cost-margin-amount": "0.0",
-              "x-litellm-response-cost-margin-percent": "0.0",
-              "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "80111.44799999999",
-              "x-litellm-version": "1.90.0"
-            }
-          },
-          "_promptfooFileMetadata": {}
-        },
-        "failureReason": 0
-      },
-      {
-        "cost": 0,
-        "gradingResult": {
-          "pass": true,
-          "score": 1,
-          "reason": "No assertions",
-          "tokensUsed": {
-            "total": 0,
-            "prompt": 0,
-            "completion": 0,
-            "cached": 0,
-            "numRequests": 0
-          }
-        },
-        "id": "4e3d0bd3-d060-408d-be12-ab6d25f96696",
-        "latencyMs": 4098,
+        "id": "442023b0-6d7d-4d9c-8bba-55d3f6c67cd7",
+        "latencyMs": 3279,
         "namedScores": {},
         "prompt": {
           "raw": "Summarise this in four bullets: LiteLLM is being used as the local AI gateway. The daily CLI workflow uses just recipes. The local-fast model group currently routes to Ollama. The project avoids custom wrappers unless there is a clear need.",
@@ -623,15 +427,15 @@
           "label": "candidate-llama32-3b"
         },
         "response": {
-          "output": "Here are four bullets summarizing the information:\n\n• LiteLLM is being used as the local AI gateway.\n• The daily CLI workflow relies solely on recipe-based interactions.\n• The local-fast model group is currently routed to Ollama.\n• Custom wrappers are only considered necessary when there is a clear need, otherwise they are avoided.",
+          "output": "Here are four bullets summarizing the text:\n\n• LiteLLM is being used as the local AI gateway.\n• The daily CLI workflow only utilizes recipes.\n• The local-fast model group currently routes to Ollama.\n• The project aims to avoid custom wrappers whenever possible.",
           "tokenUsage": {
-            "total": 148,
+            "total": 136,
             "prompt": 80,
-            "completion": 68,
+            "completion": 56,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 4098,
+          "latencyMs": 3279,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -641,27 +445,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "641",
+                "content-length": "569",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:00:01 GMT",
+                "date": "Sun, 05 Jul 2026 10:55:28 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "ca040856-f29d-45c6-a2b0-8c56a1920850",
+                "x-litellm-call-id": "2ede7220-ad08-4634-8f94-569f5b8794e7",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama32-3b",
                 "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-                "x-litellm-overhead-duration-ms": "15.784",
+                "x-litellm-overhead-duration-ms": "25.674",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "4088.083",
+                "x-litellm-response-duration-ms": "3270.159",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -681,9 +485,9 @@
         "testIdx": 1,
         "tokenUsage": {
           "prompt": 80,
-          "completion": 68,
+          "completion": 56,
           "cached": 0,
-          "total": 148,
+          "total": 136,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -715,27 +519,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "641",
+              "content-length": "569",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:00:01 GMT",
+              "date": "Sun, 05 Jul 2026 10:55:28 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "ca040856-f29d-45c6-a2b0-8c56a1920850",
+              "x-litellm-call-id": "2ede7220-ad08-4634-8f94-569f5b8794e7",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama32-3b",
               "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-              "x-litellm-overhead-duration-ms": "15.784",
+              "x-litellm-overhead-duration-ms": "25.674",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "4088.083",
+              "x-litellm-response-duration-ms": "3270.159",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -757,8 +561,8 @@
             "numRequests": 0
           }
         },
-        "id": "80a3359e-6572-4f0d-94a2-5f88743a51c7",
-        "latencyMs": 2625,
+        "id": "41cf6248-fa3f-4940-a09d-d1811e89535b",
+        "latencyMs": 1831,
         "namedScores": {},
         "prompt": {
           "raw": "Summarise this in four bullets: LiteLLM is being used as the local AI gateway. The daily CLI workflow uses just recipes. The local-fast model group currently routes to Ollama. The project avoids custom wrappers unless there is a clear need.",
@@ -772,15 +576,15 @@
           "label": "candidate-llama31-8b"
         },
         "response": {
-          "output": "Here are four bullet points summarizing the information:\n\n* LiteLLM is being used as the local AI gateway.\n* The current daily CLI workflow only uses pre-defined \"recipes\".\n* The \"local-fast\" model group currently routes requests to Ollama.\n* Custom wrappers for AI functionality are avoided unless absolutely necessary.",
+          "output": "Here are four bullet points summarizing the information:\n\n* LiteLLM is acting as the local AI gateway.\n* Daily workflows use CLI commands with pre-defined \"recipes\".\n* Currently, queries in the \"local-fast\" model group are routed to Ollama instead.\n* The project prioritizes simplicity and avoids custom wrappers unless absolutely necessary.",
           "tokenUsage": {
-            "total": 130,
+            "total": 134,
             "prompt": 65,
-            "completion": 65,
+            "completion": 69,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 2625,
+          "latencyMs": 1831,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -790,27 +594,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "624",
+                "content-length": "645",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:00:05 GMT",
+                "date": "Sun, 05 Jul 2026 10:55:32 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "920462e6-04e4-4ea1-8ec1-220af608da1d",
+                "x-litellm-call-id": "9178c7ba-e821-41b0-8a79-53f149cbd89d",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama31-8b",
                 "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-                "x-litellm-overhead-duration-ms": "3.565",
+                "x-litellm-overhead-duration-ms": "5.162",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "2616.631",
+                "x-litellm-response-duration-ms": "1820.528",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -830,9 +634,9 @@
         "testIdx": 1,
         "tokenUsage": {
           "prompt": 65,
-          "completion": 65,
+          "completion": 69,
           "cached": 0,
-          "total": 130,
+          "total": 134,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -864,27 +668,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "624",
+              "content-length": "645",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:00:05 GMT",
+              "date": "Sun, 05 Jul 2026 10:55:32 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "920462e6-04e4-4ea1-8ec1-220af608da1d",
+              "x-litellm-call-id": "9178c7ba-e821-41b0-8a79-53f149cbd89d",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama31-8b",
               "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-              "x-litellm-overhead-duration-ms": "3.565",
+              "x-litellm-overhead-duration-ms": "5.162",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "2616.631",
+              "x-litellm-response-duration-ms": "1820.528",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -906,157 +710,8 @@
             "numRequests": 0
           }
         },
-        "id": "95c582b3-53a7-4d1f-9127-c9d630097554",
-        "latencyMs": 21560,
-        "namedScores": {},
-        "prompt": {
-          "raw": "Summarise this in four bullets: LiteLLM is being used as the local AI gateway. The daily CLI workflow uses just recipes. The local-fast model group currently routes to Ollama. The project avoids custom wrappers unless there is a clear need.",
-          "label": "{{prompt}}",
-          "config": {}
-        },
-        "promptId": "effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982",
-        "promptIdx": 2,
-        "provider": {
-          "id": "litellm:candidate-qwen35",
-          "label": "candidate-qwen35"
-        },
-        "response": {
-          "output": "* LiteLLM serves as the designated local AI gateway for the project.\n* Daily CLI workflows rely exclusively on recipes without additional customizations.\n* The local-fast model group currently routes all traffic to Ollama.\n* Custom wrappers are avoided unless there is a clear operational need.",
-          "tokenUsage": {
-            "total": 631,
-            "prompt": 66,
-            "completion": 565,
-            "numRequests": 1
-          },
-          "cached": false,
-          "latencyMs": 21560,
-          "finishReason": "stop",
-          "guardrails": {
-            "flagged": false
-          },
-          "metadata": {
-            "http": {
-              "status": 200,
-              "statusText": "OK",
-              "headers": {
-                "content-length": "589",
-                "content-security-policy": "frame-ancestors 'none'",
-                "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:00:08 GMT",
-                "server": "uvicorn",
-                "x-content-type-options": "nosniff",
-                "x-frame-options": "DENY",
-                "x-litellm-attempted-fallbacks": "0",
-                "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "08757e69-f1f4-4922-bcb2-d27d4cc89c23",
-                "x-litellm-callback-duration-ms": "0.0",
-                "x-litellm-key-spend": "0.0",
-                "x-litellm-model-api-base": "http://host.containers.internal:11434",
-                "x-litellm-model-group": "candidate-qwen35",
-                "x-litellm-model-id": "086a79be56f19d4d523968f336a8c0a4af11b178d9550d757c17ba9a0f76fac7",
-                "x-litellm-overhead-duration-ms": "6.834",
-                "x-litellm-response-cost-discount-amount": "0.0",
-                "x-litellm-response-cost-margin-amount": "0.0",
-                "x-litellm-response-cost-margin-percent": "0.0",
-                "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "21540.803",
-                "x-litellm-version": "1.90.0"
-              }
-            }
-          }
-        },
-        "score": 1,
-        "success": true,
-        "testCase": {
-          "description": "short summary",
-          "vars": {
-            "prompt": "Summarise this in four bullets: LiteLLM is being used as the local AI gateway. The daily CLI workflow uses just recipes. The local-fast model group currently routes to Ollama. The project avoids custom wrappers unless there is a clear need."
-          },
-          "assert": [],
-          "options": {},
-          "metadata": {}
-        },
-        "testIdx": 1,
-        "tokenUsage": {
-          "prompt": 66,
-          "completion": 565,
-          "cached": 0,
-          "total": 631,
-          "numRequests": 1,
-          "completionDetails": {
-            "reasoning": 0,
-            "acceptedPrediction": 0,
-            "rejectedPrediction": 0,
-            "cacheReadInputTokens": 0,
-            "cacheCreationInputTokens": 0
-          },
-          "assertions": {
-            "total": 0,
-            "prompt": 0,
-            "completion": 0,
-            "cached": 0,
-            "numRequests": 1,
-            "completionDetails": {
-              "reasoning": 0,
-              "acceptedPrediction": 0,
-              "rejectedPrediction": 0,
-              "cacheReadInputTokens": 0,
-              "cacheCreationInputTokens": 0
-            }
-          }
-        },
-        "vars": {
-          "prompt": "Summarise this in four bullets: LiteLLM is being used as the local AI gateway. The daily CLI workflow uses just recipes. The local-fast model group currently routes to Ollama. The project avoids custom wrappers unless there is a clear need."
-        },
-        "metadata": {
-          "http": {
-            "status": 200,
-            "statusText": "OK",
-            "headers": {
-              "content-length": "589",
-              "content-security-policy": "frame-ancestors 'none'",
-              "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:00:08 GMT",
-              "server": "uvicorn",
-              "x-content-type-options": "nosniff",
-              "x-frame-options": "DENY",
-              "x-litellm-attempted-fallbacks": "0",
-              "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "08757e69-f1f4-4922-bcb2-d27d4cc89c23",
-              "x-litellm-callback-duration-ms": "0.0",
-              "x-litellm-key-spend": "0.0",
-              "x-litellm-model-api-base": "http://host.containers.internal:11434",
-              "x-litellm-model-group": "candidate-qwen35",
-              "x-litellm-model-id": "086a79be56f19d4d523968f336a8c0a4af11b178d9550d757c17ba9a0f76fac7",
-              "x-litellm-overhead-duration-ms": "6.834",
-              "x-litellm-response-cost-discount-amount": "0.0",
-              "x-litellm-response-cost-margin-amount": "0.0",
-              "x-litellm-response-cost-margin-percent": "0.0",
-              "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "21540.803",
-              "x-litellm-version": "1.90.0"
-            }
-          },
-          "_promptfooFileMetadata": {}
-        },
-        "failureReason": 0
-      },
-      {
-        "cost": 0,
-        "gradingResult": {
-          "pass": true,
-          "score": 1,
-          "reason": "No assertions",
-          "tokensUsed": {
-            "total": 0,
-            "prompt": 0,
-            "completion": 0,
-            "cached": 0,
-            "numRequests": 0
-          }
-        },
-        "id": "f342daf9-4a2e-46e9-8db8-9cd0a1a2416d",
-        "latencyMs": 5435,
+        "id": "8b475f14-b192-4d24-9474-45421a28dc97",
+        "latencyMs": 5633,
         "namedScores": {},
         "prompt": {
           "raw": "Explain what this command does, including any risks: podman rm -f ai-lab-litellm >/dev/null 2>&1 || true",
@@ -1070,15 +725,15 @@
           "label": "candidate-llama32-3b"
         },
         "response": {
-          "output": "This command is used to remove a running container named \"ai-lab-litellm\" from Podman, a container orchestration system.\n\nHere's a breakdown of the command:\n\n- `podman rm`: This is the command to remove containers from Podman.\n- `-f`: The `-f` option forces removal without prompting for confirmation. If you want to delete a container and lose any uncommitted changes, use this flag.\n- `ai-lab-litellm`: This is the name of the container to be removed. In this case, it's a running container named \"ai-lab-litellm\".\n- `>/dev/null 2>&1`: The output from the command is redirected to `/dev/null` (a null device that discards any data written to it) and also to the standard error stream (`2>&1`). This means that if there's an error while removing the container, it will not be displayed in the console. However, this could potentially hide errors.\n- `|| true`: If the previous command fails (for example, if the container is not running or doesn't exist), this part of the command evaluates to `true`, effectively doing nothing.\n\nRisks associated with this command include:\n\n1. **Loss of data**: If the container holds any unsaved data, deleting it without confirmation may result in losing that data.\n2. **Container deletion failure**: If there's an issue while removing the container (e.g., network issues or lack of permissions), the `>/dev/null 2>&1` redirection might hide the error, making it difficult to diagnose and fix the problem.\n\nTo mitigate these risks, consider modifying the command to:\n\n```bash\npodman rm -f ai-lab-litellm\nif [ $? -ne 0 ]; then\n    echo \"Error removing container\"\nfi\n```\n\nThis version of the command checks the exit status (`$?`) of the `rm` command and prints an error message if it fails. This ensures that any issues are clearly visible and can be addressed before proceeding.",
+          "output": "This command is used to remove a Docker container named `ai-lab-litellm` using the Podman engine.\n\nHere's a breakdown of what the command does:\n\n- `podman rm`: This is the command to remove a Docker container.\n- `-f`: The `-f` flag tells Podman to forcefully remove the container without waiting for it to finish running. This can be useful if you want to immediately free up resources associated with the container.\n- `ai-lab-litellm`: This is the name of the container to be removed. You should replace this with the actual name of your container.\n- `/dev/null`: The output of the command is redirected to `/dev/null`, which discards any standard output or error messages generated by the command.\n- `2>&1`: This redirects both standard output (file descriptor 1) and standard error (file descriptor 2) to the same place, in this case `/dev/null`. This effectively suppresses any error messages that might be generated during the removal process.\n\nThe `|| true` part at the end of the command is a logical OR operator. It means that if the `podman rm` command fails for some reason (e.g., because the container doesn't exist), the command will still execute the `true` statement and continue running, but this statement does nothing in itself.\n\nRisks associated with this command include:\n\n- **Forcefully removing a container**: If you're not sure what's inside the container or if it has any dependencies that might cause problems when removed, using `-f` can lead to data loss or other issues.\n- **Suppressing error messages**: By redirecting output and errors to `/dev/null`, you won't be able to see any error messages that might occur during the removal process. This could make it difficult to diagnose any issues that arise.\n- **Potential for unexpected behavior**: If the container is in an inconsistent state or has pending operations, removing it forcefully can lead to unpredictable behavior.\n\nTo avoid these risks, consider the following best practices:\n\n- Always verify the container name and contents before running this command.\n- Make sure you understand the implications of using `-f` and have a plan for handling any potential issues that might arise.\n- Consider logging or monitoring output to ensure you're aware of any errors or unexpected behavior.",
           "tokenUsage": {
-            "total": 485,
+            "total": 535,
             "prompt": 61,
-            "completion": 424,
+            "completion": 474,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 5435,
+          "latencyMs": 5633,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -1088,27 +743,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "2139",
+                "content-length": "2590",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:00:30 GMT",
+                "date": "Sun, 05 Jul 2026 10:55:33 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "e849132c-c354-4909-9c82-536a78fd6210",
+                "x-litellm-call-id": "7f7e6627-d12c-4bef-a0e0-bc7f9a2986c2",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama32-3b",
                 "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-                "x-litellm-overhead-duration-ms": "12.112",
+                "x-litellm-overhead-duration-ms": "18.554",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "5421.295",
+                "x-litellm-response-duration-ms": "5622.806",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -1128,9 +783,9 @@
         "testIdx": 2,
         "tokenUsage": {
           "prompt": 61,
-          "completion": 424,
+          "completion": 474,
           "cached": 0,
-          "total": 485,
+          "total": 535,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -1162,27 +817,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "2139",
+              "content-length": "2590",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:00:30 GMT",
+              "date": "Sun, 05 Jul 2026 10:55:33 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "e849132c-c354-4909-9c82-536a78fd6210",
+              "x-litellm-call-id": "7f7e6627-d12c-4bef-a0e0-bc7f9a2986c2",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama32-3b",
               "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-              "x-litellm-overhead-duration-ms": "12.112",
+              "x-litellm-overhead-duration-ms": "18.554",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "5421.295",
+              "x-litellm-response-duration-ms": "5622.806",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -1204,8 +859,8 @@
             "numRequests": 0
           }
         },
-        "id": "a14e5567-8a6e-4c70-a7ed-395518ab63c0",
-        "latencyMs": 13590,
+        "id": "ebee6d1a-0643-46c3-9c77-dd90b060de0f",
+        "latencyMs": 15223,
         "namedScores": {},
         "prompt": {
           "raw": "Explain what this command does, including any risks: podman rm -f ai-lab-litellm >/dev/null 2>&1 || true",
@@ -1219,15 +874,15 @@
           "label": "candidate-llama31-8b"
         },
         "response": {
-          "output": "A Podman command!\n\nLet's break it down:\n\n**`podman rm -f`**\n\n* `rm`: This is the \"remove\" command in Podman. It deletes a container or pod (a group of containers) from the system.\n* `-f`: The `-f` option stands for \"force\". It tells Podman to delete the specified container or pod without prompting for confirmation.\n\n**`ai-lab-litellm`**\n\n* This is the name of the container that will be deleted. If this container does not exist, the command will silently fail (more on this later).\n\n**`>/dev/null 2>&1 || true`**\n\n* `>/dev/null`: This redirects the standard output (stdout) to `/dev/null`, which is a special file in Linux that discards any input it receives. This means that any messages printed by Podman during the deletion process will be hidden.\n* `2>&1`: This redirects the standard error (stderr) to stdout, effectively capturing any error messages that might occur during the deletion process and sending them to `/dev/null`.\n* `|| true`: This is a conditional operator that executes the `true` command if the previous command fails. The `true` command does nothing but return a successful exit code.\n\nSo, in summary, this command deletes the `ai-lab-litellm` container without prompting for confirmation and hides any output or error messages that might occur during deletion.\n\n**Risks:**\n\n* If you use `-f` with Podman's `rm` command, there is no way to recover a deleted container. Be careful when deleting containers!\n* This command silently fails if the specified container does not exist. Depending on your workflow, this might be a problem.\n* As mentioned earlier, any error messages that occur during deletion are hidden and will not be visible in the terminal.\n\nTo mitigate these risks, you can modify the command to:\n\n1. Use `podman rm ai-lab-litellm` (without `-f`) to prompt for confirmation before deleting the container.\n2. Add a check to ensure the container exists before attempting deletion: `if podman ps -a | grep -q \"ai-lab-litellm\"; then podman rm -f ai-lab-litellm; fi`\n3. Display any error messages that occur during deletion by removing the `>/dev/null 2>&1 || true` part of the command.",
+          "output": "**Command Explanation**\n\nThe given command is a shell instruction designed to delete a container named \"ai-lab-litellm\" using `podman`, a daemonless container engine similar to Docker. The command's syntax and additional parameters are intended for handling the deletion process with a focus on error management.\n\nLet's break down what each part of the command does:\n\n1. **`podman rm -f ai-lab-litellm`**:\n   - `podman rm`: This is the command to remove or delete containers managed by Podman.\n   - `-f`, which stands for \"force,\" removes the container even if it's still running, rather than stopping and then removing it.\n\n2. **`>/dev/null 2>&1 || true`**:\n   - `>/dev/null`: This redirects the standard output (stdout) of the command to `/dev/null`, effectively discarding any messages or outputs that might be produced.\n   - `2>&1`: Redirects the standard error stream (stderr) to stdout, so both stdout and stderr are sent to `/dev/null`.\n   - `|| true`: This is a conditional expression known as \"short-circuiting.\" It checks if the command preceding it returns a non-zero exit status. If it does (i.e., if deleting the container fails), then the command after `||` executes. However, in this case, the command following `|| true` is simply `true`, which always succeeds and will not change the outcome of the command's return value. This construct is often used to avoid leaving a non-zero exit status in the shell if the original command fails, ensuring that the overall command still exits with zero regardless.\n\n**Risks:**\n\n- **Loss of Data**: When using `-f` without stopping the container first, you risk losing data or processes running inside the container. This is particularly risky if the container was used for critical tasks.\n- **Unintended Consequences**: The deletion process does not differentiate between containers; hence, deleting a container with this command will remove it completely, including any associated volumes and network configurations unless specifically handled otherwise.\n\n**Best Practices:**\n\n1. **Use `podman rm` instead of `-f` when possible:** If you're certain the container is stopped or doesn't contain critical data, use `podman rm` without the `-f` flag for cleaner deletion.\n2. **Check Container Status**: Before deleting a running container, ensure that it's not necessary and has no ongoing tasks that could be impacted by its removal.\n3. **Consider Backups:** Regularly backing up your containers or their data can prevent against unforeseen losses.\n\n**Security Considerations:**\n\n1. **Privileges**: Ensure the user executing this command has sufficient privileges to delete containers, ideally being part of a group or role with those permissions.\n2. **Auditing**: Be aware that deleting containers without proper auditing or logging could obscure security incidents or misconfigurations.\n\nIn summary, while the command is designed for simplicity and error tolerance by discarding output, it carries significant risks due to its forceful deletion nature without ensuring the container's state. Always carefully evaluate your use case before executing such commands, especially if you're deleting running containers.",
           "tokenUsage": {
-            "total": 548,
+            "total": 706,
             "prompt": 46,
-            "completion": 502,
+            "completion": 660,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 13590,
+          "latencyMs": 15223,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -1237,27 +892,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "2455",
+                "content-length": "3502",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:00:35 GMT",
+                "date": "Sun, 05 Jul 2026 10:55:39 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "da48dc9a-71ca-4ccb-beab-ec8958368dc1",
+                "x-litellm-call-id": "0aad5d6f-2f43-4c6d-9ac6-83f5f284e89b",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama31-8b",
                 "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-                "x-litellm-overhead-duration-ms": "4.401",
+                "x-litellm-overhead-duration-ms": "5.175",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "13579.1",
+                "x-litellm-response-duration-ms": "15214.522",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -1277,9 +932,9 @@
         "testIdx": 2,
         "tokenUsage": {
           "prompt": 46,
-          "completion": 502,
+          "completion": 660,
           "cached": 0,
-          "total": 548,
+          "total": 706,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -1311,27 +966,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "2455",
+              "content-length": "3502",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:00:35 GMT",
+              "date": "Sun, 05 Jul 2026 10:55:39 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "da48dc9a-71ca-4ccb-beab-ec8958368dc1",
+              "x-litellm-call-id": "0aad5d6f-2f43-4c6d-9ac6-83f5f284e89b",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama31-8b",
               "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-              "x-litellm-overhead-duration-ms": "4.401",
+              "x-litellm-overhead-duration-ms": "5.175",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "13579.1",
+              "x-litellm-response-duration-ms": "15214.522",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -1353,220 +1008,8 @@
             "numRequests": 0
           }
         },
-        "id": "57e28fa8-817e-4e51-8544-ce964a05f1cc",
-        "latencyMs": 155231,
-        "namedScores": {},
-        "prompt": {
-          "raw": "Explain what this command does, including any risks: podman rm -f ai-lab-litellm >/dev/null 2>&1 || true",
-          "label": "{{prompt}}",
-          "config": {}
-        },
-        "promptId": "effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982",
-        "promptIdx": 2,
-        "provider": {
-          "id": "litellm:candidate-qwen35",
-          "label": "candidate-qwen35"
-        },
-        "response": {
-          "output": "### Command Breakdown\n\nThe command `podman rm -f ai-lab-litellm >/dev/null 2>&1 || true` is a shell instruction designed to forcefully remove a container while suppressing output and ensuring the execution line returns success regardless of errors. Here is how each part functions:\n\n*   **`podman`**: Invokes the Podman engine (a rootless, daemon-less container runtime similar to Docker).\n*   **`rm`**: The subcommand instructs Podman to remove a stopped or running container. Note that unlike some older versions of `docker`, modern containers are usually in \"stopped\" state before removal; however, with `-f` it can handle specific force behaviors.\n*   **-f** (or `--force`): Forces the operation. This means:\n    *   If the container exists but is currently **running**, Podman will stop and kill its processes immediately before deleting it.\n    *   It bypasses prompts asking for confirmation to delete containers with dependencies or conflicts.\n*   **`ai-lab-litellm`**: The specific name of the target container to be deleted (likely an API proxy for LLMs based on \"Litellm\").\n*   **`>/dev/null 2>&1`**: This redirects both Standard Output (`>`) and Standard Error (`2&>`) into `/dev/null`. Essentially, this makes the command **completely silent**. The user won't see status messages like `Container ai-lab-litellm removed`, or error logs if something goes wrong (unless handled elsewhere).\n*   **`|| true`**: This is a logical operator chain. If Podman exits with an error code (non-zero, which happens frequently when running cleanup scripts—e.g., the container doesn't exist yet), `true` runs immediately and returns exit status 0.\n\n**Resulting Behavior:** The script attempts to kill/remove this specific AI service silently without alerting anyone that it succeeded or failed due to missing containers. It ensures that any calling process sees a \"success\" result code (exit code 0) even if the container wasn't there in the first place.\n\n---\n\n### Risks and Considerations\n\nWhile often useful for automated cleanup scripts, this command carries several risks:\n\n1.  **Immediate Data Loss on Ephemeral Storage**\n    *   If any data was stored inside `ai-lab-litellm` (e.g., chat history from Litellm API calls, logs, generated artifacts) in the container's writable layer or anonymous volumes, it will be wiped immediately upon removal. This is usually intended behavior for stateless apps but can result in unexpected loss of user data if not backed up on a named volume elsewhere.\n2.  **Silent Failure Masking**\n    *   Because output (`>/dev/null`) and error messages are swallowed:\n        *   If the container name was slightly misspelled, you won't see an \"unknown container\" message immediately (only `|| true` will hide that it failed to remove what existed).\n        *   You lose visibility into permission errors or file-lock issues on host paths. The script proceeds anyway because of `|| true`, so a real problem might be ignored in the background logs, making future debugging difficult if you only rely on this one command for cleanup.\n3.  **Running Process Termination**\n    *   If `ai-lab-litellm` was actively running (serving requests), it will be killed instantly with SIGKILL or similar force signals depending on Podman's internal handling of the `-f` flag. This causes immediate downtime and might leave network connections hanging if other dependent services expect a graceful shutdown sequence before deletion.\n4.  **Dependency Confusion**\n    *   If this container was part of a larger setup (e.g., linked to database volumes managed by another service) that expected the file system state on certain paths, forcefully killing it can leave filesystem states inconsistent or \"zombie\" processes if not properly cleaned up by host-level cleanup scripts.\n\n### Summary for Production Use\n**Safe Usage:** This is typically safe *only* in a controlled maintenance script where you accept ephemeral data loss and have verified that no other external process depends on the live running status of this container before deletion. It is ideal for \"best-effort\" cleanup (e.g., removing old instances during an upgrade) but dangerous if used blindly without auditing logs or backups, because errors are effectively hidden from the operator.",
-          "tokenUsage": {
-            "total": 4291,
-            "prompt": 46,
-            "completion": 4245,
-            "numRequests": 1
-          },
-          "cached": false,
-          "latencyMs": 155231,
-          "finishReason": "stop",
-          "guardrails": {
-            "flagged": false
-          },
-          "metadata": {
-            "http": {
-              "status": 200,
-              "statusText": "OK",
-              "headers": {
-                "content-length": "4604",
-                "content-security-policy": "frame-ancestors 'none'",
-                "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:00:48 GMT",
-                "server": "uvicorn",
-                "x-content-type-options": "nosniff",
-                "x-frame-options": "DENY",
-                "x-litellm-attempted-fallbacks": "0",
-                "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "6fb9dfd0-52d7-4e7e-a572-fe4082d835a6",
-                "x-litellm-callback-duration-ms": "0.0",
-                "x-litellm-key-spend": "0.0",
-                "x-litellm-model-api-base": "http://host.containers.internal:11434",
-                "x-litellm-model-group": "candidate-qwen35",
-                "x-litellm-model-id": "086a79be56f19d4d523968f336a8c0a4af11b178d9550d757c17ba9a0f76fac7",
-                "x-litellm-overhead-duration-ms": "5.808",
-                "x-litellm-response-cost-discount-amount": "0.0",
-                "x-litellm-response-cost-margin-amount": "0.0",
-                "x-litellm-response-cost-margin-percent": "0.0",
-                "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "155222.51",
-                "x-litellm-version": "1.90.0"
-              }
-            }
-          }
-        },
-        "score": 1,
-        "success": true,
-        "testCase": {
-          "description": "command-line help",
-          "vars": {
-            "prompt": "Explain what this command does, including any risks: podman rm -f ai-lab-litellm >/dev/null 2>&1 || true"
-          },
-          "assert": [],
-          "options": {},
-          "metadata": {}
-        },
-        "testIdx": 2,
-        "tokenUsage": {
-          "prompt": 46,
-          "completion": 4245,
-          "cached": 0,
-          "total": 4291,
-          "numRequests": 1,
-          "completionDetails": {
-            "reasoning": 0,
-            "acceptedPrediction": 0,
-            "rejectedPrediction": 0,
-            "cacheReadInputTokens": 0,
-            "cacheCreationInputTokens": 0
-          },
-          "assertions": {
-            "total": 0,
-            "prompt": 0,
-            "completion": 0,
-            "cached": 0,
-            "numRequests": 1,
-            "completionDetails": {
-              "reasoning": 0,
-              "acceptedPrediction": 0,
-              "rejectedPrediction": 0,
-              "cacheReadInputTokens": 0,
-              "cacheCreationInputTokens": 0
-            }
-          }
-        },
-        "vars": {
-          "prompt": "Explain what this command does, including any risks: podman rm -f ai-lab-litellm >/dev/null 2>&1 || true"
-        },
-        "metadata": {
-          "http": {
-            "status": 200,
-            "statusText": "OK",
-            "headers": {
-              "content-length": "4604",
-              "content-security-policy": "frame-ancestors 'none'",
-              "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:00:48 GMT",
-              "server": "uvicorn",
-              "x-content-type-options": "nosniff",
-              "x-frame-options": "DENY",
-              "x-litellm-attempted-fallbacks": "0",
-              "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "6fb9dfd0-52d7-4e7e-a572-fe4082d835a6",
-              "x-litellm-callback-duration-ms": "0.0",
-              "x-litellm-key-spend": "0.0",
-              "x-litellm-model-api-base": "http://host.containers.internal:11434",
-              "x-litellm-model-group": "candidate-qwen35",
-              "x-litellm-model-id": "086a79be56f19d4d523968f336a8c0a4af11b178d9550d757c17ba9a0f76fac7",
-              "x-litellm-overhead-duration-ms": "5.808",
-              "x-litellm-response-cost-discount-amount": "0.0",
-              "x-litellm-response-cost-margin-amount": "0.0",
-              "x-litellm-response-cost-margin-percent": "0.0",
-              "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "155222.51",
-              "x-litellm-version": "1.90.0"
-            }
-          },
-          "_promptfooFileMetadata": {}
-        },
-        "failureReason": 0
-      },
-      {
-        "cost": 0,
-        "error": "Evaluation timed out after 1200000ms: Error: Evaluation timed out after 1200000ms",
-        "gradingResult": null,
-        "id": "2fafde5a-91be-4b79-995d-537a46f05ba8",
-        "latencyMs": 1200000,
-        "namedScores": {},
-        "prompt": {
-          "raw": "{{prompt}}",
-          "label": "{{prompt}}"
-        },
-        "promptId": "effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982",
-        "promptIdx": 2,
-        "provider": {
-          "id": "litellm:candidate-qwen35",
-          "label": "candidate-qwen35"
-        },
-        "score": 0,
-        "success": false,
-        "testCase": {
-          "description": "troubleshooting",
-          "vars": {
-            "prompt": "LiteLLM starts in a Podman container, but curl to localhost:4000 immediately returns \"connection reset by peer\". The container is still starting. What is the likely cause and what small change should I make to the justfile?"
-          },
-          "assert": [],
-          "options": {},
-          "metadata": {}
-        },
-        "testIdx": 3,
-        "tokenUsage": {
-          "prompt": 0,
-          "completion": 0,
-          "cached": 0,
-          "total": 0,
-          "numRequests": 0,
-          "completionDetails": {
-            "reasoning": 0,
-            "acceptedPrediction": 0,
-            "rejectedPrediction": 0,
-            "cacheReadInputTokens": 0,
-            "cacheCreationInputTokens": 0
-          },
-          "assertions": {
-            "total": 0,
-            "prompt": 0,
-            "completion": 0,
-            "cached": 0,
-            "numRequests": 0,
-            "completionDetails": {
-              "reasoning": 0,
-              "acceptedPrediction": 0,
-              "rejectedPrediction": 0,
-              "cacheReadInputTokens": 0,
-              "cacheCreationInputTokens": 0
-            }
-          }
-        },
-        "vars": {
-          "prompt": "LiteLLM starts in a Podman container, but curl to localhost:4000 immediately returns \"connection reset by peer\". The container is still starting. What is the likely cause and what small change should I make to the justfile?"
-        },
-        "metadata": {},
-        "failureReason": 2
-      },
-      {
-        "cost": 0,
-        "gradingResult": {
-          "pass": true,
-          "score": 1,
-          "reason": "No assertions",
-          "tokensUsed": {
-            "total": 0,
-            "prompt": 0,
-            "completion": 0,
-            "cached": 0,
-            "numRequests": 0
-          }
-        },
-        "id": "50af109e-3a45-491b-9f3f-5e27feb7e037",
-        "latencyMs": 5863,
+        "id": "03c69126-a27b-4fda-99e9-573e3670c75f",
+        "latencyMs": 3492,
         "namedScores": {},
         "prompt": {
           "raw": "LiteLLM starts in a Podman container, but curl to localhost:4000 immediately returns \"connection reset by peer\". The container is still starting. What is the likely cause and what small change should I make to the justfile?",
@@ -1580,15 +1023,15 @@
           "label": "candidate-llama32-3b"
         },
         "response": {
-          "output": "A common issue!\n\nThe \"connection reset by peer\" error typically occurs when the client (in this case, `curl`) sends a request that causes the server to reset the connection before responding.\n\nGiven your setup:\n\n1. LiteLLM starts in a Podman container.\n2. `curl` is run on localhost:4000.\n\nA likely cause of this issue is that the container is still starting or not yet fully initialized when you try to make the `curl` request. This can happen if there are initialization scripts, network configuration, or other setup processes that take time to complete.\n\nTo fix this, you can modify the `/etc/systemd/system/LiteLLM.service` file (or wherever your service definition is located) by adding a `[Unit]` section and specifying the `After=` directive. This tells systemd to wait for other services to start before considering the LiteLLM service ready:\n\n```bash\n[Unit]\nDescription=LiteLLM\nAfter=docker.service\nAfter=network.target\n\n[Service]\nUser=<your_username>\nExecStart=/usr/bin/docker-compose -f <path_to_your_compose_file> up --build -- detach true\n```\n\nReplace `<your_username>` with the actual username of the container's owner, and `<path_to_your_compose_file>` with the path to your `docker-compose.yml` file.\n\nThis change tells systemd that LiteLLM should start after the Docker service and network have initialized. This ensures that your `curl` request is made after the container has finished starting and is fully ready.\n\nAfter making this change, reload the daemon and restart the LiteLLM service:\n\n```bash\nsudo systemctl daemon-reload\nsudo systemctl restart LiteLLM\n```\n\nVerify that the container has started correctly by checking its status or logs. Then, try running `curl` again to see if the connection issue persists.",
+          "output": "The likely cause of this issue is that the `curl` command is not waiting for the container to fully start before attempting to connect to it, resulting in a premature connection reset.\n\nOne possible solution to this issue is to use `docker-compose up -- detach` instead of simply starting the container. The `--detach` flag tells Docker Compose to run the container in detached mode, allowing the container to start and complete its initialization process before returning control back to the host machine.\n\nHowever, since you want to start the container manually, you can use a small change in your `docker-compose.yml` file:\n\n```yaml\nversion: '3'\n\nservices:\n  lite-llm:\n    image: lite-llm-image\n    ports:\n      - \"4000:4000\"\n```\n\nbecomes\n\n```yaml\nversion: '3'\n\nservices:\n  lite-llm:\n    image: lite-llm-image\n    volumes:\n      - ./app:/app\n    ports:\n      - \"4000:4000\"\n```\n\nThe addition of `volumes` maps the host's `/app` directory to the container at `/app`, allowing Docker Compose to wait for the container's volumes to be mounted before returning control back to the host machine.\n\nWith this change, Docker Compose will wait until the volume is mounted and the container is ready before starting your application.",
           "tokenUsage": {
-            "total": 457,
+            "total": 359,
             "prompt": 76,
-            "completion": 381,
+            "completion": 283,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 5863,
+          "latencyMs": 3492,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -1598,27 +1041,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "2070",
+                "content-length": "1557",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:03:24 GMT",
+                "date": "Sun, 05 Jul 2026 10:55:55 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "f4663ca5-03f1-476e-8c0a-0a275f03b6b3",
+                "x-litellm-call-id": "af78de4c-0ea5-40d9-8de9-9b5dd4cd851c",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama32-3b",
                 "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-                "x-litellm-overhead-duration-ms": "13.374",
+                "x-litellm-overhead-duration-ms": "8.665",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "5855.165999999999",
+                "x-litellm-response-duration-ms": "3482.0280000000002",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -1638,9 +1081,9 @@
         "testIdx": 3,
         "tokenUsage": {
           "prompt": 76,
-          "completion": 381,
+          "completion": 283,
           "cached": 0,
-          "total": 457,
+          "total": 359,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -1672,27 +1115,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "2070",
+              "content-length": "1557",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:03:24 GMT",
+              "date": "Sun, 05 Jul 2026 10:55:55 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "f4663ca5-03f1-476e-8c0a-0a275f03b6b3",
+              "x-litellm-call-id": "af78de4c-0ea5-40d9-8de9-9b5dd4cd851c",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama32-3b",
               "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-              "x-litellm-overhead-duration-ms": "13.374",
+              "x-litellm-overhead-duration-ms": "8.665",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "5855.165999999999",
+              "x-litellm-response-duration-ms": "3482.0280000000002",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -1714,8 +1157,8 @@
             "numRequests": 0
           }
         },
-        "id": "17cee7dc-3893-4f97-9e7f-ba1875e2c291",
-        "latencyMs": 16602,
+        "id": "87e1c296-8f62-4f8d-9915-0e5e1f1427fb",
+        "latencyMs": 9119,
         "namedScores": {},
         "prompt": {
           "raw": "LiteLLM starts in a Podman container, but curl to localhost:4000 immediately returns \"connection reset by peer\". The container is still starting. What is the likely cause and what small change should I make to the justfile?",
@@ -1729,15 +1172,15 @@
           "label": "candidate-llama31-8b"
         },
         "response": {
-          "output": "To troubleshoot this issue, let's consider what might be happening.\n\nSince `curl` to `localhost:4000` immediately returns a connection reset error (\"connection reset by peer\"), it suggests that LiteLLM hasn't fully started or initialized within the container yet. This is a common scenario because applications, especially complex ones like a language model service, typically require some time to initialize and set up their internal state before they become reachable.\n\nThe likely cause here is that LiteLLM's initialization process takes longer than the timeout for the initial connection attempt by `curl`. Here are a few possibilities:\n\n1. **Initialization Time**: The application might need some time to load its components, establish connections, or perform other startup tasks. If `curl` connects too quickly (before these processes complete), it results in a \"connection reset\" error.\n\n2. **Network Settings**: Issues with the network settings inside the container could prevent LiteLLM from properly initializing. However, if this were the case, you'd likely encounter more generic connection errors rather than a \"connection reset by peer.\"\n\n3. **Port Availability**: Ensure that port 4000 is not being used by another process either within or outside of your development environment. This could cause problems with establishing connections to LiteLLM.\n\nGiven these considerations, here's a small change you can make to the `justfile` (assuming it's using the Just build tool for Rust applications) to help manage this issue:\n\n```bash\n# Before\nbuild:\n  cmd: cargo build --release\n\nstart:\n  cmd: curl -X GET localhost:4000 || echo \"LiteLLM hasn't started yet\"\n```\n\n```bash\n# After\nbuild:\n  cmd: cargo build --release\n\nstart:\n  cmd: sleep 10 && curl -X GET localhost:4000\n```\n\nExplanation of the change:\n\n- The `sleep` command introduces a delay before attempting to connect to LiteLLM. This delay gives LiteLLM more time to start and initialize, hopefully allowing connections to be established successfully.\n- You can adjust the duration of the sleep as needed. Starting with 10 seconds is often sufficient but may need to be longer depending on your system's performance and the specific requirements of your application.\n\nRemember, this solution introduces a workaround rather than addressing the root cause. To truly resolve the issue, you should identify what takes LiteLLM so long to start and either optimize its initialization process or consider alternative approaches (like polling the application's health check endpoint) if delays are unavoidable.",
+          "output": "**Likely Cause**\n\nThe issue you're experiencing is due to the container being launched in a state where it's not yet fully initialized or ready to accept connections. Podman uses a similar approach to Docker, but with some differences in behavior and configuration.\n\nIn this case, when `LiteLLM` starts within the container, it might take some time for it to initialize its internal components or services. However, your `curl` command tries to establish a connection immediately after starting the container, which results in the \"connection reset by peer\" error because the server is not yet available.\n\n**Small Change to Justfile**\n\nTo resolve this issue, you can modify your `justfile` to wait for a short duration before attempting to connect to `localhost:4000`. Here's an example:\n\n```makefile\nrun:\n  podman run --name liteml -itd --net=host -v ${PWD}:/app/ -w /app/ liteml bash\n\n# Introduce a small wait time here using sleep(10) to give the container some time to start up\naccess-liteml:\n  @sleep 5 # Wait for 5 seconds before attempting to access localhost:4000\n  curl --connect-timeout 2 -s -S localhost:4000 || echo \"Could not connect, continue with test\"\n```\n\nIn this example, `sleep 5` waits for 5 seconds. Adjust the number of seconds as needed based on your specific application's startup time.\n\n**Explanation**\n\nThe change made here is simple yet effective:\n- It introduces a small wait period (`@sleep`) to give the container enough time to initialize its components and become reachable.\n- After this wait, it attempts to connect to `localhost:4000` using `curl`.\n\nThis approach ensures that you're not immediately connecting to a potentially unstarted server, thus resolving the \"connection reset by peer\" issue.",
           "tokenUsage": {
-            "total": 575,
+            "total": 454,
             "prompt": 61,
-            "completion": 514,
+            "completion": 393,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 16602,
+          "latencyMs": 9119,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -1747,27 +1190,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "2910",
+                "content-length": "2062",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:03:29 GMT",
+                "date": "Sun, 05 Jul 2026 10:55:58 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "b2bb2fa4-2c90-4fcc-8f1c-21edf9debee0",
+                "x-litellm-call-id": "20bab25e-4cc1-4386-bbf3-449e4694a206",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama31-8b",
                 "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-                "x-litellm-overhead-duration-ms": "3.77",
+                "x-litellm-overhead-duration-ms": "5.124",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "16590.529",
+                "x-litellm-response-duration-ms": "9108.164999999999",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -1787,9 +1230,9 @@
         "testIdx": 3,
         "tokenUsage": {
           "prompt": 61,
-          "completion": 514,
+          "completion": 393,
           "cached": 0,
-          "total": 575,
+          "total": 454,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -1821,27 +1264,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "2910",
+              "content-length": "2062",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:03:29 GMT",
+              "date": "Sun, 05 Jul 2026 10:55:58 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "b2bb2fa4-2c90-4fcc-8f1c-21edf9debee0",
+              "x-litellm-call-id": "20bab25e-4cc1-4386-bbf3-449e4694a206",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama31-8b",
               "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-              "x-litellm-overhead-duration-ms": "3.77",
+              "x-litellm-overhead-duration-ms": "5.124",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "16590.529",
+              "x-litellm-response-duration-ms": "9108.164999999999",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -1863,8 +1306,8 @@
             "numRequests": 0
           }
         },
-        "id": "7d6f24c0-ba03-42e6-8bd0-adf3fecd3268",
-        "latencyMs": 58499,
+        "id": "27160353-4c7a-4043-ae50-7ce810ea8786",
+        "latencyMs": 6821,
         "namedScores": {},
         "prompt": {
           "raw": "Review this just recipe line and explain what might go wrong: curl -fsS \"$gateway_url/v1/chat/completions\" -d \"{model: local-fast, messages: [{role: user, content: $prompt}]}\"",
@@ -1878,15 +1321,15 @@
           "label": "candidate-llama32-3b"
         },
         "response": {
-          "output": "This is a Bash command that uses the `curl` command to make an HTTP request to a server.\n\nThe line of code you've provided appears to be attempting to use a chat API (likely OpenAI's Chat API) to generate a response based on a user's input. Here's what might go wrong:\n\n1. **Non-existent or invalid Gateway URL**: The `$gateway_url` variable is not defined in the snippet, which means that if this variable is not set elsewhere in the script or code, the command will fail with an error message indicating that the URL does not exist.\n\n2. **Missing or malformed JSON data**: The `-d` option is used to specify the data to be sent in the request body. However, the JSON data being sent appears to be a string representation of JSON (`\"{model: local-fast, messages: [{role: user, content: $prompt}]}\"`). This might cause issues if not properly encoded.\n\n3. **Invalid or unescaped variable**: The `$prompt` variable is used directly in the JSON string without any escaping. If this variable contains special characters like quotes, backslashes, etc., it could lead to unexpected behavior when parsed by the server.\n\n4. **HTTP errors**: There are many potential HTTP error codes (e.g., 400 Bad Request, 404 Not Found) that could be returned depending on what's going wrong with your request. However, since this is a Bash command and not a language that handles HTTP requests natively, it will likely throw an error or produce unexpected output if an issue arises.\n\n5. **Timeouts**: If the request takes too long to complete (the default timeout for `curl` is usually around 10 seconds), it may time out before the server has a chance to respond.\n\nTo avoid these potential issues, consider the following:\n\n* Ensure that `$gateway_url` is defined and valid.\n* Use double quotes (`\"`) instead of single quotes (`'`) when defining your JSON string. This will allow you to escape special characters without having to use backslashes.\n* Consider using a Bash variable with an `export` keyword if this script is intended to be run in a Unix-like environment.\n* Verify that the OpenAI API endpoint and parameters are correct according to their documentation.\n\nHere's how the modified line of code might look:\n\n```bash\ncurl -fsS \\\n  \"$gateway_url/v1/chat/completions\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"model\": \"local-fast\", \"messages\": [{\"role\": \"user\", \"content\": \"${prompt}\"}]}'\n```\n\nThis modified line includes a `Content-Type` header to specify that the request body contains JSON data, which should help with parsing on the server's end. The `${prompt}` variable has also been properly escaped using backticks (``), which can contain special characters and will be interpreted correctly by Bash.",
+          "output": "**Code Review**\n\nThe provided `curl` command is used to send a POST request to the `$gateway_url/v1/chat/completions` endpoint with a JSON payload. Here's a breakdown of what might go wrong:\n\n### Potential Issues:\n\n1. **URL format**: The URL seems correct, but if it contains any special characters, they should be properly escaped or quoted. For example, if the URL is `https://example.com/path?query=string` and contains spaces, they should be `%20` instead of ` `.\n\n2. **Gateway URL variables**: If `$gateway_url` or `$prompt` contain any special characters (e.g., `%`, `,`, etc.), they might not be properly escaped in the JSON payload. This could lead to invalid JSON syntax errors.\n\n3. **JSON payload format**: The provided JSON payload is a single object with two properties: `model` and `messages`. The `messages` property contains another object with three properties: `role`, `content`, and `$prompt` (which is not a valid variable in this context). If the intention was to use a template literal or string formatting, it should be done correctly.\n\n4. **Content-type header**: The `-H` option is missing, which specifies the content type of the request body. Without this, the server might interpret the JSON payload as a plain text body instead of an application/json one, leading to potential errors or unexpected behavior.\n\n5. **Error handling**: The command uses `-fsS`, which enables verbose mode and displays the response status code and headers. However, it does not handle any possible errors that might occur during the request (e.g., network issues, invalid JSON syntax). It's essential to add error handling to ensure the script behaves as expected in case of failures.\n\n### Recommendations:\n\n* Use a more robust way to escape URL characters or quote special characters, if necessary.\n* Verify that `$gateway_url` and `$prompt` are properly formatted and escaped before using them in the JSON payload.\n* Ensure that the `model` property is correctly specified, and consider adding default values or error handling for invalid inputs.\n* Include the `-H` option to specify the content type header explicitly.\n* Add basic error handling to catch and log any unexpected errors that might occur during the request.\n\nHere's an updated version of the command with some of these recommendations:\n```bash\ncurl -f -sS \\\n  --header 'Content-Type: application/json' \\\n  -d '{\"model\": \"local-fast\", \"messages\": [{\"role\": \"user\", \"content\": \"$prompt\"}]}'\n```\nIn a production environment, consider using a more robust HTTP client library (e.g., `requests` in Python) that provides better error handling and other features.",
           "tokenUsage": {
-            "total": 669,
+            "total": 639,
             "prompt": 76,
-            "completion": 593,
+            "completion": 563,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 58499,
+          "latencyMs": 6821,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -1896,27 +1339,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "3054",
+                "content-length": "2970",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:24:24 GMT",
+                "date": "Sun, 05 Jul 2026 10:56:07 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "e3e78f5b-b6f6-44cd-ae4f-42a884bface0",
+                "x-litellm-call-id": "1713fef7-0bd1-4cd5-8747-956beeed4f06",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama32-3b",
                 "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-                "x-litellm-overhead-duration-ms": "9.777",
+                "x-litellm-overhead-duration-ms": "8.549",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "20601.562",
+                "x-litellm-response-duration-ms": "6810.384",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -1936,9 +1379,9 @@
         "testIdx": 4,
         "tokenUsage": {
           "prompt": 76,
-          "completion": 593,
+          "completion": 563,
           "cached": 0,
-          "total": 669,
+          "total": 639,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -1970,27 +1413,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "3054",
+              "content-length": "2970",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:24:24 GMT",
+              "date": "Sun, 05 Jul 2026 10:56:07 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "e3e78f5b-b6f6-44cd-ae4f-42a884bface0",
+              "x-litellm-call-id": "1713fef7-0bd1-4cd5-8747-956beeed4f06",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama32-3b",
               "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-              "x-litellm-overhead-duration-ms": "9.777",
+              "x-litellm-overhead-duration-ms": "8.549",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "20601.562",
+              "x-litellm-response-duration-ms": "6810.384",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -2012,8 +1455,8 @@
             "numRequests": 0
           }
         },
-        "id": "b49428cf-a768-4f19-bfdd-9e39a6b0dad8",
-        "latencyMs": 422706,
+        "id": "b7711d40-db28-43a8-9805-b634212c0f1d",
+        "latencyMs": 10264,
         "namedScores": {},
         "prompt": {
           "raw": "Review this just recipe line and explain what might go wrong: curl -fsS \"$gateway_url/v1/chat/completions\" -d \"{model: local-fast, messages: [{role: user, content: $prompt}]}\"",
@@ -2027,15 +1470,15 @@
           "label": "candidate-llama31-8b"
         },
         "response": {
-          "output": "A nice-looking Curl command!\n\nHowever, here are some potential issues that might arise:\n\n### 1. **Insecure connection (curl option)**\n\nThe `-s` option is specified twice, which means the command will be executed in \"silent mode\" and also without any SSL verification (`-S`). This can lead to security vulnerabilities if you're connecting to an HTTPS endpoint.\n\nTo fix: Remove the second `-s` or replace it with `-S` (if that's your intention) for a more secure connection.\n\n### 2. **No error handling**\n\nThe command uses the `-f` option, which means Curl will exit immediately if there's any network failure or invalid server response. While this can help prevent infinite loops, it might not provide useful error information to troubleshoot issues.\n\nTo fix: Consider removing the `-f` option and letting Curl display error messages for better debugging.\n\n### 3. **String interpolation**\n\nThe `$prompt` variable is interpolated directly into the JSON payload using string concatenation (`$prompt`). This can lead to issues if the prompt contains special characters or newline escapes.\n\nTo fix: Use a safer approach, such as wrapping the prompt in double quotes and escaping any special characters.\n\n### 4. **JSON payload**\n\nThe command assumes that the `messages` field is an array with exactly one element. If this isn't the case, you might encounter JSON parsing errors on the server-side.\n\nTo fix: Double-check your API documentation to ensure the expected format for the `messages` field.\n\nHere's a refactored version of the Curl command addressing these issues:\n```bash\ncurl -X POST \\\n  \"$gateway_url/v1/chat/completions\" \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"model\": \"local-fast\", \"messages\": [{\"role\": \"user\", \"content\": \"'\"${prompt}\"'\"}]}' \\\n  -k\n```\nNote the `-k` option for insecure connections and the double-quoted prompt with single quotes inside to avoid shell interpolation issues.",
+          "output": "A bash shell command!\n\nHere's a breakdown of the potential issues:\n\n1. **Missing quotes**: The `-d` option is meant to send data in the request body as JSON. However, the JSON object is not properly quoted. It should be `'{...}'`, not `{...}`.\n2. **Incorrect model name**: The recipe uses `$gateway_url/v1/chat/completions`, which implies an HTTP POST request. However, it specifies a local model (`local-fast`) in the data payload. This might not work as expected since the URL suggests a remote API call. If this is intended to be a local model, the URL should be adjusted accordingly.\n3. **Missing JSON formatting**: The `messages` field contains an array with a single object. However, the JSON syntax requires commas between elements in arrays. If there are multiple messages, they should be comma-separated. For example: `{ \"role\": \"user\", \"content\": \"$prompt\" }, { ... }`.\n4. **Potential injection vulnerability**: The `$prompt` variable is not sanitized or escaped. This might lead to a vulnerability if the input contains special characters that could manipulate the JSON structure or the request.\n5. **Error handling**: The `-fsS` flags are used to silence warnings and follow redirects, respectively. However, they do not provide any feedback on errors that may occur during the request. If something goes wrong (e.g., network issues), the script will exit silently, making it harder to diagnose problems.\n\nTo fix these issues, you could modify the command as follows:\n```bash\ncurl -fsS \\\n  -X POST \\\n  -H 'Content-Type: application/json' \\\n  -d '{\"model\": \"local-fast\", \"messages\": [{\"role\": \"user\", \"content\": \"$prompt\"}]}' \\\n  \"$gateway_url/v1/chat/completions\"\n```\nThis revised command:\n\n* Properly quotes the JSON object\n* Uses a more explicit `Content-Type` header to ensure correct JSON parsing\n* Removes the incorrect local model specification (assuming it's meant for a remote API call)\n* Sanitizes the input by using double quotes and proper escaping",
           "tokenUsage": {
-            "total": 477,
+            "total": 503,
             "prompt": 61,
-            "completion": 416,
+            "completion": 442,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 422706,
+          "latencyMs": 10264,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -2045,27 +1488,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "2264",
+                "content-length": "2318",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:29:50 GMT",
+                "date": "Sun, 05 Jul 2026 10:56:14 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "38eacd07-357a-4c55-8da5-351d0b411309",
+                "x-litellm-call-id": "8333b5e3-0311-4e0d-b654-a40011d3b725",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama31-8b",
                 "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-                "x-litellm-overhead-duration-ms": "3.039",
+                "x-litellm-overhead-duration-ms": "5.997",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "117500.427",
+                "x-litellm-response-duration-ms": "10254.103000000001",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -2085,9 +1528,9 @@
         "testIdx": 4,
         "tokenUsage": {
           "prompt": 61,
-          "completion": 416,
+          "completion": 442,
           "cached": 0,
-          "total": 477,
+          "total": 503,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -2119,27 +1562,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "2264",
+              "content-length": "2318",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:29:50 GMT",
+              "date": "Sun, 05 Jul 2026 10:56:14 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "38eacd07-357a-4c55-8da5-351d0b411309",
+              "x-litellm-call-id": "8333b5e3-0311-4e0d-b654-a40011d3b725",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama31-8b",
               "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-              "x-litellm-overhead-duration-ms": "3.039",
+              "x-litellm-overhead-duration-ms": "5.997",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "117500.427",
+              "x-litellm-response-duration-ms": "10254.103000000001",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -2161,157 +1604,8 @@
             "numRequests": 0
           }
         },
-        "id": "ded18038-7c85-440f-8165-879c7167c91f",
-        "latencyMs": 148354,
-        "namedScores": {},
-        "prompt": {
-          "raw": "Review this just recipe line and explain what might go wrong: curl -fsS \"$gateway_url/v1/chat/completions\" -d \"{model: local-fast, messages: [{role: user, content: $prompt}]}\"",
-          "label": "{{prompt}}",
-          "config": {}
-        },
-        "promptId": "effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982",
-        "promptIdx": 2,
-        "provider": {
-          "id": "litellm:candidate-qwen35",
-          "label": "candidate-qwen35"
-        },
-        "response": {
-          "output": "This cURL command looks like a quick-start snippet for interacting with an OpenAI-compatible local inference gateway (like vLLM, TGI, or LM Studio). While the *intent* is correct, there are several technical and security issues that will likely cause this specific line to fail in production.\n\nHere is a breakdown of what might go wrong:\n\n### 1. Invalid JSON Payload Syntax\n**The Problem:** The payload inside `-d \"...\"` contains `model:` instead of `\"model\":`, `messages:` instead of `\"messages\"`, etc., and values like `local-fast` are unquoted.\n*   **Example sent to server:** `{model: local-fast, ...}`\n*   **Required by API:** `{\"model\":\"local-fast\", \"messages\":[{\"role\":\"user\"...}]}`\n\nMost LLM gateways (including standard OpenAI compatible APIs) require strict RFC 8259 compliant JSON. Unquoted keys and missing quotes on string values will result in a **400 Bad Request** error immediately after the server receives it. In some bash shells, even if you try to escape them with single/double quotes inside double-quote blocks (e.g., `\"{\\\"model\\\":...}\"`), there is a risk of escaping mismatches breaking your prompt content ($prompt).\n\n### 2. Missing HTTP Headers\n**The Problem:** The command relies on default curl headers (`Content-Type`). It does not explicitly set `Authorization`.\n*   **Security Risk (401 Unauthorized):** If the gateway requires an API Key or Bearer token, this request will fail because no header is provided to send it: `-H \"Authorization: Bearer ...\"`\n*   **Media Type Error (415 Unsupported Media):** By default, if you don't specify headers on a JSON POST payload with certain curl versions/configurations, the content type might be guessed as `text/plain` or `application/x-www-form-urlencoded`. The LLM gateway will reject this and expect strictly `Content-Type: application/json`.\n\n### 3. Variable Escaping & Prompt Injection Risks\n**The Problem:** `$prompt` is expanded by the shell before being sent to curl.\n*   **Special Characters:** If your user prompt contains double quotes (`\"`), backslashes (`\\`), or dollar signs (`$`), bash will try to interpret them as control characters *before* passing them to curl. For example, if `$prompt = '1+2'`, it might expand incorrectly depending on shell settings. To send a literal newline in JSON via cURL without `echo -e \"newline\"` logic is error-prone; users often forget that `\\n` must be passed as two characters or handled by the API tokenization layer specifically (some expect raw newlines, others want escape codes).\n*   **Command Injection:** If `$prompt` contains shell commands (`$()`, backticks), and you aren't careful with escaping, there is a risk of unintended execution depending on how that variable was populated.\n\n### 4. Model Name Verification\n**The Problem:** `local-fast` appears to be an alias or internal identifier rather than a specific model architecture name (like `mistral:7b-v2`).\n*   **Routing Error:** If your gateway backend is configured via a routing table, `\"model\"` might need to map to the actual quantized path. Passing just \"local-fast\" without verifying that this exact string exists in your deployment configuration will result in **401 Model Not Found** or a generic error from the model registry.\n\n### 5. Error Handling (`-f` Flag Behavior)\n**The Problem:** The `-f` flag fails silently on non-zero status codes *if* there is no header attached to `Content-Type`. If you run this in an unwatched terminal, and the prompt returns JSON (even a valid error like \"JSON Parse Failed\"), the output might be suppressed by `-sS`, hiding that your input was malformed.\nYou need verbose flags (`-v`) during development to see if it's failing at network level vs API payload construction level.\n\n---\n\n### Recommended Correction\n\nHere is a safer, more robust version of this line:\n\n```bash\ncurl -fsSL \\ \n  --header \"Content-Type: application/json\" \\ \n  --header \"Authorization: Bearer $API_TOKEN\" \\ # Ensure token exists or remove if not needed locally\n  \"$gateway_url/v1/chat/completions\" \\ \n  -d \"{\\\"model\\\": \\\"local-fast\\\", \\\\\\\"messages\\\\\\\":[{\\\"role\\\":\\\"user\\\",\\\"content\\\":\\\"$prompt\\\\n\\\\n\\\"}]}\"\n```\n\n**However, using a file is much safer for production:**\n\nTo avoid escaping hell (where `$` and `\"` inside the prompt break your shell script):\n1.  Save your payload to a JSON file: `/tmp/request.json`.\n2.  Read from the `-d @/path/to/file`:\n\n```bash\n# Constructing the request in variables first allows cleaner handling\nGATEWAY_URL=\"$gateway_url\"\nMODEL=\"local-fast\"\nPROMPT_CONTENT=\"$prompt\" # Do not echo this directly, just store it\n\ncat > /tmp/request.json <<EOF\n{\n    \"model\": \"$MODEL\",\n    \"messages\": [\n        {\n            \"role\": \"user\", \n            \"content\": \"$(echo -n $PROMPT_CONTENT)\"\n        }\n    ]\n}\nEOF\n\ncurl -fsSL \\\n  --header \"Content-Type: application/json\" \\ # Explicit header required by most gateways\n  \"$GATEWAY_URL/v1/chat/completions\" \\ \n  --data-binary @/tmp/request.json\n```",
-          "tokenUsage": {
-            "total": 3617,
-            "prompt": 61,
-            "completion": 3556,
-            "numRequests": 1
-          },
-          "cached": false,
-          "latencyMs": 148354,
-          "finishReason": "stop",
-          "guardrails": {
-            "flagged": false
-          },
-          "metadata": {
-            "http": {
-              "status": 200,
-              "statusText": "OK",
-              "headers": {
-                "content-length": "5398",
-                "content-security-policy": "frame-ancestors 'none'",
-                "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:31:48 GMT",
-                "server": "uvicorn",
-                "x-content-type-options": "nosniff",
-                "x-frame-options": "DENY",
-                "x-litellm-attempted-fallbacks": "0",
-                "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "d6b8b135-8e26-4da4-917b-467a54ed9bec",
-                "x-litellm-callback-duration-ms": "0.0",
-                "x-litellm-key-spend": "0.0",
-                "x-litellm-model-api-base": "http://host.containers.internal:11434",
-                "x-litellm-model-group": "candidate-qwen35",
-                "x-litellm-model-id": "086a79be56f19d4d523968f336a8c0a4af11b178d9550d757c17ba9a0f76fac7",
-                "x-litellm-overhead-duration-ms": "5.355",
-                "x-litellm-response-cost-discount-amount": "0.0",
-                "x-litellm-response-cost-margin-amount": "0.0",
-                "x-litellm-response-cost-margin-percent": "0.0",
-                "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "148335.978",
-                "x-litellm-version": "1.90.0"
-              }
-            }
-          }
-        },
-        "score": 1,
-        "success": true,
-        "testCase": {
-          "description": "code/config review",
-          "vars": {
-            "prompt": "Review this just recipe line and explain what might go wrong: curl -fsS \"$gateway_url/v1/chat/completions\" -d \"{model: local-fast, messages: [{role: user, content: $prompt}]}\""
-          },
-          "assert": [],
-          "options": {},
-          "metadata": {}
-        },
-        "testIdx": 4,
-        "tokenUsage": {
-          "prompt": 61,
-          "completion": 3556,
-          "cached": 0,
-          "total": 3617,
-          "numRequests": 1,
-          "completionDetails": {
-            "reasoning": 0,
-            "acceptedPrediction": 0,
-            "rejectedPrediction": 0,
-            "cacheReadInputTokens": 0,
-            "cacheCreationInputTokens": 0
-          },
-          "assertions": {
-            "total": 0,
-            "prompt": 0,
-            "completion": 0,
-            "cached": 0,
-            "numRequests": 1,
-            "completionDetails": {
-              "reasoning": 0,
-              "acceptedPrediction": 0,
-              "rejectedPrediction": 0,
-              "cacheReadInputTokens": 0,
-              "cacheCreationInputTokens": 0
-            }
-          }
-        },
-        "vars": {
-          "prompt": "Review this just recipe line and explain what might go wrong: curl -fsS \"$gateway_url/v1/chat/completions\" -d \"{model: local-fast, messages: [{role: user, content: $prompt}]}\""
-        },
-        "metadata": {
-          "http": {
-            "status": 200,
-            "statusText": "OK",
-            "headers": {
-              "content-length": "5398",
-              "content-security-policy": "frame-ancestors 'none'",
-              "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:31:48 GMT",
-              "server": "uvicorn",
-              "x-content-type-options": "nosniff",
-              "x-frame-options": "DENY",
-              "x-litellm-attempted-fallbacks": "0",
-              "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "d6b8b135-8e26-4da4-917b-467a54ed9bec",
-              "x-litellm-callback-duration-ms": "0.0",
-              "x-litellm-key-spend": "0.0",
-              "x-litellm-model-api-base": "http://host.containers.internal:11434",
-              "x-litellm-model-group": "candidate-qwen35",
-              "x-litellm-model-id": "086a79be56f19d4d523968f336a8c0a4af11b178d9550d757c17ba9a0f76fac7",
-              "x-litellm-overhead-duration-ms": "5.355",
-              "x-litellm-response-cost-discount-amount": "0.0",
-              "x-litellm-response-cost-margin-amount": "0.0",
-              "x-litellm-response-cost-margin-percent": "0.0",
-              "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "148335.978",
-              "x-litellm-version": "1.90.0"
-            }
-          },
-          "_promptfooFileMetadata": {}
-        },
-        "failureReason": 0
-      },
-      {
-        "cost": 0,
-        "gradingResult": {
-          "pass": true,
-          "score": 1,
-          "reason": "No assertions",
-          "tokensUsed": {
-            "total": 0,
-            "prompt": 0,
-            "completion": 0,
-            "cached": 0,
-            "numRequests": 0
-          }
-        },
-        "id": "d75d7141-c999-4eb5-b47d-dad53b8674b8",
-        "latencyMs": 4527,
+        "id": "b4f5f465-030d-45a4-8581-2d02ca36e8bb",
+        "latencyMs": 3659,
         "namedScores": {},
         "prompt": {
           "raw": "A local model gives fast responses but often ignores requested structure, invents project files, and produces broken shell commands. Which gateway model group should it be used for, if any?",
@@ -2325,15 +1619,15 @@
           "label": "candidate-llama32-3b"
         },
         "response": {
-          "output": "Based on the behavior described, I would recommend avoiding this local model. The issues mentioned suggest that the model is not reliable or robust enough to be used as a first choice.\n\nHowever, there might be scenarios where you could still consider using this model:\n\n1.  **Educational purposes:** If you're teaching someone about modeling and want them to experiment with different approaches, you could provide guidance on how to address these issues.\n2.  **Proof-of-concept or prototyping:** For a simple proof-of-concept project that doesn't require high reliability, this model might suffice.\n\n    Nevertheless, for any production environment or critical applications, I would recommend using more reliable models.\n\n3.  **Gateway Model Group:** If you still want to use this local model, it would be best to categorize it as a **Non-production Gateway** model group.",
+          "output": "Based on the description of the local model's behavior, I would recommend using a different gateway model group that can better handle these issues.\n\nThe symptoms described - ignoring requested structure, inventing project files, and producing broken shell commands - suggest that the local model may not be robust enough to work well with complex or structured inputs. This could be due to several reasons such as:\n\n1. Lack of training data on diverse scenarios.\n2. Insufficient understanding of contextual relationships between different components.\n3. Inability to validate user input against a set of predefined rules.\n\nGiven these characteristics, I would recommend using a more robust gateway model group that can better handle complex or structured inputs. Some options could be:\n\n1. **Rule-based models**: These models are designed to work with pre-defined rules and constraints. They can enforce structure on the input data and provide more accurate results.\n2. **Hybrid models**: These models combine the strengths of different gateway model groups, such as rule-based and statistical models. They can learn from data and adapt to new situations while still enforcing structure on inputs.\n3. **Graph-based models**: These models represent knowledge as a graph, which can be more effective in handling complex relationships between different components.\n\nHowever, without more information about the specific use case or requirements, it's difficult to recommend a specific gateway model group. It's always best to evaluate the performance and behavior of different gateway model groups on your specific use case before making a final decision.",
           "tokenUsage": {
-            "total": 237,
+            "total": 360,
             "prompt": 64,
-            "completion": 173,
+            "completion": 296,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 4527,
+          "latencyMs": 3659,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -2343,27 +1637,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "1178",
+                "content-length": "1962",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:34:16 GMT",
+                "date": "Sun, 05 Jul 2026 10:56:24 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "d285d8b5-b1dd-45a0-a9a4-5d20d2dddded",
+                "x-litellm-call-id": "597989da-9e54-4e47-bfc0-2d617c7bc3f0",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama32-3b",
                 "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-                "x-litellm-overhead-duration-ms": "5.813",
+                "x-litellm-overhead-duration-ms": "8.461",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "4515.263",
+                "x-litellm-response-duration-ms": "3650.885",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -2383,9 +1677,9 @@
         "testIdx": 5,
         "tokenUsage": {
           "prompt": 64,
-          "completion": 173,
+          "completion": 296,
           "cached": 0,
-          "total": 237,
+          "total": 360,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -2417,27 +1711,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "1178",
+              "content-length": "1962",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:34:16 GMT",
+              "date": "Sun, 05 Jul 2026 10:56:24 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "d285d8b5-b1dd-45a0-a9a4-5d20d2dddded",
+              "x-litellm-call-id": "597989da-9e54-4e47-bfc0-2d617c7bc3f0",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama32-3b",
               "x-litellm-model-id": "e965fd3e190acb4514a78835bbde876e51e7fb7172e1fc1dfc5ecde561b33881",
-              "x-litellm-overhead-duration-ms": "5.813",
+              "x-litellm-overhead-duration-ms": "8.461",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "4515.263",
+              "x-litellm-response-duration-ms": "3650.885",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -2459,8 +1753,8 @@
             "numRequests": 0
           }
         },
-        "id": "bbea92b6-b2b2-46dd-b403-3a0e79b903c2",
-        "latencyMs": 8131,
+        "id": "78ae71cc-27d7-4d24-9387-f0f1bd898851",
+        "latencyMs": 4646,
         "namedScores": {},
         "prompt": {
           "raw": "A local model gives fast responses but often ignores requested structure, invents project files, and produces broken shell commands. Which gateway model group should it be used for, if any?",
@@ -2474,15 +1768,15 @@
           "label": "candidate-llama31-8b"
         },
         "response": {
-          "output": "## Step 1: Understanding the Problem\nThe user is describing a local model that provides quick results but often lacks the requested structure, creates unnecessary project files, and generates incorrect or non-functional shell commands.\n\n## Step 2: Identifying the Limitations of the Model\nGiven its limitations, the model seems to be more suited for tasks where speed is prioritized over strict adherence to specific structures or requirements that are typically met by more sophisticated models in certain contexts.\n\n## Step 3: Matching with Gateway Model Groups\nThere are several gateway models used in various applications. The primary ones include:\n- **Exploratory Models:** Designed for initial exploration and rough estimates.\n- **Detailed Models:** More precise but require detailed input, which this model does not seem to provide accurately.\n- **Simplified Models:** Often used when a quick estimate is needed without the need for complex calculations or structures.\n\n## Step 4: Selecting an Appropriate Model Group\nGiven the characteristics of the described local model—fast response times but with inaccuracies in requested structure and commands—it seems most aligned with the requirements for exploratory models. These are chosen for initial assessments where speed is critical, even if some precision might be sacrificed.\n\nThe final answer is: $\\boxed{Exploratory}$",
+          "output": "## Step 1: Analyze the characteristics of the given local model.\nThe local model provides fast responses but has limitations such as ignoring requested structure, inventing project files, and producing broken shell commands.\n\n## Step 2: Consider which type of gateway model group would best accommodate these characteristics.\nGiven its characteristics, it seems this model is suited for a scenario where speed is prioritized over the need for specific request structures or accurate file management. This suggests it might be used in situations where data accuracy and structure are less critical.\n\n## Step 3: Determine which gateway model group aligns with these considerations.\nConsidering the provided characteristics and their implications, this model would most appropriately fit into a \"Fast Data\" category, as speed is its primary advantage despite other limitations. This classification implies it's best suited for applications where rapid processing of data is essential over the need for precise structure or accurate file management.\n\nThe final answer is: $\\boxed{Fast Data}$",
           "tokenUsage": {
-            "total": 306,
+            "total": 242,
             "prompt": 49,
-            "completion": 257,
+            "completion": 193,
             "numRequests": 1
           },
           "cached": false,
-          "latencyMs": 8131,
+          "latencyMs": 4646,
           "finishReason": "stop",
           "guardrails": {
             "flagged": false
@@ -2492,27 +1786,27 @@
               "status": 200,
               "statusText": "OK",
               "headers": {
-                "content-length": "1695",
+                "content-length": "1395",
                 "content-security-policy": "frame-ancestors 'none'",
                 "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:34:21 GMT",
+                "date": "Sun, 05 Jul 2026 10:56:28 GMT",
                 "server": "uvicorn",
                 "x-content-type-options": "nosniff",
                 "x-frame-options": "DENY",
                 "x-litellm-attempted-fallbacks": "0",
                 "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "8d4096eb-619a-414b-a7aa-393c92b11ae4",
+                "x-litellm-call-id": "b312e099-4857-4d59-bf1b-aba6f06faf41",
                 "x-litellm-callback-duration-ms": "0.0",
                 "x-litellm-key-spend": "0.0",
                 "x-litellm-model-api-base": "http://host.containers.internal:11434",
                 "x-litellm-model-group": "candidate-llama31-8b",
                 "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-                "x-litellm-overhead-duration-ms": "2.04",
+                "x-litellm-overhead-duration-ms": "3.21",
                 "x-litellm-response-cost-discount-amount": "0.0",
                 "x-litellm-response-cost-margin-amount": "0.0",
                 "x-litellm-response-cost-margin-percent": "0.0",
                 "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "8122.260000000001",
+                "x-litellm-response-duration-ms": "4636.342",
                 "x-litellm-version": "1.90.0"
               }
             }
@@ -2532,9 +1826,9 @@
         "testIdx": 5,
         "tokenUsage": {
           "prompt": 49,
-          "completion": 257,
+          "completion": 193,
           "cached": 0,
-          "total": 306,
+          "total": 242,
           "numRequests": 1,
           "completionDetails": {
             "reasoning": 0,
@@ -2566,176 +1860,27 @@
             "status": 200,
             "statusText": "OK",
             "headers": {
-              "content-length": "1695",
+              "content-length": "1395",
               "content-security-policy": "frame-ancestors 'none'",
               "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:34:21 GMT",
+              "date": "Sun, 05 Jul 2026 10:56:28 GMT",
               "server": "uvicorn",
               "x-content-type-options": "nosniff",
               "x-frame-options": "DENY",
               "x-litellm-attempted-fallbacks": "0",
               "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "8d4096eb-619a-414b-a7aa-393c92b11ae4",
+              "x-litellm-call-id": "b312e099-4857-4d59-bf1b-aba6f06faf41",
               "x-litellm-callback-duration-ms": "0.0",
               "x-litellm-key-spend": "0.0",
               "x-litellm-model-api-base": "http://host.containers.internal:11434",
               "x-litellm-model-group": "candidate-llama31-8b",
               "x-litellm-model-id": "3c006706e9a983e38c48623e51170c31cdb50a7f124a4af5297daebec5fc45d2",
-              "x-litellm-overhead-duration-ms": "2.04",
+              "x-litellm-overhead-duration-ms": "3.21",
               "x-litellm-response-cost-discount-amount": "0.0",
               "x-litellm-response-cost-margin-amount": "0.0",
               "x-litellm-response-cost-margin-percent": "0.0",
               "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "8122.260000000001",
-              "x-litellm-version": "1.90.0"
-            }
-          },
-          "_promptfooFileMetadata": {}
-        },
-        "failureReason": 0
-      },
-      {
-        "cost": 0,
-        "gradingResult": {
-          "pass": true,
-          "score": 1,
-          "reason": "No assertions",
-          "tokensUsed": {
-            "total": 0,
-            "prompt": 0,
-            "completion": 0,
-            "cached": 0,
-            "numRequests": 0
-          }
-        },
-        "id": "1bbc8b6a-876a-4a6c-9f54-a1fb14f97894",
-        "latencyMs": 105268,
-        "namedScores": {},
-        "prompt": {
-          "raw": "A local model gives fast responses but often ignores requested structure, invents project files, and produces broken shell commands. Which gateway model group should it be used for, if any?",
-          "label": "{{prompt}}",
-          "config": {}
-        },
-        "promptId": "effa18501e44aafd9bc42a2f64ffc9b6350f94025520ca2ed382f9bdc4b6e982",
-        "promptIdx": 2,
-        "provider": {
-          "id": "litellm:candidate-qwen35",
-          "label": "candidate-qwen35"
-        },
-        "response": {
-          "output": "Based on the behaviors you described (ignoring structure, inventing files, broken commands), this model is a typical **Small Language Model (SLM)** with instruction-following limitations and high hallucination rates. \n\nThere is no standard industry-wide term called \"gateway model group,\" but in enterprise AI architecture or orchestration frameworks, such models should generally be restricted to specific categories based on their failure profile:\n\n### Recommended Classification\n**This model should NOT belong to:** \n1.  **Production Code Execution Gates** (e.g., Auto-generating scripts).\n2.  **File System Interaction Layers** (e.g., writing/reading project files).\n3.  **Automated DevOps/CI Pipelines** (Due to broken commands causing downtime).\n\n### Suitable Usage (If any)\nIt can only be safely used in a **\"Low-Risk Drafting\"** group, with the following constraints:\n*   **Text-Only Generation:** Used strictly for summarizing or brainstorming *internal drafts*. \n*   **Human-in-the-Loop:** Output must never run automatically without human verification.\n*   **No Tool Calling:** Do not enable this model to trigger external tools (shells, filesystem).\n\n### Summary Advice\nDue to the risk of system breakage (\"invents project files,\" \"broken shell commands\"), **no production gateway should rely on this local model for automation.** If speed is your primary metric and fidelity/accuracy cannot be compromised, use it. Otherwise, route these queries to a larger/more stable LLM via an orchestration strategy (like LangChain routing) even if it adds latency.\n\n**Recommendation:** Do not assign this to any high-impact \"Gateway\" role without strict validation layers on all outputs before execution.**",
-          "tokenUsage": {
-            "total": 3006,
-            "prompt": 50,
-            "completion": 2956,
-            "numRequests": 1
-          },
-          "cached": false,
-          "latencyMs": 105268,
-          "finishReason": "stop",
-          "guardrails": {
-            "flagged": false
-          },
-          "metadata": {
-            "http": {
-              "status": 200,
-              "statusText": "OK",
-              "headers": {
-                "content-length": "2031",
-                "content-security-policy": "frame-ancestors 'none'",
-                "content-type": "application/json",
-                "date": "Sun, 05 Jul 2026 10:34:29 GMT",
-                "server": "uvicorn",
-                "x-content-type-options": "nosniff",
-                "x-frame-options": "DENY",
-                "x-litellm-attempted-fallbacks": "0",
-                "x-litellm-attempted-retries": "0",
-                "x-litellm-call-id": "0f01a517-bb7f-4d15-af4c-2300b3dea4cf",
-                "x-litellm-callback-duration-ms": "0.0",
-                "x-litellm-key-spend": "0.0",
-                "x-litellm-model-api-base": "http://host.containers.internal:11434",
-                "x-litellm-model-group": "candidate-qwen35",
-                "x-litellm-model-id": "086a79be56f19d4d523968f336a8c0a4af11b178d9550d757c17ba9a0f76fac7",
-                "x-litellm-overhead-duration-ms": "4.601",
-                "x-litellm-response-cost-discount-amount": "0.0",
-                "x-litellm-response-cost-margin-amount": "0.0",
-                "x-litellm-response-cost-margin-percent": "0.0",
-                "x-litellm-response-cost-original": "0.0",
-                "x-litellm-response-duration-ms": "105258.178",
-                "x-litellm-version": "1.90.0"
-              }
-            }
-          }
-        },
-        "score": 1,
-        "success": true,
-        "testCase": {
-          "description": "unsuitable model signal",
-          "vars": {
-            "prompt": "A local model gives fast responses but often ignores requested structure, invents project files, and produces broken shell commands. Which gateway model group should it be used for, if any?"
-          },
-          "assert": [],
-          "options": {},
-          "metadata": {}
-        },
-        "testIdx": 5,
-        "tokenUsage": {
-          "prompt": 50,
-          "completion": 2956,
-          "cached": 0,
-          "total": 3006,
-          "numRequests": 1,
-          "completionDetails": {
-            "reasoning": 0,
-            "acceptedPrediction": 0,
-            "rejectedPrediction": 0,
-            "cacheReadInputTokens": 0,
-            "cacheCreationInputTokens": 0
-          },
-          "assertions": {
-            "total": 0,
-            "prompt": 0,
-            "completion": 0,
-            "cached": 0,
-            "numRequests": 1,
-            "completionDetails": {
-              "reasoning": 0,
-              "acceptedPrediction": 0,
-              "rejectedPrediction": 0,
-              "cacheReadInputTokens": 0,
-              "cacheCreationInputTokens": 0
-            }
-          }
-        },
-        "vars": {
-          "prompt": "A local model gives fast responses but often ignores requested structure, invents project files, and produces broken shell commands. Which gateway model group should it be used for, if any?"
-        },
-        "metadata": {
-          "http": {
-            "status": 200,
-            "statusText": "OK",
-            "headers": {
-              "content-length": "2031",
-              "content-security-policy": "frame-ancestors 'none'",
-              "content-type": "application/json",
-              "date": "Sun, 05 Jul 2026 10:34:29 GMT",
-              "server": "uvicorn",
-              "x-content-type-options": "nosniff",
-              "x-frame-options": "DENY",
-              "x-litellm-attempted-fallbacks": "0",
-              "x-litellm-attempted-retries": "0",
-              "x-litellm-call-id": "0f01a517-bb7f-4d15-af4c-2300b3dea4cf",
-              "x-litellm-callback-duration-ms": "0.0",
-              "x-litellm-key-spend": "0.0",
-              "x-litellm-model-api-base": "http://host.containers.internal:11434",
-              "x-litellm-model-group": "candidate-qwen35",
-              "x-litellm-model-id": "086a79be56f19d4d523968f336a8c0a4af11b178d9550d757c17ba9a0f76fac7",
-              "x-litellm-overhead-duration-ms": "4.601",
-              "x-litellm-response-cost-discount-amount": "0.0",
-              "x-litellm-response-cost-margin-amount": "0.0",
-              "x-litellm-response-cost-margin-percent": "0.0",
-              "x-litellm-response-cost-original": "0.0",
-              "x-litellm-response-duration-ms": "105258.178",
+              "x-litellm-response-duration-ms": "4636.342",
               "x-litellm-version": "1.90.0"
             }
           },
@@ -2745,15 +1890,15 @@
       }
     ],
     "stats": {
-      "successes": 17,
+      "successes": 12,
       "failures": 0,
-      "errors": 1,
+      "errors": 0,
       "tokenUsage": {
-        "prompt": 986,
-        "completion": 17701,
+        "prompt": 726,
+        "completion": 3997,
         "cached": 0,
-        "total": 18687,
-        "numRequests": 17,
+        "total": 4723,
+        "numRequests": 12,
         "completionDetails": {
           "reasoning": 0,
           "acceptedPrediction": 0,
@@ -2776,8 +1921,8 @@
           }
         }
       },
-      "durationMs": 2267387,
-      "evaluationDurationMs": 2267387
+      "durationMs": 81087,
+      "evaluationDurationMs": 81087
     }
   },
   "config": {
@@ -2798,14 +1943,6 @@
       {
         "id": "litellm:chat:candidate-llama31-8b",
         "label": "candidate-llama31-8b",
-        "config": {
-          "apiBaseUrl": "http://localhost:4000",
-          "apiKeyEnvar": "[REDACTED]"
-        }
-      },
-      {
-        "id": "litellm:chat:candidate-qwen35",
-        "label": "candidate-qwen35",
         "config": {
           "apiBaseUrl": "http://localhost:4000",
           "apiKeyEnvar": "[REDACTED]"
@@ -2864,8 +2001,8 @@
     "nodeVersion": "v26.4.0",
     "platform": "darwin",
     "arch": "arm64",
-    "exportedAt": "2026-07-05T10:36:15.209Z",
-    "evaluationCreatedAt": "2026-07-05T09:58:27.618Z"
+    "exportedAt": "2026-07-05T10:56:33.498Z",
+    "evaluationCreatedAt": "2026-07-05T10:55:12.294Z"
   },
   "vars": [
     "prompt"

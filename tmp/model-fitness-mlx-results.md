@@ -4,7 +4,7 @@
 
 - Role: local-fast
 - Status: pass
-- Duration: 3.69s
+- Duration: 4.38s
 
 Output:
 
@@ -16,15 +16,15 @@ Based on the description of the AI workstation, here are three bullets explainin
 
 • **CLI-native interface**: The AI workstation seeks to integrate a Command-Line Interface (CLI) that is native to the system, allowing users to interact with the AI in a familiar and intuitive way. This CLI-native interface enables seamless integration with local tools and applications, enhancing the overall user experience and productivity.
 ==========
-Prompt: 58 tokens, 623.829 tokens-per-sec
-Generation: 174 tokens, 117.886 tokens-per-sec
-Peak memory: 2.049 GB
+Prompt: 58 tokens, 250.652 tokens-per-sec
+Generation: 174 tokens, 116.179 tokens-per-sec
+Peak memory: 2.046 GB
 
 ## mlx-llama32-3b / short-summary
 
 - Role: local-fast
 - Status: pass
-- Duration: 2.26s
+- Duration: 2.31s
 
 Output:
 
@@ -35,15 +35,15 @@ Here are four bullets summarizing the text:
 • The local-fast model group currently routes to Ollama.
 • The project aims to avoid custom wrappers unless a clear need arises.
 ==========
-Prompt: 87 tokens, 728.630 tokens-per-sec
-Generation: 60 tokens, 119.611 tokens-per-sec
+Prompt: 87 tokens, 680.573 tokens-per-sec
+Generation: 60 tokens, 118.093 tokens-per-sec
 Peak memory: 2.070 GB
 
 ## mlx-llama32-3b / command-line-help
 
 - Role: local-fast
 - Status: pass
-- Duration: 5.35s
+- Duration: 5.3s
 
 Output:
 
@@ -70,15 +70,15 @@ To mitigate these risks, it's recommended to:
 - Ensure that the container is properly stopped before removal.
 - Use a more robust way
 ==========
-Prompt: 67 tokens, 567.271 tokens-per-sec
-Generation: 400 tokens, 111.119 tokens-per-sec
+Prompt: 67 tokens, 525.786 tokens-per-sec
+Generation: 400 tokens, 114.892 tokens-per-sec
 Peak memory: 2.016 GB
 
 ## mlx-llama32-3b / troubleshooting
 
 - Role: local-fast
 - Status: pass
-- Duration: 5.23s
+- Duration: 5.3s
 
 Output:
 
@@ -127,15 +127,15 @@ COPY. /app
 
 # Install any needed packages
 ==========
-Prompt: 83 tokens, 696.358 tokens-per-sec
-Generation: 400 tokens, 115.643 tokens-per-sec
-Peak memory: 2.059 GB
+Prompt: 83 tokens, 653.209 tokens-per-sec
+Generation: 400 tokens, 114.777 tokens-per-sec
+Peak memory: 2.051 GB
 
 ## mlx-llama32-3b / code-config-review
 
 - Role: local-fast
 - Status: pass
-- Duration: 5.23s
+- Duration: 5.53s
 
 Output:
 
@@ -165,15 +165,15 @@ As for what might go wrong, here are a few possibilities:
 
 3. **Gateway URL issue**: If the `$gateway_url` variable is
 ==========
-Prompt: 82 tokens, 711.982 tokens-per-sec
-Generation: 400 tokens, 115.436 tokens-per-sec
+Prompt: 82 tokens, 663.117 tokens-per-sec
+Generation: 400 tokens, 114.713 tokens-per-sec
 Peak memory: 2.058 GB
 
 ## mlx-llama32-3b / unsuitable-model-signal
 
 - Role: local-fast
 - Status: pass
-- Duration: 3.97s
+- Duration: 4.02s
 
 Output:
 
@@ -189,15 +189,15 @@ These groups typically involve working with data, which can be structured and or
 
 Ultimately, the best gateway model group will depend on the specific needs and requirements of your project. It's worth exploring different options and seeing which one works best for you.
 ==========
-Prompt: 71 tokens, 603.988 tokens-per-sec
-Generation: 257 tokens, 116.197 tokens-per-sec
+Prompt: 71 tokens, 567.932 tokens-per-sec
+Generation: 257 tokens, 115.737 tokens-per-sec
 Peak memory: 2.027 GB
 
 ## mlx-qwen3-30b-instruct / quick-general-assistance
 
 - Role: local-capable
 - Status: pass
-- Duration: 6.19s
+- Duration: 11.07s
 
 Output:
 
@@ -207,15 +207,15 @@ Output:
 
 - **CLI-native**: Designed from the ground up for command-line interaction, it offers powerful, scriptable, and efficient workflows tailored for developers and power users who value automation, reproducibility, and seamless integration into existing development pipelines.
 ==========
-Prompt: 31 tokens, 51.622 tokens-per-sec
-Generation: 129 tokens, 92.255 tokens-per-sec
+Prompt: 31 tokens, 10.842 tokens-per-sec
+Generation: 129 tokens, 88.362 tokens-per-sec
 Peak memory: 17.273 GB
 
 ## mlx-qwen3-30b-instruct / short-summary
 
 - Role: local-capable
 - Status: pass
-- Duration: 4.22s
+- Duration: 6.59s
 
 Output:
 
@@ -224,15 +224,15 @@ Output:
 - The local-fast model group currently routes inference requests to Ollama.  
 - Custom wrappers are avoided unless there is a clear and justified need.
 ==========
-Prompt: 60 tokens, 88.767 tokens-per-sec
-Generation: 64 tokens, 93.066 tokens-per-sec
+Prompt: 60 tokens, 47.730 tokens-per-sec
+Generation: 64 tokens, 92.823 tokens-per-sec
 Peak memory: 17.313 GB
 
 ## mlx-qwen3-30b-instruct / command-line-help
 
 - Role: local-capable
 - Status: pass
-- Duration: 8.72s
+- Duration: 11.46s
 
 Output:
 
@@ -281,15 +281,15 @@ It's commonly used in scripts to **ensure a container is removed, but not fail t
 
 ### ⚠️ **Risks and Consider
 ==========
-Prompt: 40 tokens, 74.503 tokens-per-sec
-Generation: 500 tokens, 90.187 tokens-per-sec
+Prompt: 40 tokens, 29.388 tokens-per-sec
+Generation: 500 tokens, 89.751 tokens-per-sec
 Peak memory: 17.275 GB
 
 ## mlx-qwen3-30b-instruct / troubleshooting
 
 - Role: local-capable
 - Status: pass
-- Duration: 9.43s
+- Duration: 11.95s
 
 Output:
 
@@ -344,15 +344,15 @@ start-litellm:
 ### Summary:
 ✅ **
 ==========
-Prompt: 58 tokens, 97.641 tokens-per-sec
-Generation: 500 tokens, 82.201 tokens-per-sec
+Prompt: 58 tokens, 33.390 tokens-per-sec
+Generation: 500 tokens, 89.698 tokens-per-sec
 Peak memory: 17.309 GB
 
 ## mlx-qwen3-30b-instruct / code-config-review
 
 - Role: local-capable
 - Status: pass
-- Duration: 9.16s
+- Duration: 11.64s
 
 Output:
 
@@ -413,15 +413,15 @@ Even if you fix the JSON, you must tell the server that you're sending JSON data
 ### 4. **No `--data-binary` or Proper JSON Handling**
 `-d` sends data as
 ==========
-Prompt: 55 tokens, 86.550 tokens-per-sec
-Generation: 500 tokens, 86.797 tokens-per-sec
+Prompt: 55 tokens, 36.581 tokens-per-sec
+Generation: 500 tokens, 89.753 tokens-per-sec
 Peak memory: 17.303 GB
 
 ## mlx-qwen3-30b-instruct / unsuitable-model-signal
 
 - Role: local-capable
 - Status: pass
-- Duration: 8.99s
+- Duration: 11.74s
 
 Output:
 
@@ -470,15 +470,15 @@ For a proper gateway model, you should use:
 
 If you must use it in a system, **add
 ==========
-Prompt: 44 tokens, 80.400 tokens-per-sec
-Generation: 500 tokens, 87.312 tokens-per-sec
+Prompt: 44 tokens, 29.750 tokens-per-sec
+Generation: 500 tokens, 89.625 tokens-per-sec
 Peak memory: 17.282 GB
 
 ## mlx-qwen3-coder-30b / quick-general-assistance
 
 - Role: local-code
 - Status: pass
-- Duration: 7.51s
+- Duration: 9.66s
 
 Output:
 
@@ -488,15 +488,15 @@ Output:
 
 • **CLI-native**: The workstation is optimized for command-line interface usage, providing powerful, scriptable access to AI tools and workflows through terminal-based interactions rather than relying on graphical user interfaces.
 ==========
-Prompt: 31 tokens, 33.766 tokens-per-sec
-Generation: 115 tokens, 74.354 tokens-per-sec
+Prompt: 31 tokens, 13.665 tokens-per-sec
+Generation: 115 tokens, 77.474 tokens-per-sec
 Peak memory: 21.089 GB
 
 ## mlx-qwen3-coder-30b / short-summary
 
 - Role: local-code
 - Status: pass
-- Duration: 7.38s
+- Duration: 7.79s
 
 Output:
 
@@ -505,15 +505,15 @@ Output:
 • The local-fast model group is configured to route through Ollama
 • Custom wrappers are avoided unless absolutely necessary for specific functionality
 ==========
-Prompt: 60 tokens, 33.632 tokens-per-sec
-Generation: 53 tokens, 75.305 tokens-per-sec
+Prompt: 60 tokens, 31.511 tokens-per-sec
+Generation: 53 tokens, 78.409 tokens-per-sec
 Peak memory: 21.130 GB
 
 ## mlx-qwen3-coder-30b / command-line-help
 
 - Role: local-code
 - Status: pass
-- Duration: 12.88s
+- Duration: 13.37s
 
 Output:
 
@@ -567,15 +567,15 @@ fi
 ## Use Case:
 This pattern is typically used in **automated scripts** where you want to ensure a container is removed without interrupting the script flow, but it should be used with extreme caution.
 ==========
-Prompt: 40 tokens, 26.716 tokens-per-sec
-Generation: 482 tokens, 72.739 tokens-per-sec
+Prompt: 40 tokens, 22.815 tokens-per-sec
+Generation: 482 tokens, 75.862 tokens-per-sec
 Peak memory: 21.091 GB
 
 ## mlx-qwen3-coder-30b / troubleshooting
 
 - Role: local-code
 - Status: pass
-- Duration: 10.75s
+- Duration: 11.46s
 
 Output:
 
@@ -601,15 +601,15 @@ The key changes:
 
 If LiteLLM has a specific flag for binding (like `--host 0.0.0.0`), add that to your command as well. The "connection reset by peer" error typically occurs when the server isn't properly listening on the exposed port or the network configuration blocks the connection.
 ==========
-Prompt: 58 tokens, 34.410 tokens-per-sec
-Generation: 322 tokens, 75.922 tokens-per-sec
+Prompt: 58 tokens, 29.275 tokens-per-sec
+Generation: 322 tokens, 76.312 tokens-per-sec
 Peak memory: 21.126 GB
 
 ## mlx-qwen3-coder-30b / code-config-review
 
 - Role: local-code
 - Status: pass
-- Duration: 9.99s
+- Duration: 10.92s
 
 Output:
 
@@ -639,15 +639,15 @@ curl -fsS "$gateway_url/v1/chat/completions" \
 
 Or better yet, use a here-document or proper JSON escaping to avoid shell quoting issues.
 ==========
-Prompt: 55 tokens, 33.689 tokens-per-sec
-Generation: 265 tokens, 69.515 tokens-per-sec
+Prompt: 55 tokens, 26.002 tokens-per-sec
+Generation: 265 tokens, 76.737 tokens-per-sec
 Peak memory: 21.120 GB
 
 ## mlx-qwen3-coder-30b / unsuitable-model-signal
 
 - Role: local-code
 - Status: pass
-- Duration: 9.49s
+- Duration: 10.77s
 
 Output:
 
@@ -674,6 +674,6 @@ Here's why:
 
 The key is using it as a "first draft" tool rather than a final output tool.
 ==========
-Prompt: 44 tokens, 30.577 tokens-per-sec
-Generation: 269 tokens, 76.227 tokens-per-sec
+Prompt: 44 tokens, 23.241 tokens-per-sec
+Generation: 269 tokens, 76.587 tokens-per-sec
 Peak memory: 21.099 GB
