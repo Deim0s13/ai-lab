@@ -112,3 +112,34 @@ eval-model-fitness:
 eval-model-fitness-mlx:
     @mkdir -p tmp
     @.venv/bin/python tools/evals/run_mlx_model_fitness.py
+
+mlx-up:
+    @just mlx-down
+    @mkdir -p tmp
+    @nohup .venv/bin/python -m mlx_lm server \
+      --model mlx-community/Llama-3.2-3B-Instruct-4bit \
+      --host 0.0.0.0 \
+      --port 8080 \
+      > tmp/mlx-fast-server.log 2>&1 &
+    @nohup .venv/bin/python -m mlx_lm server \
+      --model lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit \
+      --host 0.0.0.0 \
+      --port 8081 \
+      > tmp/mlx-capable-server.log 2>&1 &
+    @nohup .venv/bin/python -m mlx_lm server \
+      --model lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit \
+      --host 0.0.0.0 \
+      --port 8082 \
+      > tmp/mlx-code-server.log 2>&1 &
+    @echo "OK MLX servers starting"
+
+mlx-check:
+    @lsof -nP -iTCP:8080 -sTCP:LISTEN >/dev/null && echo "OK mlx fast server listening on 8080" || (echo "FAIL mlx fast server not listening on 8080" && exit 8)
+    @lsof -nP -iTCP:8081 -sTCP:LISTEN >/dev/null && echo "OK mlx capable server listening on 8081" || (echo "FAIL mlx capable server not listening on 8081" && exit 8)
+    @lsof -nP -iTCP:8082 -sTCP:LISTEN >/dev/null && echo "OK mlx code server listening on 8082" || (echo "FAIL mlx code server not listening on 8082" && exit 8)
+
+mlx-down:
+    @pkill -f "mlx_lm server.*--port 8080" 2>/dev/null || true
+    @pkill -f "mlx_lm server.*--port 8081" 2>/dev/null || true
+    @pkill -f "mlx_lm server.*--port 8082" 2>/dev/null || true
+    @echo "OK MLX servers stopped"
