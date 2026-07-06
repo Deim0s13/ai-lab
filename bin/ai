@@ -10,14 +10,14 @@ usage() {
 AI Dev Workstation
 
 Usage:
-  ai                         Start/check the local AI workstation
-  ai ask "prompt"            Ask using the default daily route
-  ai fast "prompt"           Ask using the fast default route
-  ai capable "prompt"        Ask using local-capable-mlx
-  ai code "prompt"           Ask using local-code-mlx
-  ai routes                  List available gateway routes
-  ai status                  Check local workstation status
-  ai down                    Stop local gateway and MLX servers
+  ai                                      Start/check the local AI workstation
+  ai ask "prompt"                         Ask using the default fast route
+  ai ask --mode fast "prompt"             Ask using the fast route
+  ai ask --mode capable "prompt"          Ask using the capable route
+  ai ask --mode code "prompt"             Ask using the code route
+  ai routes                               List available gateway routes
+  ai status                               Check local workstation status
+  ai down                                 Stop local gateway and MLX servers
 
 Operator commands remain available through just.
 USAGE
@@ -58,9 +58,35 @@ case "$cmd" in
 
   ask)
     shift
-    test "$#" -gt 0 || { echo "Usage: ai ask \"prompt\"" >&2; exit 2; }
+
+    mode="fast"
+
+    if [[ "${1:-}" == "--mode" ]]; then
+      mode="${2:-}"
+      shift 2
+    fi
+
+    case "$mode" in
+      fast)
+        model="local-fast"
+        ;;
+      capable)
+        model="local-capable-mlx"
+        ;;
+      code)
+        model="local-code-mlx"
+        ;;
+      *)
+        echo "Unknown mode: $mode" >&2
+        echo "Supported modes: fast, capable, code" >&2
+        exit 2
+        ;;
+    esac
+
+    test "$#" -gt 0 || { echo "Usage: ai ask [--mode fast|capable|code] \"prompt\"" >&2; exit 2; }
+
     ensure_ready
-    ask_model "local-fast" "$*"
+    ask_model "$model" "$*"
     ;;
 
   fast)
