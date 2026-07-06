@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export LITELLM_MASTER_KEY="${LITELLM_MASTER_KEY:-sk-local-dev}"
+
+GATEWAY_URL="${AI_LAB_GATEWAY_URL:-http://localhost:4000}"
+
+usage() {
+  cat <<USAGE
+AI Dev Workstation
+
+Usage:
+  ai                         Start/check the local AI workstation
+  ai ask "prompt"            Ask using the default daily route
+  ai fast "prompt"           Ask using local-fast-mlx
+  ai capable "prompt"        Ask using local-capable-mlx
+  ai code "prompt"           Ask using local-code-mlx
+  ai routes                  List available gateway routes
+  ai status                  Check local workstation status
+  ai down                    Stop local gateway and MLX servers
+
+Operator commands remain available through just.
+USAGE
+}
+
+ensure_ready() {
+  just mlx-up >/dev/null
+  just ai-up >/dev/null
+}
+
+ask_model() {
+  local model="$1"
+  local prompt="$2"
+
+  curl -fsS "${GATEWAY_URL}/v1/chat/completions" \
+    -H "Authorization: Bearer ${LITELLM_MASTER_KEY}" \
+    -H "Content-Type: application/json" \
+    -d "$(
+      .venv/bin/python -c '
+import json, sys
+print(json.dumps({
+  "model": sys.argv[1],
+  "messages": [{"role": "user", "content": sys.argv[2]}]
+}))
+' "$model" "$prompt"
+    )" | jq -r '.choices[0].message.content'
+}
+
+cmd="${1:-}"
+
+case "$cmd" in
+  "")
+    ensure_ready
+    echo "AI Dev Workstation is ready."
+    echo
+    usage
+    ;;
+
+  ask)
+    shift
+    test "$#" -gt 0 || { echo "Usage: ai ask \"prompt\"" >&2; exit 2; }
+    ensure_ready
+    ask_model "local-fast" "$*"
+    ;;
+
+  fast)
+    shift
+    test "$#" -gt 0 || { echo "Usage: ai fast \"prompt\"" >&2; exit 2; }
+    ensure_ready
+    ask_model "local-fast" "$*"
+    ;;
+
+  capable)
+    shift
+    test "$#" -gt 0 || { echo "Usage: ai capable \"prompt\"" >&2; exit 2; }
+    ensure_ready
+    ask_model "local-capable-mlx" "$*"
+    ;;
+
+  code)
+    shift
+    test "$#" -gt 0 || { echo "Usage: ai code \"prompt\"" >&2; exit 2; }
+    ensure_ready
+    ask_model "local-code-mlx" "$*"
+    ;;
+
+  routes)
+    ensure_ready
+    just gateway-routes
+    ;;
+
+  status)
+    echo "== MLX servers =="
+    just mlx-check
+    echo
+    echo "== Gateway routes =="
+    just gateway-routes
+    echo
+    echo "== MLX candidate routes =="
+    just gateway-mlx-models
+    ;;
+
+  down)
+    just ai-down
+    just mlx-down
+    ;;
+
+  help|-h|--help)
+    usage
+    ;;
+
+  *)
+    echo "Unknown command: $cmd" >&2
+    echo >&2
+    usage >&2
+    exit 2
+    ;;
+esac

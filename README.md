@@ -91,17 +91,39 @@ The project should be:
 
 ---
 
+## User Entry Point
+
+The primary user-facing entrypoint is the `ai` command.
+
+The intended daily experience is:
+
+    ai
+    ai ask "Explain what this command does"
+    ai code "Review this justfile recipe"
+    ai routes
+    ai status
+
+The `ai` command is a thin layer over the local workstation foundations. It uses LiteLLM as the gateway and delegates operator tasks to existing `just` recipes.
+
+`just` remains the operator/foundation layer for gateway lifecycle, MLX lifecycle, diagnostics and model fitness.
+
+See:
+
+    docs/end-user-experience/ai-command.md
+
+---
+
 ## Profile Routing Summary
 
 The workstation is profile-aware.
 
 Each profile can use the same overall architecture while applying different routing, provider and safety rules.
 
-| Profile | Status | Routing posture |
-|---|---|---|
-| `macos-work` | Active | Local-first; Gemini and Cursor first for approved work AI; Anthropic and OpenAI only depending on use case, data sensitivity and approval context. |
-| `windows-personal` | Active | Local-first; OpenAI and Anthropic are the primary frontier escalation paths; Gemini where useful. |
-| `fedora-atomic` | Future / reference | Future rebuildability profile; not an active Milestone 1 implementation target. |
+| Profile            | Status             | Routing posture                                                                                                                                    |
+| ------------------ | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `macos-work`       | Active             | Local-first; Gemini and Cursor first for approved work AI; Anthropic and OpenAI only depending on use case, data sensitivity and approval context. |
+| `windows-personal` | Active             | Local-first; OpenAI and Anthropic are the primary frontier escalation paths; Gemini where useful.                                                  |
+| `fedora-atomic`    | Future / reference | Future rebuildability profile; not an active Milestone 1 implementation target.                                                                    |
 
 Work-safe routing means the work profile does not treat non-approved frontier providers as the default route, blocks restricted content from external routing, and keeps work context separate from personal workflows.
 
@@ -153,12 +175,12 @@ The CLI is the primary interface for the workstation.
 
 The initial Milestone 1 CLI commands are:
 
-| Command | Purpose |
-|---|---|
-| `ask-ai` | General terminal-first AI prompt entry point. |
-| `ai-route` | Explain and test routing decisions. |
-| `ai-status` | Show active profile, gateway health, runtime health and provider/secrets status. |
-| `ai-bootstrap-check` | Validate that a profile has been rebuilt or set up correctly. |
+| Command              | Purpose                                                                          |
+| -------------------- | -------------------------------------------------------------------------------- |
+| `ask-ai`             | General terminal-first AI prompt entry point.                                    |
+| `ai-route`           | Explain and test routing decisions.                                              |
+| `ai-status`          | Show active profile, gateway health, runtime health and provider/secrets status. |
+| `ai-bootstrap-check` | Validate that a profile has been rebuilt or set up correctly.                    |
 
 The initial CLI contracts define:
 
@@ -247,7 +269,6 @@ Primary frontier providers:
 - OpenAI
 - Anthropic
 
-
 Additional frontier proviers, depending on use case:
 
 - Gemini
@@ -284,17 +305,17 @@ Design pattern:
 
 These are initial candidates and may change as the project evolves.
 
-| Capability | Initial Candidate |
-|---|---|
-| Model gateway | LiteLLM |
-| Windows local runtime | Ollama |
-| macOS local runtime | oMLX / MLX-compatible runtime |
-| macOS fallback runtime | Ollama |
-| Chat UI | Open WebUI |
-| CLI coding assistant | Aider / OpenCode |
-| Agent runner | Goose |
-| Model fitness | llmfit |
-| Frontier providers | Anthropic, OpenAI, Gemini |
+| Capability             | Initial Candidate             |
+| ---------------------- | ----------------------------- |
+| Model gateway          | LiteLLM                       |
+| Windows local runtime  | Ollama                        |
+| macOS local runtime    | oMLX / MLX-compatible runtime |
+| macOS fallback runtime | Ollama                        |
+| Chat UI                | Open WebUI                    |
+| CLI coding assistant   | Aider / OpenCode              |
+| Agent runner           | Goose                         |
+| Model fitness          | llmfit                        |
+| Frontier providers     | Anthropic, OpenAI, Gemini     |
 
 Tools are treated as implementations of capabilities. They can be trialled, adopted, replaced or removed over time.
 
@@ -325,19 +346,19 @@ ai-lab/
 
 Key directories:
 
-| Directory | Purpose |
-|---|---|
-| `docs/` | Project architecture, principles, milestones and decisions |
-| `docs/adr/` | Architecture Decision Records |
-| `profiles/` | Device and use-case profiles |
-| `config/` | Providers, routing, models, policies and capabilities |
-| `containers/` | Containerised services such as gateway and chat UI |
-| `bootstrap/` | Rebuild and setup scripts |
-| `tools/` | CLI wrappers and workstation commands |
-| `contexts/` | Shared, work, personal and persona context |
-| `tests/` | Validation and health checks |
-| `labs/` | Learning notes and practical experiments |
-| `archive/` | Legacy notes, previous experiments and historical material |
+| Directory     | Purpose                                                    |
+| ------------- | ---------------------------------------------------------- |
+| `docs/`       | Project architecture, principles, milestones and decisions |
+| `docs/adr/`   | Architecture Decision Records                              |
+| `profiles/`   | Device and use-case profiles                               |
+| `config/`     | Providers, routing, models, policies and capabilities      |
+| `containers/` | Containerised services such as gateway and chat UI         |
+| `bootstrap/`  | Rebuild and setup scripts                                  |
+| `tools/`      | CLI wrappers and workstation commands                      |
+| `contexts/`   | Shared, work, personal and persona context                 |
+| `tests/`      | Validation and health checks                               |
+| `labs/`       | Learning notes and practical experiments                   |
+| `archive/`    | Legacy notes, previous experiments and historical material |
 
 ---
 
@@ -345,19 +366,19 @@ Key directories:
 
 Start here:
 
-| Document | Purpose |
-|---|---|
-| `docs/00-overview.md` | Project overview and orientation |
-| `docs/01-vision.md` | Long-term vision and direction |
-| `docs/02-principles.md` | Design principles |
-| `docs/03-architecture.md` | Target architecture |
-| `docs/04-capability-contracts.md` | Capability-based design |
-| `docs/05-component-lifecycle.md` | How tools move from candidate to preferred or removed |
-| `docs/06-profiles.md` | Device profile model |
-| `docs/07-routing-strategy.md` | Local and frontier routing approach |
-| `docs/08-rebuild-strategy.md` | Rebuildability and workstation-as-code approach |
-| `docs/09-tool-selection.md` | How tools are selected |
-| `docs/10-milestones.md` | Delivery roadmap |
+| Document                             | Purpose                                                     |
+| ------------------------------------ | ----------------------------------------------------------- |
+| `docs/00-overview.md`                | Project overview and orientation                            |
+| `docs/01-vision.md`                  | Long-term vision and direction                              |
+| `docs/02-principles.md`              | Design principles                                           |
+| `docs/03-architecture.md`            | Target architecture                                         |
+| `docs/04-capability-contracts.md`    | Capability-based design                                     |
+| `docs/05-component-lifecycle.md`     | How tools move from candidate to preferred or removed       |
+| `docs/06-profiles.md`                | Device profile model                                        |
+| `docs/07-routing-strategy.md`        | Local and frontier routing approach                         |
+| `docs/08-rebuild-strategy.md`        | Rebuildability and workstation-as-code approach             |
+| `docs/09-tool-selection.md`          | How tools are selected                                      |
+| `docs/10-milestones.md`              | Delivery roadmap                                            |
 | `docs/11-cli-interface-contracts.md` | Initial CLI command contracts, flags, output and exit codes |
 
 Architecture decisions are recorded in:
