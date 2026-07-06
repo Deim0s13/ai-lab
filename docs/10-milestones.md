@@ -22,17 +22,17 @@ The milestones are deliberately sequenced so that each later capability builds o
 
 ## 2. Milestone principles
 
-| Principle | Meaning |
-|---|---|
-| Foundation before features | Build the control plane before adding lots of tools. |
-| Usable increments | Each milestone should create something I can actually use. |
-| Profile-aware from the start | Work and personal behaviour should not be bolted on later. |
-| Rebuildable by default | Every milestone should improve or preserve rebuildability. |
-| Secure by default | Secrets and provider access must be handled safely from the beginning. |
-| CLI-first delivery | The CLI should become useful before the UI becomes central. |
-| Model choices informed by fit | Use llmfit or equivalent before locking in model aliases. |
-| Agents later | Agents should wait until routing, validation and boundaries are trusted. |
-| Avoid novelty traps | Do not add tools just because they are interesting. |
+| Principle                     | Meaning                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------ |
+| Foundation before features    | Build the control plane before adding lots of tools.                     |
+| Usable increments             | Each milestone should create something I can actually use.               |
+| Profile-aware from the start  | Work and personal behaviour should not be bolted on later.               |
+| Rebuildable by default        | Every milestone should improve or preserve rebuildability.               |
+| Secure by default             | Secrets and provider access must be handled safely from the beginning.   |
+| CLI-first delivery            | The CLI should become useful before the UI becomes central.              |
+| Model choices informed by fit | Use llmfit or equivalent before locking in model aliases.                |
+| Agents later                  | Agents should wait until routing, validation and boundaries are trusted. |
+| Avoid novelty traps           | Do not add tools just because they are interesting.                      |
 
 ---
 
@@ -64,16 +64,36 @@ The order can change if reality demands it, but this is the preferred delivery p
 
 ## 4. Milestone summary
 
-| Milestone | Name | Outcome |
-|---:|---|---|
-| 1 | Rebuildable Gateway Foundation | A profile-aware gateway foundation that can be rebuilt and validated. |
-| 2 | CLI Habit Layer | Daily-use CLI commands become useful and consistent. |
-| 3 | Model Fitness Loop | Model choices are informed by actual device and task fit. |
-| 4 | UI Parity | Open WebUI or equivalent uses the same gateway and routing model. |
-| 5 | Development Workflow | Coding tools integrate with the workstation model. |
-| 6 | Work Persona Layer | Architecture, writing and work-safe workflows become more useful. |
-| 7 | Controlled Agents | Agents are introduced with boundaries and profile-aware controls. |
-| 8 | RAG / Project Memory | Local project/document memory is added carefully. |
+| Milestone | Name                           | Outcome                                                               |
+| --------: | ------------------------------ | --------------------------------------------------------------------- |
+|         1 | Rebuildable Gateway Foundation | A profile-aware gateway foundation that can be rebuilt and validated. |
+|         2 | CLI Habit Layer                | Daily-use CLI commands become useful and consistent.                  |
+|         3 | Model Fitness Loop             | Model choices are informed by actual device and task fit.             |
+|         4 | UI Parity                      | Open WebUI or equivalent uses the same gateway and routing model.     |
+|         5 | Development Workflow           | Coding tools integrate with the workstation model.                    |
+|         6 | Work Persona Layer             | Architecture, writing and work-safe workflows become more useful.     |
+|         7 | Controlled Agents              | Agents are introduced with boundaries and profile-aware controls.     |
+|         8 | RAG / Project Memory           | Local project/document memory is added carefully.                     |
+
+---
+
+### Forward Delivery Direction
+
+Milestones 1–3 are complete and should not be reopened.
+
+Future work should build on those foundations through delivery-focused milestones rather than additional decision-only issues.
+
+The project direction is:
+
+- keep `just` as the operator/foundation layer
+- make `ai` the user-facing entrypoint
+- keep local-first as the default operating posture
+- treat frontier providers as explicit, visible and logged escalation paths
+- add observability through `ai status`, `ai routes`, `ai history` and `ai feedback`
+- define context boundaries before private RAG or agents
+- introduce controlled agents only after routing, context and access boundaries are clear
+
+The project should prefer implementation issues with practical outcomes over standalone documentation or decision issues.
 
 ---
 
@@ -87,33 +107,33 @@ The focus is to confirm the boundary conditions before creating the gateway foun
 
 ## Required decisions
 
-| Area | Decision needed | ADR |
-|---|---|---|
-| Gateway failure | Define what happens when the gateway is unavailable. | `docs/adr/0008-gateway-failure-and-degraded-operation.md` |
-| Runtime access | Define when tools use the gateway versus direct runtime access. | `docs/adr/0009-runtime-access-patterns.md` |
-| Model fitness | Confirm llmfit as a candidate, not a fixed dependency, and define fallback approach. | `docs/adr/0010-model-fitness-approach.md` |
-| Secrets | Confirm Bitwarden as the preferred secrets strategy. | `docs/adr/0011-secrets-management-strategy.md` |
-| Context boundaries | Define work/personal context access rules. | `docs/adr/0012-work-personal-context-boundaries.md` |
-| Routing validation | Define routing tests and decision logging. | `docs/adr/0013-routing-validation-and-observability.md` |
-| Agent guardrails | Define controlled agent constraints before implementation. | `docs/adr/0014-controlled-agent-guardrails.md` |
-| Fedora Atomic status | Clarify that Fedora Atomic is a future/reference profile. | `docs/adr/0015-fedora-atomic-profile-status.md` |
+| Area                 | Decision needed                                                                      | ADR                                                       |
+| -------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| Gateway failure      | Define what happens when the gateway is unavailable.                                 | `docs/adr/0008-gateway-failure-and-degraded-operation.md` |
+| Runtime access       | Define when tools use the gateway versus direct runtime access.                      | `docs/adr/0009-runtime-access-patterns.md`                |
+| Model fitness        | Confirm llmfit as a candidate, not a fixed dependency, and define fallback approach. | `docs/adr/0010-model-fitness-approach.md`                 |
+| Secrets              | Confirm Bitwarden as the preferred secrets strategy.                                 | `docs/adr/0011-secrets-management-strategy.md`            |
+| Context boundaries   | Define work/personal context access rules.                                           | `docs/adr/0012-work-personal-context-boundaries.md`       |
+| Routing validation   | Define routing tests and decision logging.                                           | `docs/adr/0013-routing-validation-and-observability.md`   |
+| Agent guardrails     | Define controlled agent constraints before implementation.                           | `docs/adr/0014-controlled-agent-guardrails.md`            |
+| Fedora Atomic status | Clarify that Fedora Atomic is a future/reference profile.                            | `docs/adr/0015-fedora-atomic-profile-status.md`           |
 
 ## Hardening checklist
 
 Before starting Milestone 1 implementation, the following should be true:
 
-| Check | Expected outcome |
-|---|---|
-| Gateway failure model is defined | Normal, degraded local and degraded manual modes are documented. |
-| Runtime access model is defined | Gateway-first is the default, with documented direct access exceptions. |
-| macOS runtime split is understood | oMLX / MLX and Ollama responsibilities are explicit. |
-| Model fitness approach is replaceable | llmfit is a candidate, with gateway-based checks as fallback. |
-| Secrets strategy is decided | Bitwarden is preferred; `.env.local` is fallback only. |
-| Work/personal context boundaries are explicit | Profiles define allowed and blocked context categories. |
-| Routing validation is designed | Expected routing behaviours are testable. |
-| Routing logging is designed | Metadata-only routing logs are defined and excluded from git. |
-| Agent guardrails are pre-defined | Agents are disabled by default for work profile and constrained for personal profile. |
-| Fedora Atomic status is clear | Future/reference only, not active Milestone 1 scope. |
+| Check                                         | Expected outcome                                                                      |
+| --------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Gateway failure model is defined              | Normal, degraded local and degraded manual modes are documented.                      |
+| Runtime access model is defined               | Gateway-first is the default, with documented direct access exceptions.               |
+| macOS runtime split is understood             | oMLX / MLX and Ollama responsibilities are explicit.                                  |
+| Model fitness approach is replaceable         | llmfit is a candidate, with gateway-based checks as fallback.                         |
+| Secrets strategy is decided                   | Bitwarden is preferred; `.env.local` is fallback only.                                |
+| Work/personal context boundaries are explicit | Profiles define allowed and blocked context categories.                               |
+| Routing validation is designed                | Expected routing behaviours are testable.                                             |
+| Routing logging is designed                   | Metadata-only routing logs are defined and excluded from git.                         |
+| Agent guardrails are pre-defined              | Agents are disabled by default for work profile and constrained for personal profile. |
+| Fedora Atomic status is clear                 | Future/reference only, not active Milestone 1 scope.                                  |
 
 ## Impact on Milestone 1
 
@@ -147,16 +167,16 @@ The goal is not to build every future workflow. The goal is to build the spine.
 
 ## Target capabilities
 
-| Capability | Expected state |
-|---|---|
-| Profiles | Initial `macos-work` and `windows-personal` profiles defined. |
-| Secrets | Bitwarden preferred; `.env.local` fallback documented. |
-| Gateway | LiteLLM or equivalent trialled as model gateway. |
-| Providers | Local and frontier provider placeholders defined. |
-| Routing | Basic config-led routing structure created. |
-| CLI | Basic `ask-ai`, `ai-route` and `ai-status` started. |
-| Validation | Basic `ai-bootstrap-check` created. |
-| Rebuildability | Bootstrap approach exists, even if not fully automated. |
+| Capability     | Expected state                                                |
+| -------------- | ------------------------------------------------------------- |
+| Profiles       | Initial `macos-work` and `windows-personal` profiles defined. |
+| Secrets        | Bitwarden preferred; `.env.local` fallback documented.        |
+| Gateway        | LiteLLM or equivalent trialled as model gateway.              |
+| Providers      | Local and frontier provider placeholders defined.             |
+| Routing        | Basic config-led routing structure created.                   |
+| CLI            | Basic `ask-ai`, `ai-route` and `ai-status` started.           |
+| Validation     | Basic `ai-bootstrap-check` created.                           |
+| Rebuildability | Bootstrap approach exists, even if not fully automated.       |
 
 ## Deliverables
 
@@ -235,11 +255,12 @@ It does need a working foundation that is observable, profile-aware and rebuilda
 :::
 
 :::writing{variant="document" id="71952"}
+
 ## Update Milestone 2 — CLI Habit Layer
 
 In **Milestone 2 — CLI Habit Layer**, add this acceptance criteria section.
 
-```markdown
+````markdown
 ### Acceptance criteria
 
 Milestone 2 is successful when the CLI tools are useful enough to become part of daily workflow.
@@ -253,6 +274,8 @@ ai-route --profile macos-work --task summarise --sensitivity internal --explain
 ai-route --profile windows-personal --task coding_debug --sensitivity personal --best --explain
 ai-status
 ```
+````
+
 The milestone is complete when:
 
 - `ask-ai` is useful for quick terminal-based prompts
@@ -294,14 +317,14 @@ This milestone is about making the CLI useful, simple and habit-forming.
 
 ## Target capabilities
 
-| Capability | Expected state |
-|---|---|
-| `ask-ai` | Useful for everyday local and routed prompts. |
-| `ai-route` | Explains routing decisions clearly. |
-| `ai-status` | Shows profile, gateway, runtime and provider health. |
-| Profiles | Active profile selection is visible. |
-| Routing | Basic route flags work. |
-| Output handling | Optional save/copy patterns explored. |
+| Capability      | Expected state                                       |
+| --------------- | ---------------------------------------------------- |
+| `ask-ai`        | Useful for everyday local and routed prompts.        |
+| `ai-route`      | Explains routing decisions clearly.                  |
+| `ai-status`     | Shows profile, gateway, runtime and provider health. |
+| Profiles        | Active profile selection is visible.                 |
+| Routing         | Basic route flags work.                              |
+| Output handling | Optional save/copy patterns explored.                |
 
 ## Expected deliverables
 
@@ -356,13 +379,13 @@ I do not want routing aliases to be based on hype or random model choices. I wan
 
 ## Target capabilities
 
-| Capability | Expected state |
-|---|---|
-| Model fitness | llmfit or equivalent process trialled. |
+| Capability     | Expected state                                   |
+| -------------- | ------------------------------------------------ |
+| Model fitness  | llmfit or equivalent process trialled.           |
 | Device results | Results captured for macOS and Windows profiles. |
-| Model aliases | Initial aliases informed by actual results. |
-| Model review | Repeatable process defined. |
-| Routing | Routes updated based on model fit. |
+| Model aliases  | Initial aliases informed by actual results.      |
+| Model review   | Repeatable process defined.                      |
+| Routing        | Routes updated based on model fit.               |
 
 ## Expected deliverables
 
@@ -400,18 +423,19 @@ ai-status
 ai-route --profile macos-work --task summarise --sensitivity internal --explain
 ai-route --profile windows-personal --task coding_debug --sensitivity personal --best --explain
 ```
+
 The milestone is complete when:
 
-* `ai-model-review` can run or summarise model fitness checks
-* model review results are stored in a repeatable location
-* model aliases such as `local_fast`, `local_capable` and `local_code` have documented candidates
-* alias decisions are profile-aware
-* `macos-work` clearly maps aliases to oMLX / MLX-compatible runtime or Ollama fallback
-* `windows-personal` clearly maps aliases to Ollama-backed models where appropriate
-* llmfit has either been trialled or explicitly deferred
-* gateway-based model checks exist as a fallback or complement
-* routing decisions can reference model fitness findings
-* model choices can be reviewed and changed without rewriting CLI tools
+- `ai-model-review` can run or summarise model fitness checks
+- model review results are stored in a repeatable location
+- model aliases such as `local_fast`, `local_capable` and `local_code` have documented candidates
+- alias decisions are profile-aware
+- `macos-work` clearly maps aliases to oMLX / MLX-compatible runtime or Ollama fallback
+- `windows-personal` clearly maps aliases to Ollama-backed models where appropriate
+- llmfit has either been trialled or explicitly deferred
+- gateway-based model checks exist as a fallback or complement
+- routing decisions can reference model fitness findings
+- model choices can be reviewed and changed without rewriting CLI tools
 
 Milestone 3 should not require a perfect benchmark suite.
 
@@ -447,13 +471,13 @@ Open WebUI or an equivalent tool should use the same gateway, provider posture a
 
 ## Target capabilities
 
-| Capability | Expected state |
-|---|---|
-| Chat UI | Open WebUI or equivalent trialled. |
-| Gateway integration | UI connects to gateway where practical. |
-| Profiles | UI behaviour aligns to active profile or documented config. |
-| Rebuildability | UI service is containerised or repeatably configured. |
-| Data handling | Persistence and storage behaviour understood. |
+| Capability          | Expected state                                              |
+| ------------------- | ----------------------------------------------------------- |
+| Chat UI             | Open WebUI or equivalent trialled.                          |
+| Gateway integration | UI connects to gateway where practical.                     |
+| Profiles            | UI behaviour aligns to active profile or documented config. |
+| Rebuildability      | UI service is containerised or repeatably configured.       |
+| Data handling       | Persistence and storage behaviour understood.               |
 
 ## Expected deliverables
 
@@ -507,13 +531,13 @@ Coding tools should be treated as harnessed workflows, not just direct model cal
 
 ## Target capabilities
 
-| Capability | Expected state |
-|---|---|
-| CLI coding assistant | Aider, OpenCode or equivalent trialled. |
-| Local coding route | Local coding model tested. |
+| Capability            | Expected state                                            |
+| --------------------- | --------------------------------------------------------- |
+| CLI coding assistant  | Aider, OpenCode or equivalent trialled.                   |
+| Local coding route    | Local coding model tested.                                |
 | Frontier coding route | OpenAI/Anthropic/Cursor/Gemini posture tested by profile. |
-| File safety | Editing behaviour understood. |
-| Rebuildability | Tool install and config documented. |
+| File safety           | Editing behaviour understood.                             |
+| Rebuildability        | Tool install and config documented.                       |
 
 ## Expected deliverables
 
@@ -567,13 +591,13 @@ I want the workstation to support how I actually work: architecture decisions, c
 
 ## Target capabilities
 
-| Capability | Expected state |
-|---|---|
-| Architecture assistant | `architect-ai` created or prototyped. |
-| Writing assistant | `write-ai` created or prototyped. |
-| Research assistant | `research-ai` created or prototyped. |
-| Context loading | Safe, profile-aware context patterns explored. |
-| Work profile posture | Approved-tool-first behaviour reinforced. |
+| Capability             | Expected state                                 |
+| ---------------------- | ---------------------------------------------- |
+| Architecture assistant | `architect-ai` created or prototyped.          |
+| Writing assistant      | `write-ai` created or prototyped.              |
+| Research assistant     | `research-ai` created or prototyped.           |
+| Context loading        | Safe, profile-aware context patterns explored. |
+| Work profile posture   | Approved-tool-first behaviour reinforced.      |
 
 ## Expected deliverables
 
@@ -628,13 +652,13 @@ This milestone is where harness engineering becomes explicit: agents must run in
 
 ## Target capabilities
 
-| Capability | Expected state |
-|---|---|
-| Agent runner | Goose or equivalent trialled. |
-| Permissions | File and tool access understood. |
-| Routing | Agents use gateway where practical. |
-| Profiles | Personal profile enabled first; work profile restricted. |
-| Observability | Agent actions are visible enough to trust. |
+| Capability    | Expected state                                           |
+| ------------- | -------------------------------------------------------- |
+| Agent runner  | Goose or equivalent trialled.                            |
+| Permissions   | File and tool access understood.                         |
+| Routing       | Agents use gateway where practical.                      |
+| Profiles      | Personal profile enabled first; work profile restricted. |
+| Observability | Agent actions are visible enough to trust.               |
 
 ## Expected deliverables
 
@@ -684,14 +708,14 @@ RAG and memory can be powerful, but they can also introduce complexity, privacy 
 
 ## Target capabilities
 
-| Capability | Expected state |
-|---|---|
-| Document indexing | Local indexing approach selected. |
-| Retrieval | Basic retrieval works against selected context. |
-| Embeddings | Embedding model/provider selected. |
-| Profile boundaries | Work and personal indexes stay separate. |
-| CLI integration | Retrieval supports CLI workflows. |
-| Agent integration | Future agent use considered. |
+| Capability         | Expected state                                  |
+| ------------------ | ----------------------------------------------- |
+| Document indexing  | Local indexing approach selected.               |
+| Retrieval          | Basic retrieval works against selected context. |
+| Embeddings         | Embedding model/provider selected.              |
+| Profile boundaries | Work and personal indexes stay separate.        |
+| CLI integration    | Retrieval supports CLI workflows.               |
+| Agent integration  | Future agent use considered.                    |
 
 ## Expected deliverables
 
@@ -778,16 +802,16 @@ The most important dependencies are:
 
 Each milestone should be considered done only when it has:
 
-| Requirement | Meaning |
-|---|---|
-| Working capability | Something usable exists. |
-| Profile awareness | Behaviour is clear for relevant profiles. |
-| Rebuild path | Install/config steps are documented or automated. |
-| Validation | Health or status can be checked. |
-| Documentation | Relevant docs are updated. |
-| Lifecycle status | Components have status updated. |
-| ADRs | Architecture-significant decisions are recorded. |
-| Manual steps | Known manual steps are documented. |
+| Requirement        | Meaning                                           |
+| ------------------ | ------------------------------------------------- |
+| Working capability | Something usable exists.                          |
+| Profile awareness  | Behaviour is clear for relevant profiles.         |
+| Rebuild path       | Install/config steps are documented or automated. |
+| Validation         | Health or status can be checked.                  |
+| Documentation      | Relevant docs are updated.                        |
+| Lifecycle status   | Components have status updated.                   |
+| ADRs               | Architecture-significant decisions are recorded.  |
+| Manual steps       | Known manual steps are documented.                |
 
 A milestone is not done just because a tool was installed.
 

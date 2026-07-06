@@ -12,7 +12,7 @@ AI Dev Workstation
 Usage:
   ai                         Start/check the local AI workstation
   ai ask "prompt"            Ask using the default daily route
-  ai fast "prompt"           Ask using local-fast-mlx
+  ai fast "prompt"           Ask using the fast default route
   ai capable "prompt"        Ask using local-capable-mlx
   ai code "prompt"           Ask using local-code-mlx
   ai routes                  List available gateway routes
@@ -90,14 +90,45 @@ case "$cmd" in
     ;;
 
   status)
-    echo "== MLX servers =="
-    just mlx-check
+    echo "AI Dev Workstation Status"
     echo
-    echo "== Gateway routes =="
-    just gateway-routes
-    echo
-    echo "== MLX candidate routes =="
-    just gateway-mlx-models
+
+    echo "Profile:    macos-work"
+    echo "Posture:    local-first"
+
+    if curl -fsS "${GATEWAY_URL}/v1/models" \
+      -H "Authorization: Bearer ${LITELLM_MASTER_KEY}" >/dev/null 2>&1; then
+      echo "Gateway:    running"
+    else
+      echo "Gateway:    not reachable"
+      echo "            Try: just ai-up"
+    fi
+
+    fast_ready="not ready"
+    capable_ready="not ready"
+    code_ready="not ready"
+
+    if lsof -nP -iTCP:8080 -sTCP:LISTEN >/dev/null 2>&1; then
+      fast_ready="ready"
+    fi
+
+    if lsof -nP -iTCP:8081 -sTCP:LISTEN >/dev/null 2>&1; then
+      capable_ready="ready"
+    fi
+
+    if lsof -nP -iTCP:8082 -sTCP:LISTEN >/dev/null 2>&1; then
+      code_ready="ready"
+    fi
+
+    echo "Local:      fast (${fast_ready}), capable (${capable_ready}), code (${code_ready})"
+
+    if [[ "${fast_ready}" != "ready" || "${capable_ready}" != "ready" || "${code_ready}" != "ready" ]]; then
+      echo "            Try: just mlx-up"
+    fi
+
+    echo "Frontier:   not configured"
+    echo "Routes:     local-fast, local-capable-mlx, local-code-mlx"
+    echo "Last route: not recorded yet"
     ;;
 
   down)
