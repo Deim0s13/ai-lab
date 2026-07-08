@@ -17,7 +17,9 @@ Usage:
   ai code prompt                              Shortcut for code mode
   ai routes                                   List available gateway routes
   ai status                                   Check local workstation status
+  ai profile                                  Show active profile and routing posture
   ai down                                     Stop local gateway and MLX servers
+
 
 Operator commands remain available through just.
 
@@ -54,6 +56,46 @@ check_python_runtime() {
     error "Try: python -m venv .venv && .venv/bin/pip install -r requirements.txt"
     exit 8
   fi
+}
+
+active_profile() {
+  echo "${AI_LAB_PROFILE:-macos-work}"
+}
+
+profile_path() {
+  echo "profiles/$(active_profile)/profile.yaml"
+}
+
+profile_exists() {
+  [[ -f "$(profile_path)" ]]
+}
+
+profile_posture() {
+  echo "local-first"
+}
+
+show_profile() {
+  local profile
+  local path
+
+  profile="$(active_profile)"
+  path="$(profile_path)"
+
+  echo "AI Dev Workstation Profile"
+  echo
+  echo "Active profile:   ${profile}"
+  echo "Profile file:     ${path}"
+
+  if profile_exists; then
+    echo "Profile status:   found"
+  else
+    echo "Profile status:   missing"
+    echo "                  Try: export AI_LAB_PROFILE=macos-work"
+  fi
+
+  echo "Routing posture:  $(profile_posture)"
+  echo "Gateway:          local LiteLLM"
+  echo "Frontier:         not configured"
 }
 
 gateway_ready() {
@@ -259,8 +301,8 @@ case "$cmd" in
     echo "AI Dev Workstation Status"
     echo
 
-    echo "Profile:    macos-work"
-    echo "Posture:    local-first"
+    echo "Profile:    $(active_profile)"
+    echo "Posture:    $(profile_posture)"
 
     if curl -fsS "${GATEWAY_URL}/v1/models" \
       -H "Authorization: Bearer ${LITELLM_MASTER_KEY}" >/dev/null 2>&1; then
@@ -295,6 +337,11 @@ case "$cmd" in
     echo "Frontier:   not configured"
     echo "Routes:     local-fast, local-capable-mlx, local-code-mlx"
     echo "Last route: not recorded yet"
+    ;;
+
+  profile)
+    check_dependencies
+    show_profile
     ;;
 
   down)
