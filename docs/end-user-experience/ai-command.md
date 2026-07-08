@@ -163,19 +163,28 @@ List available gateway routes:
 
     ai routes
 
-Current route dry-run support is not implemented yet.
-
-Future route testing should support:
+Test what route would handle a prompt:
 
     ai routes test Review this shell command
+
+Test a specific mode:
+
     ai routes test --mode code Review this shell command
 
-The dry run should show:
+Example output:
 
-- selected mode
-- route that would be used
-- backend model, where known
-- whether the route is currently reachable
+    AI Route Dry Run
+
+    Mode:       code
+    Route:      local-code-mlx
+    Provider:   local
+    Gateway:    reachable
+    Action:     would route locally
+    Prompt:     Review this shell command
+
+Route dry-run does not send the prompt to a model. It only shows what the current explicit mode routing would do.
+
+Semantic routing is not implemented yet. Future semantic routing should build on this observability path rather than replacing it.
 
 ## Degraded-Mode Errors
 

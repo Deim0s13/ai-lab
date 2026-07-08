@@ -16,6 +16,7 @@ Usage:
   ai capable prompt                           Shortcut for capable mode
   ai code prompt                              Shortcut for code mode
   ai routes                                   List available gateway routes
+  ai routes test prompt                       Show what route would handle a prompt
   ai status                                   Check local workstation status
   ai profile                                  Show active profile and routing posture
   ai down                                     Stop local gateway and MLX servers
@@ -72,6 +73,82 @@ profile_exists() {
 
 profile_posture() {
   echo "local-first"
+}
+
+route_for_mode() {
+  local mode="$1"
+
+  case "$mode" in
+    fast)
+      echo "local-fast"
+      ;;
+    capable)
+      echo "local-capable-mlx"
+      ;;
+    code)
+      echo "local-code-mlx"
+      ;;
+    *)
+      error "Unknown mode: ${mode}"
+      error "Supported modes: fast, capable, code"
+      exit 2
+      ;;
+  esac
+}
+
+route_provider() {
+  local route="$1"
+
+  case "$route" in
+    local-*)
+      echo "local"
+      ;;
+    *)
+      echo "unknown"
+      ;;
+  esac
+}
+
+routes_test() {
+  local mode="fast"
+  local route
+  local provider
+  local prompt
+
+  if [[ "${1:-}" == "--mode" ]]; then
+    mode="${2:-}"
+    shift 2
+  fi
+
+  route="$(route_for_mode "$mode")"
+  provider="$(route_provider "$route")"
+
+  prompt="$(read_prompt "$@")" || {
+    error "No prompt provided."
+    error "Usage: ai routes test [--mode fast|capable|code] prompt"
+    error "Examples:"
+    error "  ai routes test Review this shell command"
+    error "  ai routes test --mode code Review this shell command"
+    exit 2
+  }
+
+  check_dependencies
+  ensure_gateway_ready
+
+  echo "AI Route Dry Run"
+  echo
+  echo "Mode:       ${mode}"
+  echo "Route:      ${route}"
+  echo "Provider:   ${provider}"
+
+  if gateway_ready; then
+    echo "Gateway:    reachable"
+  else
+    echo "Gateway:    not reachable"
+  fi
+
+  echo "Action:     would route locally"
+  echo "Prompt:     ${prompt}"
 }
 
 show_profile() {
@@ -238,22 +315,7 @@ case "$cmd" in
       shift 2
     fi
 
-    case "$mode" in
-      fast)
-        model="local-fast"
-        ;;
-      capable)
-        model="local-capable-mlx"
-        ;;
-      code)
-        model="local-code-mlx"
-        ;;
-      *)
-        echo "Unknown mode: $mode" >&2
-        echo "Supported modes: fast, capable, code" >&2
-        exit 2
-        ;;
-    esac
+    model="$(route_for_mode "$mode")"
 
     prompt="$(read_prompt "$@")" || missing_prompt "ask"
 
@@ -289,10 +351,27 @@ case "$cmd" in
     ;;
 
   routes)
-    check_dependencies
-    check_python_runtime
-    ensure_gateway_ready
-    just gateway-routes
+    shift
+
+    case "${1:-}" in
+      "")
+        check_dependencies
+        check_python_runtime
+        ensure_gateway_ready
+        just gateway-routes
+        ;;
+      test)
+        shift
+        routes_test "$@"
+        ;;
+      *)
+        error "Unknown routes command: ${1}"
+        error "Usage:"
+        error "  ai routes"
+        error "  ai routes test [--mode fast|capable|code] prompt"
+        exit 2
+        ;;
+    esac
     ;;
 
   status)
