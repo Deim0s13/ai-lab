@@ -149,6 +149,8 @@ routes_test() {
 
   echo "Action:     would route locally"
   echo "Prompt:     ${prompt}"
+
+  log_history "dry_run" "routes test" "$mode" "$route" "$provider" "success" "" "$prompt"
 }
 
 show_profile() {
@@ -178,6 +180,112 @@ show_profile() {
 gateway_ready() {
   curl -fsS "${GATEWAY_URL}/v1/models" \
     -H "Authorization: Bearer ${LITELLM_MASTER_KEY}" >/dev/null 2>&1
+}
+
+state_root() {
+  echo "${AI_LAB_STATE_DIR:-${XDG_STATE_HOME:-$HOME/.local/state}/ai-lab}"
+}
+
+profile_state_dir() {
+  echo "$(state_root)/profiles/$(active_profile)"
+}
+
+history_file() {
+  echo "$(profile_state_dir)/history.jsonl"
+}
+
+log_history() {
+  local event_type="$1"
+  local command_name="$2"
+  local mode="$3"
+  local route="$4"
+  local provider="$5"
+  local status="$6"
+  local latency_ms="$7"
+  local prompt="$8"
+  local file
+
+  file="$(history_file)"
+
+  mkdir -p "$(dirname "$file")"
+
+  if [[ ! -x ".venv/bin/python" ]]; then
+    error "Warning: usage history was not written because .venv/bin/python was not found."
+    return 0
+  fi
+
+  if ! AI_LAB_HISTORY_PROMPT="$prompt" .venv/bin/python - "$file" "$(active_profile)" "$event_type" "$command_name" "$mode" "$route" "$provider" "$status" "$latency_ms" <<'PY'
+import json
+import os
+import sys
+from datetime import datetime, timezone
+
+file_path = sys.argv[1]
+
+entry = {
+    "timestamp": datetime.now(timezone.utc).isoformat(),
+    "profile": sys.argv[2],
+    "event": sys.argv[3],
+    "command": sys.argv[4],
+    "mode": sys.argv[5],
+    "route": sys.argv[6],
+    "provider": sys.argv[7],
+    "status": sys.argv[8],
+    "latency_ms": int(sys.argv[9]) if sys.argv[9] else None,
+    "local": sys.argv[7] == "local",
+    "prompt": os.environ.get("AI_LAB_HISTORY_PROMPT", ""),
+}
+
+with open(file_path, "a", encoding="utf-8") as history:
+    history.write(json.dumps(entry, ensure_ascii=False) + "\n")
+PY
+  then
+    error "Warning: failed to write usage history: ${file}"
+  fi
+}
+
+last_route_summary() {
+  local file
+
+  file="$(history_file)"
+
+  if [[ ! -s "$file" ]]; then
+    echo "not recorded yet"
+    return 0
+  fi
+
+  if [[ ! -x ".venv/bin/python" ]]; then
+    echo "not available (.venv missing)"
+    return 0
+  fi
+
+  .venv/bin/python - "$file" <<'PY'
+import json
+import sys
+
+file_path = sys.argv[1]
+
+try:
+    with open(file_path, "r", encoding="utf-8") as history:
+        lines = [line.strip() for line in history if line.strip()]
+    if not lines:
+        print("not recorded yet")
+        raise SystemExit(0)
+
+    entry = json.loads(lines[-1])
+    event = entry.get("event", "unknown")
+    mode = entry.get("mode", "unknown")
+    route = entry.get("route", "unknown")
+    status = entry.get("status", "unknown")
+    latency = entry.get("latency_ms")
+
+    if latency is None:
+        print(f"{mode} -> {route} ({event}, {status})")
+    else:
+        print(f"{mode} -> {route} ({event}, {status}, {latency}ms)")
+except Exception:
+    print("unavailable")
+PY
 }
 
 mlx_ready() {
@@ -295,6 +403,40 @@ print(json.dumps({
     | jq -r '.choices[0].message.content'
 }
 
+run_prompt_command() {
+  local command_name="$1"
+  local mode="$2"
+  local route="$3"
+  local prompt="$4"
+  local provider
+  local start_ns
+  local end_ns
+  local latency_ms
+  local output
+  local status_code
+
+  provider="$(route_provider "$route")"
+
+  start_ns="$(.venv/bin/python -c 'import time; print(time.monotonic_ns())')"
+
+  set +e
+  output="$(ask_model "$route" "$prompt" 2>&1)"
+  status_code="$?"
+  set -e
+
+  end_ns="$(.venv/bin/python -c 'import time; print(time.monotonic_ns())')"
+  latency_ms="$(( (end_ns - start_ns) / 1000000 ))"
+
+  if [[ "$status_code" -eq 0 ]]; then
+    log_history "prompt" "$command_name" "$mode" "$route" "$provider" "success" "$latency_ms" "$prompt"
+    printf "%s\n" "$output"
+  else
+    log_history "prompt" "$command_name" "$mode" "$route" "$provider" "failure" "$latency_ms" "$prompt"
+    printf "%s\n" "$output" >&2
+    exit "$status_code"
+  fi
+}
+
 cmd="${1:-}"
 
 case "$cmd" in
@@ -304,6 +446,7 @@ case "$cmd" in
     echo
     usage
     ;;
+
 
   ask)
     shift
@@ -320,7 +463,7 @@ case "$cmd" in
     prompt="$(read_prompt "$@")" || missing_prompt "ask"
 
     ensure_ready
-    ask_model "$model" "$prompt"
+    run_prompt_command "ask" "$mode" "$model" "$prompt"
     ;;
 
   fast)
@@ -329,7 +472,7 @@ case "$cmd" in
     prompt="$(read_prompt "$@")" || missing_prompt "fast"
 
     ensure_ready
-    ask_model "local-fast" "$prompt"
+    run_prompt_command "fast" "fast" "local-fast" "$prompt"
     ;;
 
   capable)
@@ -338,7 +481,7 @@ case "$cmd" in
     prompt="$(read_prompt "$@")" || missing_prompt "capable"
 
     ensure_ready
-    ask_model "local-capable-mlx" "$prompt"
+    run_prompt_command "capable" "capable" "local-capable-mlx" "$prompt"
     ;;
 
   code)
@@ -347,7 +490,7 @@ case "$cmd" in
     prompt="$(read_prompt "$@")" || missing_prompt "code"
 
     ensure_ready
-    ask_model "local-code-mlx" "$prompt"
+    run_prompt_command "code" "code" "local-code-mlx" "$prompt"
     ;;
 
   routes)
@@ -415,7 +558,7 @@ case "$cmd" in
 
     echo "Frontier:   not configured"
     echo "Routes:     local-fast, local-capable-mlx, local-code-mlx"
-    echo "Last route: not recorded yet"
+    echo "Last route: $(last_route_summary)"
     ;;
 
   profile)
