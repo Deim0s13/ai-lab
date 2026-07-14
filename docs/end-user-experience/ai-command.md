@@ -117,7 +117,65 @@ Example output:
     Routes:     local-fast, local-capable-mlx, local-code-mlx
     Last route: not recorded yet
 
-The purpose of `ai status` is to give confidence that the local workstation is ready before starting work.
+## Usage History
+
+The `ai` command records local usage history for prompt commands and route dry-runs.
+
+History is stored as durable local state, not cache.
+
+Default history path:
+
+    ~/.local/state/ai-lab/profiles/macos-work/history.jsonl
+
+The state root can be overridden with:
+
+    AI_LAB_STATE_DIR=/path/to/state
+
+History is stored separately per active profile:
+
+    ~/.local/state/ai-lab/profiles/macos-work/history.jsonl
+    ~/.local/state/ai-lab/profiles/windows-personal/history.jsonl
+
+History entries are JSONL records and include:
+
+- timestamp
+- profile
+- event type
+- command
+- mode
+- route
+- provider
+- status
+- latency
+- prompt
+
+Show recent usage history:
+
+    ai history
+
+Show a specific number of entries:
+
+    ai history --limit 20
+    ai history -n 20
+
+Example output:
+
+    AI Usage History
+
+    Profile:      macos-work
+    History file: ~/.local/state/ai-lab/profiles/macos-work/history.jsonl
+
+    Showing last 2 entries
+
+    2026-07-09T01:56:42Z | prompt | ask | capable -> local-capable-mlx | local | success | 21721ms
+      Prompt: Reply with exactly: history works.
+
+    2026-07-09T01:56:42Z | dry_run | routes test | code -> local-code-mlx | local | success | n/a
+      Prompt: Review this command
+
+The history command reads local JSONL history. It does not send anything to a model.
+
+The history file is local and private. It should not be committed to the repository.The purpose of `ai status` is to give confidence that the local workstation is ready before starting work.
 
 ## Profile Visibility
 

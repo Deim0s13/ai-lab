@@ -18,6 +18,7 @@ Usage:
   ai routes                                   List available gateway routes
   ai routes test prompt                       Show what route would handle a prompt
   ai status                                   Check local workstation status
+  ai history                                 Show recent local AI usage history
   ai profile                                  Show active profile and routing posture
   ai down                                     Stop local gateway and MLX servers
 
@@ -285,6 +286,99 @@ try:
         print(f"{mode} -> {route} ({event}, {status}, {latency}ms)")
 except Exception:
     print("unavailable")
+PY
+}
+
+show_history() {
+  local limit="10"
+  local file
+
+  case "${1:-}" in
+    "")
+      ;;
+    --limit|-n)
+      limit="${2:-}"
+      ;;
+    *)
+      limit="${1:-}"
+      ;;
+  esac
+
+  if ! [[ "$limit" =~ ^[0-9]+$ ]] || [[ "$limit" -lt 1 ]]; then
+    error "Invalid history limit: ${limit}"
+    error "Usage: ai history [--limit N]"
+    exit 2
+  fi
+
+  file="$(history_file)"
+
+  echo "AI Usage History"
+  echo
+  echo "Profile:      $(active_profile)"
+  echo "History file: ${file}"
+  echo
+
+  if [[ ! -s "$file" ]]; then
+    echo "No AI usage history recorded yet."
+    return 0
+  fi
+
+  check_python_runtime
+
+  .venv/bin/python - "$file" "$limit" <<'PY'
+import json
+import sys
+from datetime import datetime
+
+file_path = sys.argv[1]
+limit = int(sys.argv[2])
+
+entries = []
+
+with open(file_path, "r", encoding="utf-8") as history:
+    for line in history:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            entries.append(json.loads(line))
+        except json.JSONDecodeError:
+            continue
+
+entries = entries[-limit:]
+
+if not entries:
+    print("No readable AI usage history entries found.")
+    raise SystemExit(0)
+
+print(f"Showing last {len(entries)} entr{'y' if len(entries) == 1 else 'ies'}")
+print()
+
+for entry in entries:
+    timestamp = entry.get("timestamp", "unknown")
+    if timestamp.endswith("+00:00"):
+        timestamp = timestamp.replace("+00:00", "Z")
+
+    event = entry.get("event", "unknown")
+    command = entry.get("command", "unknown")
+    mode = entry.get("mode", "unknown")
+    route = entry.get("route", "unknown")
+    provider = entry.get("provider", "unknown")
+    status = entry.get("status", "unknown")
+    latency = entry.get("latency_ms")
+    prompt = entry.get("prompt", "")
+
+    latency_text = "n/a" if latency is None else f"{latency}ms"
+
+    print(f"{timestamp} | {event} | {command} | {mode} -> {route} | {provider} | {status} | {latency_text}")
+
+    if prompt:
+        prompt_preview = " ".join(prompt.split())
+        if len(prompt_preview) > 140:
+            prompt_preview = prompt_preview[:137] + "..."
+        print(f"  Prompt: {prompt_preview}")
+
+    print()
 PY
 }
 
@@ -559,6 +653,11 @@ case "$cmd" in
     echo "Frontier:   not configured"
     echo "Routes:     local-fast, local-capable-mlx, local-code-mlx"
     echo "Last route: $(last_route_summary)"
+    ;;
+
+  history)
+    shift
+    show_history "$@"
     ;;
 
   profile)
