@@ -18,7 +18,8 @@ Usage:
   ai routes                                   List available gateway routes
   ai routes test prompt                       Show what route would handle a prompt
   ai status                                   Check local workstation status
-  ai history                                 Show recent local AI usage history
+  ai history                                  Show recent local AI usage history
+  ai feedback good|bad [note]                 Mark the most recent prompt response
   ai profile                                  Show active profile and routing posture
   ai down                                     Stop local gateway and MLX servers
 
@@ -367,6 +368,8 @@ for entry in entries:
     status = entry.get("status", "unknown")
     latency = entry.get("latency_ms")
     prompt = entry.get("prompt", "")
+    feedback = entry.get("feedback")
+    feedback_note = entry.get("feedback_note", "")
 
     latency_text = "n/a" if latency is None else f"{latency}ms"
 
@@ -378,8 +381,103 @@ for entry in entries:
             prompt_preview = prompt_preview[:137] + "..."
         print(f"  Prompt: {prompt_preview}")
 
+    if feedback:
+        print(f"  Feedback: {feedback}")
+        if feedback_note:
+            note_preview = " ".join(feedback_note.split())
+            if len(note_preview) > 140:
+                note_preview = note_preview[:137] + "..."
+            print(f"  Note: {note_preview}")
+
     print()
 PY
+}
+
+record_feedback() {
+  local rating="${1:-}"
+  local note="${*:2}"
+  local file
+
+  case "$rating" in
+    good|bad)
+      ;;
+    "")
+      error "No feedback rating provided."
+      error "Usage: ai feedback good|bad [note]"
+      error "Examples:"
+      error "  ai feedback good"
+      error "  ai feedback bad Missed the context"
+      exit 2
+      ;;
+    *)
+      error "Unknown feedback rating: ${rating}"
+      error "Supported ratings: good, bad"
+      exit 2
+      ;;
+  esac
+
+  file="$(history_file)"
+
+  if [[ ! -s "$file" ]]; then
+    error "No AI prompt history found for profile: $(active_profile)"
+    error "Run a prompt first, then retry:"
+    error "  ai ask --mode capable Summarise this"
+    exit 2
+  fi
+
+  check_python_runtime
+
+  if AI_LAB_FEEDBACK_NOTE="$note" .venv/bin/python - "$file" "$rating" <<'PY'
+import json
+import os
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+file_path = Path(sys.argv[1])
+rating = sys.argv[2]
+note = os.environ.get("AI_LAB_FEEDBACK_NOTE", "")
+
+raw_lines = file_path.read_text(encoding="utf-8").splitlines()
+entries = []
+changed = False
+
+for line in raw_lines:
+    if not line.strip():
+        continue
+    try:
+        entries.append(json.loads(line))
+    except json.JSONDecodeError:
+        entries.append({"event": "unreadable", "raw": line})
+
+for entry in reversed(entries):
+    if entry.get("event") == "prompt":
+        entry["feedback"] = rating
+        entry["feedback_timestamp"] = datetime.now(timezone.utc).isoformat()
+        if note:
+            entry["feedback_note"] = note
+        elif "feedback_note" in entry:
+            entry.pop("feedback_note", None)
+        changed = True
+        break
+
+if not changed:
+    print("No prompt history entry found to update.", file=sys.stderr)
+    raise SystemExit(3)
+
+with file_path.open("w", encoding="utf-8") as history:
+    for entry in entries:
+        history.write(json.dumps(entry, ensure_ascii=False) + "\n")
+PY
+  then
+    echo "Recorded feedback: ${rating}"
+    if [[ -n "$note" ]]; then
+      echo "Note: ${note}"
+    fi
+  else
+    error "Failed to record feedback."
+    exit 8
+  fi
 }
 
 mlx_ready() {
@@ -658,6 +756,11 @@ case "$cmd" in
   history)
     shift
     show_history "$@"
+    ;;
+
+  feedback)
+    shift
+    record_feedback "$@"
     ;;
 
   profile)
