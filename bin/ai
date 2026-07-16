@@ -23,7 +23,6 @@ Usage:
   ai profile                                  Show active profile and routing posture
   ai down                                     Stop local gateway and MLX servers
 
-
 Operator commands remain available through just.
 
 Prompts can be quoted, unquoted, or provided through stdin.
@@ -111,19 +110,57 @@ route_provider() {
   esac
 }
 
+semantic_mode_for_prompt() {
+  local prompt="$1"
+  local mode
+
+  check_python_runtime
+
+  if [[ ! -f "tools/routing/semantic_route.py" ]]; then
+    error "Semantic routing helper not found: tools/routing/semantic_route.py"
+    error "Use an explicit mode instead:"
+    error "  ai ask --mode fast prompt"
+    error "  ai ask --mode capable prompt"
+    error "  ai ask --mode code prompt"
+    exit 8
+  fi
+
+  if ! mode="$(.venv/bin/python tools/routing/semantic_route.py "$prompt")"; then
+    error "Semantic routing failed."
+    error "Use an explicit mode instead:"
+    error "  ai ask --mode fast prompt"
+    error "  ai ask --mode capable prompt"
+    error "  ai ask --mode code prompt"
+    exit 8
+  fi
+
+  case "$mode" in
+    fast|capable|code)
+      echo "$mode"
+      ;;
+    *)
+      error "Semantic routing returned an unknown mode: ${mode}"
+      error "Use an explicit mode instead:"
+      error "  ai ask --mode fast prompt"
+      error "  ai ask --mode capable prompt"
+      error "  ai ask --mode code prompt"
+      exit 8
+      ;;
+  esac
+}
+
 routes_test() {
-  local mode="fast"
+  local mode=""
   local route
   local provider
   local prompt
+  local decision_source="semantic"
 
   if [[ "${1:-}" == "--mode" ]]; then
     mode="${2:-}"
+    decision_source="explicit"
     shift 2
   fi
-
-  route="$(route_for_mode "$mode")"
-  provider="$(route_provider "$route")"
 
   prompt="$(read_prompt "$@")" || {
     error "No prompt provided."
@@ -135,6 +172,14 @@ routes_test() {
   }
 
   check_dependencies
+
+  if [[ -z "$mode" ]]; then
+    mode="$(semantic_mode_for_prompt "$prompt")"
+  fi
+
+  route="$(route_for_mode "$mode")"
+  provider="$(route_provider "$route")"
+
   ensure_gateway_ready
 
   echo "AI Route Dry Run"
@@ -142,6 +187,7 @@ routes_test() {
   echo "Mode:       ${mode}"
   echo "Route:      ${route}"
   echo "Provider:   ${provider}"
+  echo "Decision:   ${decision_source}"
 
   if gateway_ready; then
     echo "Gateway:    reachable"
@@ -152,7 +198,7 @@ routes_test() {
   echo "Action:     would route locally"
   echo "Prompt:     ${prompt}"
 
-  log_history "dry_run" "routes test" "$mode" "$route" "$provider" "success" "" "$prompt"
+  log_history "dry_run" "routes test" "$mode" "$route" "$provider" "success" "" "$prompt" "$decision_source"
 }
 
 show_profile() {
@@ -205,6 +251,7 @@ log_history() {
   local status="$6"
   local latency_ms="$7"
   local prompt="$8"
+  local decision_source="${9:-unknown}"
   local file
 
   file="$(history_file)"
@@ -216,7 +263,7 @@ log_history() {
     return 0
   fi
 
-  if ! AI_LAB_HISTORY_PROMPT="$prompt" .venv/bin/python - "$file" "$(active_profile)" "$event_type" "$command_name" "$mode" "$route" "$provider" "$status" "$latency_ms" <<'PY'
+  if ! AI_LAB_HISTORY_PROMPT="$prompt" .venv/bin/python - "$file" "$(active_profile)" "$event_type" "$command_name" "$mode" "$route" "$provider" "$status" "$latency_ms" "$decision_source" <<'PY'
 import json
 import os
 import sys
@@ -236,6 +283,7 @@ entry = {
     "latency_ms": int(sys.argv[9]) if sys.argv[9] else None,
     "local": sys.argv[7] == "local",
     "prompt": os.environ.get("AI_LAB_HISTORY_PROMPT", ""),
+    "decision_source": sys.argv[10],
 }
 
 with open(file_path, "a", encoding="utf-8") as history:
@@ -280,11 +328,14 @@ try:
     route = entry.get("route", "unknown")
     status = entry.get("status", "unknown")
     latency = entry.get("latency_ms")
+    decision = entry.get("decision_source")
+
+    decision_text = f", {decision}" if decision else ""
 
     if latency is None:
-        print(f"{mode} -> {route} ({event}, {status})")
+        print(f"{mode} -> {route} ({event}, {status}{decision_text})")
     else:
-        print(f"{mode} -> {route} ({event}, {status}, {latency}ms)")
+        print(f"{mode} -> {route} ({event}, {status}, {latency}ms{decision_text})")
 except Exception:
     print("unavailable")
 PY
@@ -329,7 +380,6 @@ show_history() {
   .venv/bin/python - "$file" "$limit" <<'PY'
 import json
 import sys
-from datetime import datetime
 
 file_path = sys.argv[1]
 limit = int(sys.argv[2])
@@ -368,6 +418,7 @@ for entry in entries:
     status = entry.get("status", "unknown")
     latency = entry.get("latency_ms")
     prompt = entry.get("prompt", "")
+    decision_source = entry.get("decision_source")
     feedback = entry.get("feedback")
     feedback_note = entry.get("feedback_note", "")
 
@@ -380,6 +431,9 @@ for entry in entries:
         if len(prompt_preview) > 140:
             prompt_preview = prompt_preview[:137] + "..."
         print(f"  Prompt: {prompt_preview}")
+
+    if decision_source:
+        print(f"  Decision: {decision_source}")
 
     if feedback:
         print(f"  Feedback: {feedback}")
@@ -600,6 +654,7 @@ run_prompt_command() {
   local mode="$2"
   local route="$3"
   local prompt="$4"
+  local decision_source="${5:-explicit}"
   local provider
   local start_ns
   local end_ns
@@ -620,10 +675,10 @@ run_prompt_command() {
   latency_ms="$(( (end_ns - start_ns) / 1000000 ))"
 
   if [[ "$status_code" -eq 0 ]]; then
-    log_history "prompt" "$command_name" "$mode" "$route" "$provider" "success" "$latency_ms" "$prompt"
+    log_history "prompt" "$command_name" "$mode" "$route" "$provider" "success" "$latency_ms" "$prompt" "$decision_source"
     printf "%s\n" "$output"
   else
-    log_history "prompt" "$command_name" "$mode" "$route" "$provider" "failure" "$latency_ms" "$prompt"
+    log_history "prompt" "$command_name" "$mode" "$route" "$provider" "failure" "$latency_ms" "$prompt" "$decision_source"
     printf "%s\n" "$output" >&2
     exit "$status_code"
   fi
@@ -639,23 +694,28 @@ case "$cmd" in
     usage
     ;;
 
-
   ask)
     shift
 
-    mode="fast"
+    mode=""
+    decision_source="semantic"
 
     if [[ "${1:-}" == "--mode" ]]; then
       mode="${2:-}"
+      decision_source="explicit"
       shift 2
+    fi
+
+    prompt="$(read_prompt "$@")" || missing_prompt "ask"
+
+    if [[ -z "$mode" ]]; then
+      mode="$(semantic_mode_for_prompt "$prompt")"
     fi
 
     model="$(route_for_mode "$mode")"
 
-    prompt="$(read_prompt "$@")" || missing_prompt "ask"
-
     ensure_ready
-    run_prompt_command "ask" "$mode" "$model" "$prompt"
+    run_prompt_command "ask" "$mode" "$model" "$prompt" "$decision_source"
     ;;
 
   fast)
@@ -664,7 +724,7 @@ case "$cmd" in
     prompt="$(read_prompt "$@")" || missing_prompt "fast"
 
     ensure_ready
-    run_prompt_command "fast" "fast" "local-fast" "$prompt"
+    run_prompt_command "fast" "fast" "local-fast" "$prompt" "explicit"
     ;;
 
   capable)
@@ -673,7 +733,7 @@ case "$cmd" in
     prompt="$(read_prompt "$@")" || missing_prompt "capable"
 
     ensure_ready
-    run_prompt_command "capable" "capable" "local-capable-mlx" "$prompt"
+    run_prompt_command "capable" "capable" "local-capable-mlx" "$prompt" "explicit"
     ;;
 
   code)
@@ -682,7 +742,7 @@ case "$cmd" in
     prompt="$(read_prompt "$@")" || missing_prompt "code"
 
     ensure_ready
-    run_prompt_command "code" "code" "local-code-mlx" "$prompt"
+    run_prompt_command "code" "code" "local-code-mlx" "$prompt" "explicit"
     ;;
 
   routes)
