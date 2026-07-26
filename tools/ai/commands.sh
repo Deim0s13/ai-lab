@@ -7,7 +7,7 @@ AI Dev Workstation
 
 Usage:
   ai                                          Start/check the local AI workstation
-  ai ask [--mode fast|capable|code] prompt    Ask using the selected mode
+  ai ask [options] prompt                     Ask using local-first routing
   ai fast prompt                              Shortcut for fast mode
   ai capable prompt                           Shortcut for capable mode
   ai code prompt                              Shortcut for code mode
@@ -18,6 +18,11 @@ Usage:
   ai feedback good|bad [note]                 Mark the most recent prompt response
   ai profile                                  Show active profile and routing posture
   ai down                                     Stop local gateway and MLX servers
+
+Ask options:
+  --mode fast|capable|code                    Select a mode explicitly
+  --frontier                                  Request frontier escalation
+  --confirm-frontier                          Acknowledge frontier use
 
 Operator commands remain available through just.
 
@@ -112,6 +117,66 @@ show_profile() {
   echo "Frontier:         not configured"
 }
 
+handle_frontier_request() {
+  local mode="$1"
+  local prompt="$2"
+  local confirmed="$3"
+  local route
+  local provider
+
+  route="$(frontier_route_for_mode "$mode")"
+  provider="$(route_provider "$route")"
+
+  if [[ "$confirmed" != "true" ]]; then
+    echo "Frontier escalation requested."
+    echo
+    echo "Profile:         $(active_profile)"
+    echo "Local-first:     enabled"
+    echo "Requested route: ${route}"
+    echo "Acknowledgement: required"
+    echo
+    echo "No request was sent."
+    echo "Rerun with --confirm-frontier to acknowledge frontier use."
+
+    log_history \
+      "frontier_escalation" \
+      "ask" \
+      "$mode" \
+      "$route" \
+      "$provider" \
+      "blocked" \
+      "" \
+      "$prompt" \
+      "frontier_unacknowledged"
+
+    exit 7
+  fi
+
+  echo "Frontier escalation acknowledged."
+  echo
+  echo "Profile:         $(active_profile)"
+  echo "Local-first:     enabled"
+  echo "Requested route: ${route}"
+  echo "Acknowledgement: confirmed"
+  echo "Provider:        not configured"
+  echo
+  echo "No request was sent."
+  echo "Frontier provider configuration is deferred to a future issue."
+
+  log_history \
+    "frontier_escalation" \
+    "ask" \
+    "$mode" \
+    "$route" \
+    "$provider" \
+    "unavailable" \
+    "" \
+    "$prompt" \
+    "frontier_acknowledged"
+
+  exit 6
+}
+
 run_prompt_command() {
   local command_name="$1"
   local mode="$2"
@@ -177,13 +242,46 @@ command_default() {
 command_ask() {
   local mode=""
   local decision_source="semantic"
+  local frontier_requested="false"
+  local frontier_confirmed="false"
   local prompt
   local model
 
-  if [[ "${1:-}" == "--mode" ]]; then
-    mode="${2:-}"
-    decision_source="explicit"
-    shift 2
+  while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+      --mode)
+        if [[ "$#" -lt 2 ]]; then
+          error "Missing value for --mode."
+          error "Supported modes: fast, capable, code"
+          exit 2
+        fi
+
+        mode="$2"
+        decision_source="explicit"
+        shift 2
+        ;;
+      --frontier)
+        frontier_requested="true"
+        shift
+        ;;
+      --confirm-frontier)
+        frontier_confirmed="true"
+        shift
+        ;;
+      --)
+        shift
+        break
+        ;;
+      *)
+        break
+        ;;
+    esac
+  done
+
+  if [[ "$frontier_confirmed" == "true" &&
+    "$frontier_requested" != "true" ]]; then
+    error "--confirm-frontier requires --frontier."
+    exit 2
   fi
 
   prompt="$(read_prompt "$@")" || missing_prompt "ask"
@@ -192,10 +290,22 @@ command_ask() {
     mode="$(semantic_mode_for_prompt "$prompt")"
   fi
 
+  if [[ "$frontier_requested" == "true" ]]; then
+    handle_frontier_request \
+      "$mode" \
+      "$prompt" \
+      "$frontier_confirmed"
+  fi
+
   model="$(route_for_mode "$mode")"
 
   ensure_ready
-  run_prompt_command "ask" "$mode" "$model" "$prompt" "$decision_source"
+  run_prompt_command \
+    "ask" \
+    "$mode" \
+    "$model" \
+    "$prompt" \
+    "$decision_source"
 }
 
 command_fast() {

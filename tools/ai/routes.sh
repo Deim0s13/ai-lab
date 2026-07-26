@@ -22,12 +22,33 @@ route_for_mode() {
   esac
 }
 
+frontier_route_for_mode() {
+  local mode="$1"
+
+  case "$mode" in
+    fast|capable)
+      echo "frontier-reasoning"
+      ;;
+    code)
+      echo "frontier-code"
+      ;;
+    *)
+      error "Unknown mode: ${mode}"
+      error "Supported modes: fast, capable, code"
+      exit 2
+      ;;
+  esac
+}
+
 route_provider() {
   local route="$1"
 
   case "$route" in
     local-*)
       echo "local"
+      ;;
+    frontier-*)
+      echo "frontier"
       ;;
     *)
       echo "unknown"

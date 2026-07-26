@@ -153,6 +153,18 @@ The current proof backend for local-fast is an Ollama model behind LiteLLM.
 
 The stable interface is the model group, not the specific local model. The local model can be replaced later without changing the daily command.
 
+## Frontier Escalation Acknowledgement
+
+The CLI includes a safe acknowledgement stub for future frontier routing.
+
+    ai ask --frontier "Review this synthetic problem"
+
+The request is not sent until frontier use is explicitly acknowledged:
+
+    ai ask --frontier --confirm-frontier "Review this synthetic problem"
+
+Frontier providers are not configured, so acknowledged requests are logged and reported as unavailable. The default `ai ask` path remains local-first.
+
 ## Current Limitations
 
 The CLI habit layer currently does not include:
@@ -168,6 +180,9 @@ The CLI habit layer currently does not include:
 - prompt templates
 - background startup
 - automatic secret loading
+- configured frontier provider execution
+- automatic frontier escalation
+- provider fallback
 
 These are future capabilities and should be added only when there is a clear need.
 

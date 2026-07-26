@@ -16,13 +16,13 @@ This helps avoid the implementation becoming the specification.
 
 This document covers the initial CLI commands planned for the early milestones:
 
-| Command | Purpose | Initial milestone |
-|---|---|---|
-| `ask-ai` | General AI prompt entry point. | Milestone 1 / 2 |
-| `ai-route` | Explain and test routing decisions. | Milestone 1 / 2 |
-| `ai-status` | Show workstation health and active profile state. | Milestone 1 |
-| `ai-bootstrap-check` | Validate a rebuild or initial setup. | Milestone 1 |
-| `ai-model-review` | Review model fitness and alias suitability. | Milestone 3 |
+| Command              | Purpose                                           | Initial milestone |
+| -------------------- | ------------------------------------------------- | ----------------- |
+| `ask-ai`             | General AI prompt entry point.                    | Milestone 1 / 2   |
+| `ai-route`           | Explain and test routing decisions.               | Milestone 1 / 2   |
+| `ai-status`          | Show workstation health and active profile state. | Milestone 1       |
+| `ai-bootstrap-check` | Validate a rebuild or initial setup.              | Milestone 1       |
+| `ai-model-review`    | Review model fitness and alias suitability.       | Milestone 3       |
 
 Future commands such as `dev-ai`, `architect-ai`, `write-ai`, `research-ai` and `agent-ai` should follow the same conventions when they are introduced.
 
@@ -30,18 +30,18 @@ Future commands such as `dev-ai`, `architect-ai`, `write-ai`, `research-ai` and 
 
 ## 3. CLI design principles
 
-| Principle | Meaning |
-|---|---|
-| Stable interface | Command names and core flags should remain stable where practical. |
-| Profile-aware | Commands should know which profile is active or allow one to be specified. |
-| Gateway-first | Commands should use the gateway where practical. |
-| Degraded-mode aware | Commands should behave clearly when the gateway is unavailable. |
-| Explainable | Routing and validation commands should explain decisions in plain language. |
-| Scriptable | Commands should support predictable exit codes and optional machine-readable output later. |
-| Safe by default | Commands should not leak secrets, prompt content or sensitive context in logs. |
-| Local-first | General commands should prefer local routes where appropriate. |
-| Config-driven | Commands should read profiles, routes, aliases and policies from config. |
-| Thin wrappers | Commands should coordinate existing tools and config, not become a private platform. |
+| Principle           | Meaning                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| Stable interface    | Command names and core flags should remain stable where practical.                         |
+| Profile-aware       | Commands should know which profile is active or allow one to be specified.                 |
+| Gateway-first       | Commands should use the gateway where practical.                                           |
+| Degraded-mode aware | Commands should behave clearly when the gateway is unavailable.                            |
+| Explainable         | Routing and validation commands should explain decisions in plain language.                |
+| Scriptable          | Commands should support predictable exit codes and optional machine-readable output later. |
+| Safe by default     | Commands should not leak secrets, prompt content or sensitive context in logs.             |
+| Local-first         | General commands should prefer local routes where appropriate.                             |
+| Config-driven       | Commands should read profiles, routes, aliases and policies from config.                   |
+| Thin wrappers       | Commands should coordinate existing tools and config, not become a private platform.       |
 
 ---
 
@@ -93,18 +93,18 @@ for machine-readable output, but JSON output is not required for the first imple
 
 Commands should use consistent exit codes.
 
-| Exit code | Meaning |
-|---:|---|
-| `0` | Success. |
-| `1` | General failure. |
-| `2` | Invalid arguments or missing required input. |
-| `3` | Missing or invalid profile. |
-| `4` | Gateway unavailable. |
-| `5` | Local runtime unavailable. |
-| `6` | Provider unavailable or missing secret. |
-| `7` | Policy block. |
-| `8` | Validation failed. |
-| `9` | Context access denied. |
+| Exit code | Meaning                                      |
+| --------: | -------------------------------------------- |
+|       `0` | Success.                                     |
+|       `1` | General failure.                             |
+|       `2` | Invalid arguments or missing required input. |
+|       `3` | Missing or invalid profile.                  |
+|       `4` | Gateway unavailable.                         |
+|       `5` | Local runtime unavailable.                   |
+|       `6` | Provider unavailable or missing secret.      |
+|       `7` | Policy block.                                |
+|       `8` | Validation failed.                           |
+|       `9` | Context access denied.                       |
 
 These do not need to be perfect on day one, but the convention should guide implementation.
 
@@ -139,13 +139,13 @@ Commands that route prompts should support a sensitivity concept.
 
 Initial sensitivity levels:
 
-| Sensitivity | Meaning |
-|---|---|
-| `public` | Public or non-sensitive content. |
-| `internal` | Internal but low-risk content. |
-| `customer` | Customer-specific or commercially sensitive content. |
-| `personal` | Personal information or personal project material. |
-| `restricted` | Content that should not be routed externally. |
+| Sensitivity  | Meaning                                              |
+| ------------ | ---------------------------------------------------- |
+| `public`     | Public or non-sensitive content.                     |
+| `internal`   | Internal but low-risk content.                       |
+| `customer`   | Customer-specific or commercially sensitive content. |
+| `personal`   | Personal information or personal project material.   |
+| `restricted` | Content that should not be routed externally.        |
 
 Example:
 
@@ -157,11 +157,11 @@ ask-ai --profile macos-work --sensitivity customer --best "Review this fictional
 
 Commands should recognise three operating modes:
 
-| Mode | Meaning |
-|---|---|
-| `normal` | Gateway is healthy and used. |
-| `degraded_local` | Gateway is unavailable, but direct local fallback is allowed and used. |
-| `degraded_manual` | Gateway is unavailable and no automatic fallback is available. |
+| Mode              | Meaning                                                                |
+| ----------------- | ---------------------------------------------------------------------- |
+| `normal`          | Gateway is healthy and used.                                           |
+| `degraded_local`  | Gateway is unavailable, but direct local fallback is allowed and used. |
+| `degraded_manual` | Gateway is unavailable and no automatic fallback is available.         |
 
 Commands should make degraded mode visible in output.
 
@@ -197,19 +197,37 @@ ask-ai [options] "prompt"
 
 ## 5.4 Initial flags
 
-| Flag | Required? | Meaning |
-|---|---:|---|
-| `--profile <name>` | No | Use a specific profile. |
-| `--local` | No | Force local-only route. |
-| `--best` | No | Use best available route allowed by profile and policy. |
-| `--explain-route` | No | Show why the route was selected. |
-| `--sensitivity <level>` | No | Declare sensitivity level. |
-| `--provider <name>` | No | Request a specific provider where policy allows. |
-| `--model <name>` | No | Request a specific model where supported. |
-| `--no-frontier` | No | Prevent frontier escalation. |
-| `--save <path>` | No | Save output to file. |
-| `--stdin` | No | Read prompt/input from stdin. |
-| `--json` | Future | Machine-readable output. |
+| Flag                    | Required? | Meaning                                                 |
+| ----------------------- | --------: | ------------------------------------------------------- |
+| `--profile <name>`      |        No | Use a specific profile.                                 |
+| `--local`               |        No | Force local-only route.                                 |
+| `--best`                |        No | Use best available route allowed by profile and policy. |
+| `--explain-route`       |        No | Show why the route was selected.                        |
+| `--sensitivity <level>` |        No | Declare sensitivity level.                              |
+| `--provider <name>`     |        No | Request a specific provider where policy allows.        |
+| `--model <name>`        |        No | Request a specific model where supported.               |
+| `--no-frontier`         |        No | Prevent frontier escalation.                            |
+| `--save <path>`         |        No | Save output to file.                                    |
+| `--stdin`               |        No | Read prompt/input from stdin.                           |
+| `--json`                |    Future | Machine-readable output.                                |
+| `--frontier`            |        No | Explicitly request a frontier route.                    |
+| `--confirm-frontier`    |        No | Acknowledge the requested frontier escalation.          |
+
+Frontier escalation is currently acknowledgement-only.
+
+`--frontier` selects the intended frontier route but does not send the prompt. `--confirm-frontier` records explicit acknowledgement. Until a frontier provider is configured, acknowledged requests fail clearly as provider unavailable.
+
+Frontier escalation must never happen solely because semantic routing selected a mode.
+
+```bash
+ai ask --frontier "Review this synthetic problem"
+
+ai ask --mode code --frontier --confirm-frontier \
+  "Review this synthetic code"
+```
+
+| Frontier acknowledgement required | `7` |
+| Frontier acknowledged but provider unavailable | `6` |
 
 ## 5.5 Examples
 
@@ -294,16 +312,16 @@ Use --local or remove restricted content.
 
 ## 5.7 Exit code expectations
 
-| Scenario | Exit code |
-|---|---:|
-| Prompt completed successfully | `0` |
-| Missing prompt | `2` |
-| Missing profile | `3` |
-| Gateway unavailable and no fallback | `4` |
-| Local runtime unavailable | `5` |
-| Provider unavailable or missing secret | `6` |
-| Policy block | `7` |
-| Context access denied | `9` |
+| Scenario                               | Exit code |
+| -------------------------------------- | --------: |
+| Prompt completed successfully          |       `0` |
+| Missing prompt                         |       `2` |
+| Missing profile                        |       `3` |
+| Gateway unavailable and no fallback    |       `4` |
+| Local runtime unavailable              |       `5` |
+| Provider unavailable or missing secret |       `6` |
+| Policy block                           |       `7` |
+| Context access denied                  |       `9` |
 
 ---
 
@@ -335,17 +353,17 @@ ai-route [options] ["prompt"]
 
 ## 6.4 Initial flags
 
-| Flag | Required? | Meaning |
-|---|---:|---|
-| `--profile <name>` | No | Use a specific profile. |
-| `--task <type>` | No | Declare task type. |
-| `--sensitivity <level>` | No | Declare sensitivity level. |
-| `--local` | No | Force local-only decision. |
-| `--best` | No | Evaluate best allowed route. |
-| `--provider <name>` | No | Evaluate requested provider. |
-| `--explain` | No | Show detailed reasoning. |
-| `--test` | No | Run routing validation tests. |
-| `--json` | Future | Machine-readable output. |
+| Flag                    | Required? | Meaning                       |
+| ----------------------- | --------: | ----------------------------- |
+| `--profile <name>`      |        No | Use a specific profile.       |
+| `--task <type>`         |        No | Declare task type.            |
+| `--sensitivity <level>` |        No | Declare sensitivity level.    |
+| `--local`               |        No | Force local-only decision.    |
+| `--best`                |        No | Evaluate best allowed route.  |
+| `--provider <name>`     |        No | Evaluate requested provider.  |
+| `--explain`             |        No | Show detailed reasoning.      |
+| `--test`                |        No | Run routing validation tests. |
+| `--json`                |    Future | Machine-readable output.      |
 
 ## 6.5 Examples
 
@@ -399,14 +417,14 @@ Result: PASS
 
 ## 6.7 Exit code expectations
 
-| Scenario | Exit code |
-|---|---:|
-| Route resolved successfully | `0` |
-| Routing tests passed | `0` |
-| Invalid task or sensitivity | `2` |
-| Missing profile | `3` |
-| Routing tests failed | `8` |
-| Policy block | `7` |
+| Scenario                    | Exit code |
+| --------------------------- | --------: |
+| Route resolved successfully |       `0` |
+| Routing tests passed        |       `0` |
+| Invalid task or sensitivity |       `2` |
+| Missing profile             |       `3` |
+| Routing tests failed        |       `8` |
+| Policy block                |       `7` |
 
 ---
 
@@ -450,11 +468,11 @@ ai-status [options]
 
 ## 7.4 Initial flags
 
-| Flag | Required? | Meaning |
-|---|---:|---|
-| `--profile <name>` | No | Check a specific profile. |
-| `--verbose` | No | Show more detail. |
-| `--json` | Future | Machine-readable output. |
+| Flag               | Required? | Meaning                   |
+| ------------------ | --------: | ------------------------- |
+| `--profile <name>` |        No | Check a specific profile. |
+| `--verbose`        |        No | Show more detail.         |
+| `--json`           |    Future | Machine-readable output.  |
 
 ## 7.5 Example
 
@@ -523,15 +541,15 @@ Next action:
 
 ## 7.7 Exit code expectations
 
-| Scenario | Exit code |
-|---|---:|
-| All required checks pass | `0` |
-| Warnings present, but usable | `0` |
-| Required check fails | `8` |
-| Missing profile | `3` |
-| Gateway unavailable | `4`, if gateway is required for selected check |
-| Local runtime unavailable | `5`, if required |
-| Required secret unavailable | `6` |
+| Scenario                     |                                      Exit code |
+| ---------------------------- | ---------------------------------------------: |
+| All required checks pass     |                                            `0` |
+| Warnings present, but usable |                                            `0` |
+| Required check fails         |                                            `8` |
+| Missing profile              |                                            `3` |
+| Gateway unavailable          | `4`, if gateway is required for selected check |
+| Local runtime unavailable    |                               `5`, if required |
+| Required secret unavailable  |                                            `6` |
 
 ---
 
@@ -580,12 +598,12 @@ ai-bootstrap-check [options]
 
 ## 8.4 Initial flags
 
-| Flag | Required? | Meaning |
-|---|---:|---|
-| `--profile <name>` | Yes initially | Validate a specific profile. |
-| `--skip-gateway` | No | Skip live gateway check if still setting up. |
-| `--verbose` | No | Show detailed checks. |
-| `--json` | Future | Machine-readable output. |
+| Flag               |     Required? | Meaning                                      |
+| ------------------ | ------------: | -------------------------------------------- |
+| `--profile <name>` | Yes initially | Validate a specific profile.                 |
+| `--skip-gateway`   |            No | Skip live gateway check if still setting up. |
+| `--verbose`        |            No | Show detailed checks.                        |
+| `--json`           |        Future | Machine-readable output.                     |
 
 ## 8.5 Example
 
@@ -667,16 +685,16 @@ Next actions:
 
 ## 8.7 Exit code expectations
 
-| Scenario | Exit code |
-|---|---:|
-| Bootstrap check passed | `0` |
-| Passed with warnings | `0` |
-| Invalid arguments | `2` |
-| Missing profile | `3` |
-| Required gateway check failed | `4` |
-| Required local runtime check failed | `5` |
-| Required secret missing | `6` |
-| Validation failed | `8` |
+| Scenario                            | Exit code |
+| ----------------------------------- | --------: |
+| Bootstrap check passed              |       `0` |
+| Passed with warnings                |       `0` |
+| Invalid arguments                   |       `2` |
+| Missing profile                     |       `3` |
+| Required gateway check failed       |       `4` |
+| Required local runtime check failed |       `5` |
+| Required secret missing             |       `6` |
+| Validation failed                   |       `8` |
 
 ---
 
@@ -710,14 +728,14 @@ ai-model-review [options]
 
 ## 9.4 Initial flags
 
-| Flag | Required? | Meaning |
-|---|---:|---|
-| `--profile <name>` | Yes | Review models for a profile. |
-| `--runtime <name>` | No | Review a specific runtime. |
-| `--alias <name>` | No | Review suitability for a specific alias. |
-| `--run` | No | Run model checks. |
-| `--summarise` | No | Summarise existing results. |
-| `--json` | Future | Machine-readable output. |
+| Flag               | Required? | Meaning                                  |
+| ------------------ | --------: | ---------------------------------------- |
+| `--profile <name>` |       Yes | Review models for a profile.             |
+| `--runtime <name>` |        No | Review a specific runtime.               |
+| `--alias <name>`   |        No | Review suitability for a specific alias. |
+| `--run`            |        No | Run model checks.                        |
+| `--summarise`      |        No | Summarise existing results.              |
+| `--json`           |    Future | Machine-readable output.                 |
 
 ## 9.5 Example
 
@@ -756,13 +774,13 @@ Recommendations:
 
 ## 9.7 Exit code expectations
 
-| Scenario | Exit code |
-|---|---:|
-| Review completed | `0` |
-| Invalid arguments | `2` |
-| Missing profile | `3` |
-| Runtime unavailable | `5` |
-| Review could not run | `8` |
+| Scenario             | Exit code |
+| -------------------- | --------: |
+| Review completed     |       `0` |
+| Invalid arguments    |       `2` |
+| Missing profile      |       `3` |
+| Runtime unavailable  |       `5` |
+| Review could not run |       `8` |
 
 ---
 
@@ -772,14 +790,14 @@ Future commands should follow the same contract pattern.
 
 Expected future commands:
 
-| Command | Purpose |
-|---|---|
-| `dev-ai` | Coding and repo-aware development workflow. |
+| Command        | Purpose                                                      |
+| -------------- | ------------------------------------------------------------ |
+| `dev-ai`       | Coding and repo-aware development workflow.                  |
 | `architect-ai` | Architecture reasoning, option analysis and decision review. |
-| `write-ai` | Writing, rewriting and tone refinement. |
-| `research-ai` | Research, synthesis and comparison workflows. |
-| `agent-ai` | Controlled agent workflows. |
-| `ai-secrets` | Centralised secrets lookup helper, if needed. |
+| `write-ai`     | Writing, rewriting and tone refinement.                      |
+| `research-ai`  | Research, synthesis and comparison workflows.                |
+| `agent-ai`     | Controlled agent workflows.                                  |
+| `ai-secrets`   | Centralised secrets lookup helper, if needed.                |
 
 Each future command should define:
 
@@ -808,12 +826,12 @@ ai-bootstrap-check
 
 The minimum viable contract is:
 
-| Command | Minimum viable behaviour |
-|---|---|
-| `ask-ai` | Send a local prompt through gateway or configured local fallback. |
-| `ai-route` | Explain expected route for a profile/task/sensitivity. |
-| `ai-status` | Show active profile, gateway health, runtime health and secrets status. |
-| `ai-bootstrap-check` | Validate required profile/config/runtime/gateway basics. |
+| Command              | Minimum viable behaviour                                                |
+| -------------------- | ----------------------------------------------------------------------- |
+| `ask-ai`             | Send a local prompt through gateway or configured local fallback.       |
+| `ai-route`           | Explain expected route for a profile/task/sensitivity.                  |
+| `ai-status`          | Show active profile, gateway health, runtime health and secrets status. |
+| `ai-bootstrap-check` | Validate required profile/config/runtime/gateway basics.                |
 
 Milestone 1 does not need complete JSON output, advanced route classification, full provider automation or polished UX.
 

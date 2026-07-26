@@ -97,6 +97,37 @@ The shortcut commands map to the same routes:
 | `ai capable` | `local-capable-mlx` |
 | `ai code`    | `local-code-mlx`    |
 
+## Frontier Escalation Acknowledgement
+
+The workstation remains local-first. Frontier escalation must be explicitly requested and acknowledged.
+
+Request frontier escalation:
+
+    ai ask --frontier "Review this synthetic problem"
+
+This does not send the prompt. It shows the requested frontier route and explains that acknowledgement is required.
+
+Acknowledge the escalation:
+
+    ai ask --frontier --confirm-frontier "Review this synthetic problem"
+
+Frontier providers are not configured yet, so the acknowledged request is logged but not sent.
+
+Explicit mode selection controls the requested frontier route:
+
+| Mode      | Requested frontier route |
+| --------- | ------------------------ |
+| `fast`    | `frontier-reasoning`     |
+| `capable` | `frontier-reasoning`     |
+| `code`    | `frontier-code`          |
+
+Escalation decisions are recorded in local history as either:
+
+- `frontier_unacknowledged`
+- `frontier_acknowledged`
+
+This is an acknowledgement stub. Provider configuration, automatic escalation and provider fallback remain deferred.
+
 ## Status
 
 `ai status` provides a one-glance view of the workstation.
@@ -331,6 +362,7 @@ The goal is not to hide the foundations. The goal is to make the foundations eas
 | `ai profile` visibility                      | Implemented |
 | Actionable degraded-mode errors              | Implemented |
 | `ai routes`                                  | Implemented |
+| Frontier escalation acknowledgement          | Implemented |
 
 ### Planned
 
