@@ -66,7 +66,10 @@ capabilities:
     status: planned
     priority: milestone_4
     candidates:
-      - open_webui
+      - librechat
+    notes:
+      - LibreChat v0.8.7 was selected by the browser chat UI evaluation.
+      - Permanent lifecycle implementation is tracked in issue 56.
 
   cli_coding_assistant:
     status: planned

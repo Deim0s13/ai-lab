@@ -2,11 +2,11 @@
 
 ## Status
 
-Proposed
+Accepted
 
 ## Date
 
-2026-07-27
+2026-07-28
 
 ## Capability Area
 
@@ -39,12 +39,12 @@ The tool should support:
 
 ## Options Considered
 
-| Option      | Version researched | Notes                                                                                                                               | Screening outcome    |
-| ----------- | -----------------: | ----------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
-| Open WebUI  |            v0.10.2 | Explicit LiteLLM support, single container, official ARM64 and Podman guidance; custom licence and configuration hardening required | Proceed to Trial     |
-| LibreChat   |             v0.8.7 | MIT licence and declarative custom endpoints; substantially heavier default service stack                                           | Proceed to Trial     |
-| AnythingLLM |            v1.15.0 | MIT licence, single container and generic OpenAI support; RAG/workspace/agent focus exceeds this milestone                          | Parked               |
-| LobeHub     |            v2.2.11 | OpenAI proxy support, but current product direction is agent operations with broader infrastructure and a custom licence            | Rejected for Chat UI |
+| Option      | Version researched | Notes                                                                                                                    | Screening outcome    |
+| ----------- | -----------------: | ------------------------------------------------------------------------------------------------------------------------ | -------------------- |
+| Open WebUI  |            v0.10.2 | Explicit LiteLLM support, but both official ARM64 image variants failed during application startup                       | Trial Failed         |
+| LibreChat   |             v0.8.7 | MIT licence and declarative custom endpoints; substantially heavier default service stack                                | Proceed to Trial     |
+| AnythingLLM |            v1.15.0 | MIT licence, single container and generic OpenAI support; RAG/workspace/agent focus exceeds this milestone               | Parked               |
+| LobeHub     |            v2.2.11 | OpenAI proxy support, but current product direction is agent operations with broader infrastructure and a custom licence | Rejected for Chat UI |
 
 ## Mandatory Gate Screening
 
@@ -233,26 +233,87 @@ At minimum verify:
 - all container images are pinned by version or digest
 - whether nonessential RAG and search services can be removed safely
 
+## Practical Trial Results
+
+The temporary Open WebUI and LibreChat deployments, profile-scoped volumes and trial secrets were removed after testing. Container images were left cached locally and may be removed independently.
+
+### Open WebUI — Failed
+
+Tested on the `macos-work` profile using Podman on macOS ARM64.
+
+Images tested:
+
+- `ghcr.io/open-webui/open-webui:v0.10.2`
+- `ghcr.io/open-webui/open-webui:v0.10.2-slim`
+
+Both images:
+
+- used the official `linux/arm64` image
+- matched the Podman VM's `aarch64` architecture
+- started Bash and Python successfully
+- exited with code `132` when launching the Open WebUI application through Uvicorn
+- produced no application-level logs
+- never reached the `/health` endpoint
+
+The full and slim variants therefore fail the mandatory macOS ARM64 deployment gate. Gateway routing, persistence and daily usability could not be tested because the application did not start.
+
+Further debugging of bundled native Python dependencies is outside this evaluation. Adopting Open WebUI would otherwise require maintaining a custom image or workaround, conflicting with the rebuildability and maintenance requirements.
+
+### LibreChat — Passed
+
+Tested LibreChat v0.8.7 on the `macos-work` profile using pinned ARM64 images for LibreChat and MongoDB.
+
+The trial confirmed:
+
+- operation with only LibreChat and MongoDB
+- no requirement for MeiliSearch, pgvector, RAG API or the admin panel
+- localhost-only exposure on port 3080
+- configuration through a read-only `librechat.yaml`
+- credentials supplied through environment variables
+- only the custom LiteLLM endpoint enabled
+- existing gateway model aliases discovered
+- successful synthetic chat through `local-fast`
+- requests visible in LiteLLM logs
+- visible failure when LiteLLM was stopped, with no provider fallback
+- registration disabled after initial provisioning
+- account and conversation persistence after full recreation
+- profile-scoped MongoDB storage
+- familiar, ChatGPT-like daily usability
+
+The two-container deployment used approximately 678 MB of memory during the recorded sample.
+
+Operational caveats:
+
+- MongoDB 4.4.18 is required on Apple Silicon because the default MongoDB image requires unsupported AVX instructions.
+- Bind-mounted configuration must live beneath `/Users` so it is shared with the Podman VM.
+- The minimal Compose definition must pin images instead of using the floating tags in LibreChat's default Compose file.
+- LibreChat logs a non-blocking warning when the intentionally omitted RAG API is unavailable.
+
+### Community and Maintenance Health
+
+LibreChat has a large and active contributor community. At the time of evaluation, the project had approximately 41,350 GitHub stars, 8,520 forks and 384 contributors.
+
+During the preceding three months, 682 pull requests were merged from approximately 72 distinct authors. Of 405 issues opened during the same period, 293 had already closed. The project also maintains active documentation, GitHub Discussions, a published roadmap and a Discord community reported to exceed 9,000 members.
+
+Maintenance remains somewhat centralized around the founder, and the large issue and pull-request backlogs indicate triage pressure. Recent releases are also marked as prereleases. These risks are acceptable provided deployments remain version- and digest-pinned, upgrades are tested, and the UI remains replaceable.
+
 ## Decision
 
-Pending practical trial.
+Accepted.
 
-Research recommendation:
+Select LibreChat v0.8.7 as the browser chat UI for the current workstation capability.
 
-- Advance Open WebUI to Trial.
-- Advance LibreChat to Trial.
+- Reject Open WebUI because both official v0.10.2 ARM64 variants failed the mandatory startup gate.
 - Park AnythingLLM for possible future RAG evaluation.
-- Reject LobeHub for the Chat UI capability; reconsider only if a later agent-front-end capability requires it.
-
-Do not mark any candidate Adopted based on documentation research alone.
+- Reject LobeHub for this capability because its agent-platform scope and operational complexity exceed UI parity.
 
 ## Rationale
 
-Open WebUI currently has the clearest fit with the required gateway-first browser workflow and the lowest operational burden. Its security defaults, persistent configuration behavior and custom licence require explicit acceptance.
+LibreChat passed every mandatory practical gate and provides a familiar daily-use chat interface through the existing LiteLLM gateway.
 
-LibreChat is the strongest conventional open-source alternative. Its declarative configuration and MIT licence are attractive, but its service footprint may be disproportionate for a single-user workstation.
+A minimal two-container deployment removes the default search, vector, RAG and administration services without affecting normal chat. The remaining MongoDB dependency and approximately 678 MB sampled memory are acceptable for the capability.
 
-Practical proof is required before choosing between them.
+The selection requires configuration and Compose orchestration, but no custom application or routing code. Gateway access, model aliases and profile boundaries remain authoritative and replaceable.
 
 ## Implementation Notes
 
