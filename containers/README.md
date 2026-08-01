@@ -1,35 +1,21 @@
-# containers
+# Containers
 
-This directory will contain container and service definitions used by the workstation.
+This directory contains reproducible service definitions used by the workstation.
 
-The goal is to keep services reproducible and easy to rebuild.
+## Implemented services
 
----
-
-## Purpose
-
-Container definitions may be used for:
-
-- AI gateway services
-- Open WebUI
-- supporting services
-- future RAG or memory services
-- development utilities
-
----
-
-## Expected structure
-
-Possible future structure:
+LibreChat provides the selected browser chat UI. It runs with MongoDB and uses LiteLLM as its only model endpoint.
 
 ```text
 containers/
-├── gateway/
-├── open-webui/
-└── shared/
+└── librechat/
+    ├── compose.yaml
+    ├── librechat.yaml
+    ├── .env.example
+    └── README.md
 ```
 
----
+Profile-local files such as `.env.macos-work.local` and `.env.windows-personal.local` are ignored. The lifecycle recipes use profile-specific Compose project names so persistent volumes and conversation state are not shared accidentally.
 
 ## Rules
 
@@ -43,8 +29,6 @@ Container definitions should:
 - work with the selected container runtime for the profile
 
 For Windows / WSL2 and future Fedora Atomic usage, Podman-compatible patterns are preferred where practical.
-
----
 
 ## Related docs
 

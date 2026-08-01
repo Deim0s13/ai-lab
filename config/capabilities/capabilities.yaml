@@ -63,13 +63,14 @@ capabilities:
       - gateway_based_checks
 
   chat_ui:
-    status: planned
+    status: adopted
     priority: milestone_4
     candidates:
       - librechat
     notes:
-      - LibreChat v0.8.7 was selected by the browser chat UI evaluation.
-      - Permanent lifecycle implementation is tracked in issue 56.
+      - LibreChat v0.8.7 is the selected browser chat UI.
+      - Its reproducible service lifecycle is defined under containers/librechat.
+      - LiteLLM remains its only configured model endpoint.
 
   cli_coding_assistant:
     status: planned

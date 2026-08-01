@@ -1,0 +1,54 @@
+services:
+  mongodb:
+    image: docker.io/library/mongo:4.4.18
+    command: mongod --noauth
+    restart: "no"
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  api:
+    image: ghcr.io/danny-avila/librechat:v0.8.7
+    restart: "no"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3080
+      DOMAIN_CLIENT: http://localhost:3080
+      DOMAIN_SERVER: http://localhost:3080
+      MONGO_URI: mongodb://mongodb:27017/LibreChat
+
+      ENDPOINTS: custom
+      LITELLM_API_KEY: "${LITELLM_MASTER_KEY:?LITELLM_MASTER_KEY must be set}"
+
+      ALLOW_EMAIL_LOGIN: "true"
+      ALLOW_REGISTRATION: "${LIBRECHAT_ALLOW_REGISTRATION:-false}"
+      ALLOW_SOCIAL_LOGIN: "false"
+      ALLOW_SOCIAL_REGISTRATION: "false"
+      ALLOW_PASSWORD_RESET: "false"
+      ALLOW_UNVERIFIED_EMAIL_LOGIN: "true"
+      SESSION_COOKIE_SECURE: "false"
+
+      JWT_SECRET: "${JWT_SECRET:?JWT_SECRET must be set}"
+      JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET:?JWT_REFRESH_SECRET must be set}"
+      CREDS_KEY: "${CREDS_KEY:?CREDS_KEY must be set}"
+      CREDS_IV: "${CREDS_IV:?CREDS_IV must be set}"
+
+      APP_TITLE: AI Lab
+      DEBUG_LOGGING: "${LIBRECHAT_DEBUG_LOGGING:-false}"
+    ports:
+      - "127.0.0.1:3080:3080"
+    volumes:
+      - type: bind
+        source: ./librechat.yaml
+        target: /app/librechat.yaml
+        read_only: true
+
+volumes:
+  mongodb-data:

@@ -1,0 +1,35 @@
+version: 1.3.13
+cache: false
+
+interface:
+  customWelcome: "AI Lab"
+  modelSelect: true
+  parameters: true
+  presets: false
+  bookmarks: false
+  fileSearch: false
+  prompts:
+    use: false
+    create: false
+    share: false
+    public: false
+  agents:
+    use: false
+    create: false
+    share: false
+    public: false
+  marketplace:
+    use: false
+
+endpoints:
+  custom:
+    - name: "AI Lab Gateway"
+      apiKey: "${LITELLM_API_KEY}"
+      baseURL: "http://host.containers.internal:4000/v1"
+      models:
+        default:
+          - "local-fast"
+        fetch: true
+      titleConvo: false
+      summarize: false
+      modelDisplayLabel: "AI Lab Gateway"
