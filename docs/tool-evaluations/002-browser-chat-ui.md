@@ -42,7 +42,7 @@ The tool should support:
 | Option      | Version researched | Notes                                                                                                                    | Screening outcome    |
 | ----------- | -----------------: | ------------------------------------------------------------------------------------------------------------------------ | -------------------- |
 | Open WebUI  |            v0.10.2 | Explicit LiteLLM support, but both official ARM64 image variants failed during application startup                       | Trial Failed         |
-| LibreChat   |             v0.8.7 | MIT licence and declarative custom endpoints; substantially heavier default service stack                                | Proceed to Trial     |
+| LibreChat   |             v0.8.7 | MIT licence and declarative custom endpoints; substantially heavier default service stack                                | Selected             |
 | AnythingLLM |            v1.15.0 | MIT licence, single container and generic OpenAI support; RAG/workspace/agent focus exceeds this milestone               | Parked               |
 | LobeHub     |            v2.2.11 | OpenAI proxy support, but current product direction is agent operations with broader infrastructure and a custom licence | Rejected for Chat UI |
 
@@ -53,7 +53,7 @@ The tool should support:
 | Self-hosted                      | Pass                              | Pass                                                     | Pass                                   | Pass                                      |
 | Open-source fit                  | Conditional: custom licence       | Pass: MIT                                                | Pass: MIT                              | Conditional: custom licence               |
 | LiteLLM/OpenAI-compatible access | Strong documented fit             | Generic custom endpoint                                  | Generic OpenAI provider                | OpenAI proxy configuration                |
-| Existing alias discovery         | Documented auto-discovery         | Model fetch supported; verify                            | Verify manually                        | Verify manually                           |
+| Existing alias discovery         | Documented auto-discovery         | Model fetch supported; verify                            | Confirmed manually                     | Verify manually                           |
 | Gateway-only operation           | Conditional configuration         | Configurable through custom-only endpoints               | UI configuration requires verification | Direct-provider posture remains a concern |
 | Repeatable container deployment  | Strong                            | Pass, but multi-service                                  | Pass                                   | Operationally complex                     |
 | Storage understood               | Single `/app/backend/data` volume | MongoDB, uploads, logs, MeiliSearch and pgvector storage | `/app/server/storage`                  | Database/authentication infrastructure    |
@@ -84,8 +84,6 @@ The issue weights are applied using:
 - Trial fit: 3
 - Weak fit: 2
 - Reject: 1
-
-These scores are provisional until practical testing is completed.
 
 | Candidate   | Gateway 25% | Rebuild/config 20% | Privacy/profile 20% | Complexity 15% | Usability 10% | Maintenance/licence 10% | Result |
 | ----------- | ----------: | -----------------: | ------------------: | -------------: | ------------: | ----------------------: | -----: |
