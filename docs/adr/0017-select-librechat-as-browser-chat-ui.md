@@ -30,7 +30,7 @@ The standard deployment will:
 - keep configuration, state and volumes separate by profile
 - omit the admin panel, MeiliSearch, pgvector and RAG services until separately required
 
-Permanent lifecycle implementation is deferred to issue #56.
+Issues #56 and #57 delivered the permanent lifecycle, focused validation and user-facing documentation.
 
 ## Options Considered
 
@@ -137,20 +137,24 @@ This decision aligns with the open-source-first, local-first, config-over-code, 
 - Treat the missing-RAG startup warning as expected unless it obscures actionable errors.
 - Re-evaluate optional RAG, search, agent and administration services in their own milestones.
 
-## Implementation Impact
+## Implementation Status
 
-Issue #56 will add the permanent, profile-aware service definition and lifecycle commands. It should include:
+Issues #56 and #57 completed the adopted LibreChat implementation:
 
 - pinned LibreChat and MongoDB images
 - localhost-only exposure
-- a read-only `librechat.yaml`
+- read-only `librechat.yaml` configuration
 - environment-based secret injection
-- `ENDPOINTS=custom` with LiteLLM as the only endpoint
-- separate Compose project names and volumes per profile
-- registration lock after initial account provisioning
-- documented startup, health, logs, recreation and removal commands
+- LiteLLM as the only model endpoint
+- profile-derived Compose projects and persistent volumes
+- registration disabled during normal operation
+- unified workstation startup and recovery
+- focused `just ui-check` validation
+- documented lifecycle, persistence, reset and troubleshooting workflows
+- gateway-down testing confirming there is no direct-provider bypass
+- persistence and recovery testing across container recreation and macOS sleep
 
-Issue #57 will validate UI parity and update user-facing documentation. No LibreChat-specific routing or UI logic should be added to `bin/ai`.
+No LibreChat-specific routing or UI logic was added to `bin/ai`.
 
 ## Review Trigger
 

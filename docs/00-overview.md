@@ -167,7 +167,7 @@ This means the first priority is not to build a coding agent or UI. The first pr
 - validation checks
 - rebuildable setup
 
-Once the control plane exists, I can add coding tools, Open WebUI, work personas, model fitness checks and agents in a controlled way.
+The established control plane now supports the CLI, model fitness and LibreChat. Coding tools, work personas and controlled agents can build on the same foundation.
 
 ---
 

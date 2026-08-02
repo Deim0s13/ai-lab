@@ -315,17 +315,17 @@ The selection requires configuration and Compose orchestration, but no custom ap
 
 ## Implementation Notes
 
-- Permanent service definitions are deferred to #56.
-- Final validation and adoption are deferred to #57.
-- Temporary proof material may be kept under `labs/` if evidence needs to be retained.
-- Do not add UI behavior to `bin/ai`.
-- Do not configure direct provider credentials.
-- Use synthetic prompts only.
+- Issue #56 delivered the pinned, profile-aware LibreChat and MongoDB service definition.
+- Issue #57 delivered focused validation and user-facing documentation.
+- LiteLLM remains the only configured model endpoint.
+- No UI behaviour was added to `bin/ai`.
+- No direct provider credentials are configured in LibreChat.
+- Validation uses synthetic prompts only.
 
 ## Follow-up Issues
 
-- #56 — Add reproducible browser chat UI service lifecycle
-- #57 — Validate and document browser UI parity
+- #56 — Completed: reproducible browser chat UI service lifecycle
+- #57 — Completed: browser UI parity validation and documentation
 
 ## Review Trigger
 
@@ -333,7 +333,7 @@ Review this evaluation if:
 
 - practical gateway testing contradicts the documentation assessment
 - Open WebUI licence terms no longer fit the project
-- LibreChat provides a supported minimal deployment without RAG/search services
+- the minimal LibreChat deployment no longer supports the required chat workflow
 - the selected tool cannot enforce gateway-only operation
 - profile state cannot be separated safely
 - operational overhead outweighs recurring use

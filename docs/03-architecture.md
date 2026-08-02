@@ -66,7 +66,7 @@ flowchart TD
 
     CLI[CLI Commands]
     IDE[IDE / Editor]
-    UI[Open WebUI or Chat UI]
+    UI[LibreChat]
     Agents[Future Agents]
 
     Gateway[AI Gateway / Router]
@@ -151,7 +151,7 @@ The repository is the source of truth for the workstation. Local machine state s
 
 ```mermaid
 flowchart TD
-    A[Interface Layer<br/>CLI, IDE, Open WebUI, Agents]
+    A[Interface Layer<br/>CLI, IDE, LibreChat, Agents]
     B[Command Layer<br/>ask-ai, ai-route, ai-status, dev-ai, architect-ai]
     C[Gateway Layer<br/>LiteLLM or equivalent, model aliases, routing]
     D[Policy and Config Layer<br/>profiles, providers, routes, capabilities]
@@ -174,15 +174,15 @@ flowchart TD
 
 ## 7. Layer responsibilities
 
-| Layer | Responsibility |
-|---|---|
-| Interface layer | Provides the ways I interact with the workstation: CLI, IDE, UI and future agents. |
-| Command layer | Provides stable commands and habits such as `ask-ai`, `ai-route`, `ai-status`, `dev-ai`, `architect-ai` and `write-ai`. |
-| Gateway layer | Provides a common model access point, routing, aliases and provider abstraction. |
-| Policy and config layer | Defines profiles, routes, providers, capabilities, model aliases and privacy rules. |
-| Provider layer | Connects to local runtimes and frontier or approved AI providers. |
-| Rebuild layer | Makes the workstation reproducible through bootstrap scripts, packages, containers and validation. |
-| Governance layer | Captures principles, ADRs, component lifecycle and tool selection decisions. |
+| Layer                   | Responsibility                                                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Interface layer         | Provides the ways I interact with the workstation: CLI, IDE, UI and future agents.                                      |
+| Command layer           | Provides stable commands and habits such as `ask-ai`, `ai-route`, `ai-status`, `dev-ai`, `architect-ai` and `write-ai`. |
+| Gateway layer           | Provides a common model access point, routing, aliases and provider abstraction.                                        |
+| Policy and config layer | Defines profiles, routes, providers, capabilities, model aliases and privacy rules.                                     |
+| Provider layer          | Connects to local runtimes and frontier or approved AI providers.                                                       |
+| Rebuild layer           | Makes the workstation reproducible through bootstrap scripts, packages, containers and validation.                      |
+| Governance layer        | Captures principles, ADRs, component lifecycle and tool selection decisions.                                            |
 
 ---
 
@@ -351,17 +351,18 @@ Routing should eventually consider:
 - user flags such as `--local`, `--best` and `--explain-route`
 
 ---
+
 ## 11. Gateway failure and degraded operation
 
 The gateway is the preferred control point for model access, but it should not become a hard single point of failure for basic local use.
 
 The workstation should support three operating modes:
 
-| Mode | Description | Expected behaviour |
-|---|---|---|
-| Normal | Gateway is healthy and reachable. | CLI, UI, IDE tools and future agents use the gateway where practical. |
-| Degraded local | Gateway is unavailable, but a local runtime is available. | Selected CLI commands may fall back to direct local runtime access where explicitly configured. |
-| Degraded manual | Gateway is unavailable and no automated fallback is configured. | The CLI explains the failure and provides the next manual recovery step. |
+| Mode            | Description                                                     | Expected behaviour                                                                              |
+| --------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Normal          | Gateway is healthy and reachable.                               | CLI, UI, IDE tools and future agents use the gateway where practical.                           |
+| Degraded local  | Gateway is unavailable, but a local runtime is available.       | Selected CLI commands may fall back to direct local runtime access where explicitly configured. |
+| Degraded manual | Gateway is unavailable and no automated fallback is configured. | The CLI explains the failure and provides the next manual recovery step.                        |
 
 The gateway-first principle still applies. Degraded local mode exists to keep the workstation usable during failure or rebuild scenarios, not to create a second hidden architecture.
 
@@ -402,7 +403,7 @@ It should not silently apply to:
 
 - approved work AI tool routing
 - frontier provider routing
-- Open WebUI
+- LibreChat
 - agents
 - work-sensitive tasks
 
@@ -487,17 +488,17 @@ flowchart TD
 
 ### Runtime access rules
 
-| Tool / capability | Preferred access | Direct access allowed? | Notes |
-|---|---|---:|---|
-| `ask-ai` | Gateway | Yes, local fallback only | Used for degraded local mode. |
-| `ai-route` | Config only | No | Explains route decisions; should not call runtimes. |
-| `ai-status` | Gateway and direct health checks | Yes | Health checks may inspect runtimes directly. |
-| `ai-bootstrap-check` | Gateway and direct health checks | Yes | Rebuild validation needs direct checks. |
-| `ai-model-review` | Direct/runtime-specific or gateway-based | Yes | Model assessment may need direct runtime access. |
-| Open WebUI | Gateway | No initially | Avoid creating a separate UI model path. |
-| Aider / OpenCode | Gateway where practical | Yes, if required | Direct access must be documented per tool. |
-| Goose / agents | Gateway | No initially | Agents need stronger controls. |
-| RAG / project memory | Gateway | No initially | Retrieval may be local, but generation should route through policy. |
+| Tool / capability    | Preferred access                         |   Direct access allowed? | Notes                                                               |
+| -------------------- | ---------------------------------------- | -----------------------: | ------------------------------------------------------------------- |
+| `ask-ai`             | Gateway                                  | Yes, local fallback only | Used for degraded local mode.                                       |
+| `ai-route`           | Config only                              |                       No | Explains route decisions; should not call runtimes.                 |
+| `ai-status`          | Gateway and direct health checks         |                      Yes | Health checks may inspect runtimes directly.                        |
+| `ai-bootstrap-check` | Gateway and direct health checks         |                      Yes | Rebuild validation needs direct checks.                             |
+| `ai-model-review`    | Direct/runtime-specific or gateway-based |                      Yes | Model assessment may need direct runtime access.                    |
+| LibreChat            | Gateway                                  |             No initially | Avoid creating a separate UI model path.                            |
+| Aider / OpenCode     | Gateway where practical                  |         Yes, if required | Direct access must be documented per tool.                          |
+| Goose / agents       | Gateway                                  |             No initially | Agents need stronger controls.                                      |
+| RAG / project memory | Gateway                                  |             No initially | Retrieval may be local, but generation should route through policy. |
 
 ### Profile-level runtime policy
 
@@ -692,16 +693,16 @@ flowchart TD
 
 Examples:
 
-| Capability | Current / Candidate Implementation |
-|---|---|
-| Model gateway | LiteLLM |
-| Local runtime — Windows | Ollama |
-| Local runtime — macOS | oMLX / MLX, Ollama fallback |
-| Chat UI | Open WebUI |
-| CLI coding assistant | Aider / OpenCode |
-| Agent runner | Goose |
-| Model fitness | llmfit |
-| Secrets management | Bitwarden |
+| Capability              | Current / Candidate Implementation |
+| ----------------------- | ---------------------------------- |
+| Model gateway           | LiteLLM                            |
+| Local runtime — Windows | Ollama                             |
+| Local runtime — macOS   | oMLX / MLX, Ollama fallback        |
+| Chat UI                 | LibreChat                          |
+| CLI coding assistant    | Aider / OpenCode                   |
+| Agent runner            | Goose                              |
+| Model fitness           | llmfit                             |
+| Secrets management      | Bitwarden                          |
 
 A tool can move through the lifecycle:
 
@@ -772,18 +773,18 @@ ai-lab/
 
 Key directories:
 
-| Directory | Responsibility |
-|---|---|
-| `bootstrap/` | Setup and rebuild scripts |
-| `profiles/` | Device-specific profiles |
-| `packages/` | Package declarations |
-| `containers/` | Gateway, Open WebUI and future service definitions |
-| `config/` | Providers, routing, models, policies and capabilities |
-| `contexts/` | Shared, work, personal and persona context |
-| `tools/` | CLI wrappers and workstation commands |
-| `tests/` | Validation and health checks |
-| `docs/` | Architecture, principles, decisions and roadmap |
-| `archive/` | Legacy material and historical experiments |
+| Directory     | Responsibility                                        |
+| ------------- | ----------------------------------------------------- |
+| `bootstrap/`  | Setup and rebuild scripts                             |
+| `profiles/`   | Device-specific profiles                              |
+| `packages/`   | Package declarations                                  |
+| `containers/` | LiteLLM, LibreChat and future service definitions     |
+| `config/`     | Providers, routing, models, policies and capabilities |
+| `contexts/`   | Shared, work, personal and persona context            |
+| `tools/`      | CLI wrappers and workstation commands                 |
+| `tests/`      | Validation and health checks                          |
+| `docs/`       | Architecture, principles, decisions and roadmap       |
+| `archive/`    | Legacy material and historical experiments            |
 
 ---
 
@@ -829,17 +830,17 @@ Milestone 1 should prove that:
 
 These decisions should be captured or expanded through ADRs:
 
-| Decision | ADR |
-|---|---|
-| Use a gateway-first architecture | `docs/adr/0001-gateway-first.md` |
-| Use open-source tools before building custom tools | `docs/adr/0002-open-source-first.md` |
-| Treat the CLI as a first-class interface | `docs/adr/0003-cli-native.md` |
-| Make the workstation rebuildable from code and config | `docs/adr/0004-rebuildable-by-default.md` |
-| Build around composable and replaceable components | `docs/adr/0005-composable-and-replaceable.md` |
-| Use local-first but frontier-capable routing | `docs/adr/0006-local-first-frontier-capable.md` |
+| Decision                                              | ADR                                                       |
+| ----------------------------------------------------- | --------------------------------------------------------- |
+| Use a gateway-first architecture                      | `docs/adr/0001-gateway-first.md`                          |
+| Use open-source tools before building custom tools    | `docs/adr/0002-open-source-first.md`                      |
+| Treat the CLI as a first-class interface              | `docs/adr/0003-cli-native.md`                             |
+| Make the workstation rebuildable from code and config | `docs/adr/0004-rebuildable-by-default.md`                 |
+| Build around composable and replaceable components    | `docs/adr/0005-composable-and-replaceable.md`             |
+| Use local-first but frontier-capable routing          | `docs/adr/0006-local-first-frontier-capable.md`           |
 | Separate work and personal behaviour through profiles | `docs/adr/0007-profile-based-work-personal-separation.md` |
 
-Additional ADRs should be created for major tool decisions such as LiteLLM, Open WebUI, Bitwarden, Aider, OpenCode, Goose and oMLX.
+Major tool decisions should be captured through ADRs. LibreChat is recorded in ADR 0017; future selections or replacements for LiteLLM, Bitwarden, coding assistants, agents and local runtimes should receive ADRs where warranted.
 
 ---
 
@@ -867,18 +868,18 @@ Additional ADRs should be created for major tool decisions such as LiteLLM, Open
 
 ## 20. Risks and mitigations
 
-| Risk | Mitigation |
-|---|---|
-| Tool sprawl | Use capability contracts and component lifecycle. |
-| Work/personal context mixing | Use profiles, context boundaries and routing policy. |
-| Secrets leakage | Use Bitwarden, `.env.example`, ignored local fallback and validation. |
-| Overbuilding too early | Use milestones and adopt-before-build principle. |
-| Local models underperforming | Use llmfit and frontier escalation. |
-| Gateway becomes too complex | Start with simple routing and evolve gradually. |
-| UI and CLI drift apart | Route both through the same gateway where practical. |
-| Project gets abandoned | Prioritise daily-use workflows and stable commands. |
+| Risk                                      | Mitigation                                                                                           |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Tool sprawl                               | Use capability contracts and component lifecycle.                                                    |
+| Work/personal context mixing              | Use profiles, context boundaries and routing policy.                                                 |
+| Secrets leakage                           | Use Bitwarden, `.env.example`, ignored local fallback and validation.                                |
+| Overbuilding too early                    | Use milestones and adopt-before-build principle.                                                     |
+| Local models underperforming              | Use llmfit and frontier escalation.                                                                  |
+| Gateway becomes too complex               | Start with simple routing and evolve gradually.                                                      |
+| UI and CLI drift apart                    | Route both through the same gateway where practical.                                                 |
+| Project gets abandoned                    | Prioritise daily-use workflows and stable commands.                                                  |
 | Gateway becomes a single point of failure | Define normal, degraded local and degraded manual modes; validate gateway health and fallback paths. |
-| macOS runtime split creates drift | Make runtime access explicit; document gateway versus direct runtime access per tool and profile. |
+| macOS runtime split creates drift         | Make runtime access explicit; document gateway versus direct runtime access per tool and profile.    |
 
 ---
 
@@ -894,4 +895,4 @@ Rebuildable workstation.
 
 The first milestone should build the control plane, not the entire future state.
 
-Once the gateway, profile, routing, secrets and validation foundations are in place, the workstation can safely grow into coding workflows, Open WebUI parity, work personas, model fitness, controlled agents and future RAG/project memory.
+With gateway, profile, routing, secrets, validation and browser UI foundations in place, the workstation can grow into coding workflows, work personas, controlled agents and future RAG/project memory.

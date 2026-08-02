@@ -29,7 +29,7 @@ It also makes the workstation easier to evolve as new providers, runtimes or mod
 ### Implications
 
 - CLI tools should call the gateway where practical.
-- Open WebUI or other chat interfaces should use the same gateway rather than becoming separate AI environments.
+- LibreChat and any future chat interfaces should use the same gateway rather than becoming separate AI environments.
 - Coding tools should use routed model aliases where possible.
 - Model names should be abstracted behind aliases such as `local_fast`, `local_code` or `frontier_reasoning`.
 - Provider-specific configuration should live in config files rather than being scattered through scripts.

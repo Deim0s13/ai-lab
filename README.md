@@ -10,23 +10,18 @@ The aim is not to build a one-off local chatbot or a pile of scripts. The aim is
 
 ## Current Status
 
-This project is in the **foundation design and build phase**.
+The `macos-work` profile now provides an operational local AI workstation with:
 
-The current focus is:
+- LiteLLM as the shared model gateway
+- oMLX as the preferred Apple Silicon runtime
+- Ollama as the local fallback
+- a thin, profile-aware `ai` CLI
+- model-fitness evaluation
+- LibreChat through the same gateway
+- persistent, profile-scoped browser chat data
+- unified startup, recovery, status, logs and shutdown workflows
 
-- documenting the architecture
-- defining the project principles
-- creating the profile model
-- defining the routing strategy
-- establishing rebuildability
-- selecting initial open-source tools
-- preparing the first gateway-based implementation
-
-The first implementation milestone is:
-
-```text
-Milestone 1 — Rebuildable Gateway Foundation
-```
+The gateway, CLI, model-fitness and browser UI foundations are implemented. Future work can build coding, persona, agent and project-memory capabilities on the same replaceable architecture.
 
 ---
 
@@ -40,7 +35,7 @@ It should support:
 - model routing
 - frontier model escalation
 - CLI-first workflows
-- Open WebUI or similar chat UI support
+- LibreChat browser UI through the shared LiteLLM gateway
 - development and vibe coding workflows
 - architecture and writing workflows
 - model fitness review
@@ -105,7 +100,7 @@ The intended daily experience is:
 
 The `ai` command is a thin layer over the local workstation foundations. It uses LiteLLM as the gateway and delegates operator tasks to existing `just` recipes.
 
-`just` remains the operator/foundation layer for gateway lifecycle, MLX lifecycle, diagnostics and model fitness.
+`just` remains the operator/foundation layer for workstation, runtime, gateway, UI, diagnostics and model-fitness workflows.
 
 See:
 
@@ -311,7 +306,7 @@ These are initial candidates and may change as the project evolves.
 | Windows local runtime  | Ollama                        |
 | macOS local runtime    | oMLX / MLX-compatible runtime |
 | macOS fallback runtime | Ollama                        |
-| Chat UI                | Open WebUI                    |
+| Chat UI                | LibreChat                     |
 | CLI coding assistant   | Aider / OpenCode              |
 | Agent runner           | Goose                         |
 | Model fitness          | llmfit                        |

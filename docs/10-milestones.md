@@ -64,16 +64,16 @@ The order can change if reality demands it, but this is the preferred delivery p
 
 ## 4. Milestone summary
 
-| Milestone | Name                           | Outcome                                                               |
-| --------: | ------------------------------ | --------------------------------------------------------------------- |
-|         1 | Rebuildable Gateway Foundation | A profile-aware gateway foundation that can be rebuilt and validated. |
-|         2 | CLI Habit Layer                | Daily-use CLI commands become useful and consistent.                  |
-|         3 | Model Fitness Loop             | Model choices are informed by actual device and task fit.             |
-|         4 | UI Parity                      | Open WebUI or equivalent uses the same gateway and routing model.     |
-|         5 | Development Workflow           | Coding tools integrate with the workstation model.                    |
-|         6 | Work Persona Layer             | Architecture, writing and work-safe workflows become more useful.     |
-|         7 | Controlled Agents              | Agents are introduced with boundaries and profile-aware controls.     |
-|         8 | RAG / Project Memory           | Local project/document memory is added carefully.                     |
+| Milestone | Name                           | Outcome                                                                          |
+| --------: | ------------------------------ | -------------------------------------------------------------------------------- |
+|         1 | Rebuildable Gateway Foundation | A profile-aware gateway foundation that can be rebuilt and validated.            |
+|         2 | CLI Habit Layer                | Daily-use CLI commands become useful and consistent.                             |
+|         3 | Model Fitness Loop             | Model choices are informed by actual device and task fit.                        |
+|         4 | UI Parity                      | LibreChat uses the same LiteLLM gateway and profile-aware workstation lifecycle. |
+|         5 | Development Workflow           | Coding tools integrate with the workstation model.                               |
+|         6 | Work Persona Layer             | Architecture, writing and work-safe workflows become more useful.                |
+|         7 | Controlled Agents              | Agents are introduced with boundaries and profile-aware controls.                |
+|         8 | RAG / Project Memory           | Local project/document memory is added carefully.                                |
 
 ---
 
@@ -299,7 +299,7 @@ You may also add this short definition of done:
 
 - full semantic routing
 - full coding assistant integration
-- Open WebUI parity
+- browser UI parity
 - agents
 - RAG/project memory
 - advanced observability
@@ -463,57 +463,69 @@ This milestone is successful when:
 
 # 9. Milestone 4 — UI Parity
 
+**Status:** Complete
+
 ## Intent
 
-Add a browser-based UI without creating a separate AI environment.
+Add a browser-based interface without creating a separate AI environment.
 
-Open WebUI or an equivalent tool should use the same gateway, provider posture and routing model where practical.
+LibreChat uses the same LiteLLM gateway, model aliases, runtime posture and profile boundaries as the CLI.
 
-## Target capabilities
+## Delivered capabilities
 
-| Capability          | Expected state                                              |
-| ------------------- | ----------------------------------------------------------- |
-| Chat UI             | Open WebUI or equivalent trialled.                          |
-| Gateway integration | UI connects to gateway where practical.                     |
-| Profiles            | UI behaviour aligns to active profile or documented config. |
-| Rebuildability      | UI service is containerised or repeatably configured.       |
-| Data handling       | Persistence and storage behaviour understood.               |
+| Capability          | Delivered state                                                                       |
+| ------------------- | ------------------------------------------------------------------------------------- |
+| Chat UI             | LibreChat v0.8.7 adopted.                                                             |
+| Gateway integration | LiteLLM is the only configured model endpoint.                                        |
+| Profiles            | Compose projects, environment files and MongoDB volumes are profile-scoped.           |
+| Rebuildability      | LibreChat and MongoDB use pinned Compose configuration.                               |
+| Data handling       | Accounts and conversations persist in a named MongoDB volume.                         |
+| Validation          | `just ui-check` validates committed configuration and the running deployment.         |
+| Lifecycle           | Unified `workstation-*` commands start, recover, inspect and stop the complete stack. |
 
-## Expected deliverables
+## Delivered artifacts
 
-- Open WebUI container/service definition
-- gateway connection from UI
-- documented UI setup
-- validation check for UI service
-- notes on persistence and storage
-- profile-aware usage guidance
-- decision on whether Open WebUI becomes adopted
+- comparative browser UI evaluation
+- ADR selecting LibreChat
+- pinned LibreChat and MongoDB Compose services
+- gateway-only LibreChat configuration
+- ignored profile-local secret configuration
+- profile-scoped persistent storage
+- focused `just ui-check` validation
+- documented first-run, daily-use, reset and troubleshooting workflows
 
-## Example target flow
+## Daily flow
 
 ```bash
-ai-status
-podman compose up -d open-webui
+just workstation-up
+just workstation-status
+just ui-check
 ```
 
-Then use the UI against the same model layer as the CLI.
+Open <http://127.0.0.1:3080> after the workstation reports ready.
 
-## Success criteria
+## Validation evidence
 
-This milestone is successful when:
+The adopted deployment has demonstrated:
 
-- I can use a browser UI against the workstation model layer.
-- The UI does not bypass the gateway unnecessarily.
-- The UI does not create confusing separate provider configuration.
-- I understand where UI data is stored.
-- The UI can be rebuilt or restarted consistently.
+- model aliases discovered through LiteLLM
+- successful synthetic prompting through `local-fast-mlx`
+- visible prompt failure when LiteLLM is stopped
+- no direct runtime or provider bypass
+- successful recovery through `just workstation-up`
+- conversation persistence through container and Podman recreation
+- recovery after macOS sleep
+- localhost-only browser access
+- separate profile-derived Compose and storage names
 
 ## Not included
 
 - RAG
-- multi-user production setup
-- enterprise chat platform patterns
-- complex auth or identity integration
+- agents
+- multi-user production deployment
+- enterprise identity integration
+- remote or mobile access
+- automatic login-time startup
 
 ---
 
@@ -827,7 +839,7 @@ Potential future work that should not distract from the current milestones:
 - automatic sensitivity detection
 - richer model evaluation
 - automatic model download and pruning
-- advanced Open WebUI configuration
+- advanced LibreChat configuration
 - local observability stack
 - voice input/output
 - mobile access

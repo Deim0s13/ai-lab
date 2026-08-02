@@ -22,17 +22,17 @@ This does not mean everything needs to be perfectly automated on day one. It mea
 
 ## 2. Rebuild principles
 
-| Principle | Meaning |
-|---|---|
-| Repository as source of truth | Important setup should live in the repo, not only on the machine. |
-| Profile-driven rebuilds | Bootstrap and validation should use the selected profile. |
-| Thin host where practical | Keep host changes minimal and explicit. |
-| Services as code | Gateway, UI and future services should be defined in repeatable config. |
-| Secure secrets | Secrets should come from Bitwarden where practical, not committed files. |
-| Idempotent scripts | Bootstrap should be safe to rerun where practical. |
-| Validate after setup | A rebuild is not complete until health checks pass. |
-| Manual steps are technical debt | If something cannot be automated yet, document it clearly. |
-| Cross-platform by design | macOS, Windows/WSL2 and future Fedora Atomic should share patterns where possible. |
+| Principle                       | Meaning                                                                            |
+| ------------------------------- | ---------------------------------------------------------------------------------- |
+| Repository as source of truth   | Important setup should live in the repo, not only on the machine.                  |
+| Profile-driven rebuilds         | Bootstrap and validation should use the selected profile.                          |
+| Thin host where practical       | Keep host changes minimal and explicit.                                            |
+| Services as code                | Gateway, UI and future services should be defined in repeatable config.            |
+| Secure secrets                  | Secrets should come from Bitwarden where practical, not committed files.           |
+| Idempotent scripts              | Bootstrap should be safe to rerun where practical.                                 |
+| Validate after setup            | A rebuild is not complete until health checks pass.                                |
+| Manual steps are technical debt | If something cannot be automated yet, document it clearly.                         |
+| Cross-platform by design        | macOS, Windows/WSL2 and future Fedora Atomic should share patterns where possible. |
 
 ---
 
@@ -88,21 +88,21 @@ ai-status
 
 The rebuild strategy covers:
 
-| Area | Rebuild approach |
-|---|---|
-| Packages | Declared in profile-aware package files. |
-| CLI tools | Installed or linked through bootstrap. |
-| Gateway | Defined through config and container/service files. |
-| Chat UI | Containerised where practical. |
-| Local runtimes | Installed through documented/profile-specific steps. |
-| Models | Declared as desired models or aliases; model binaries are not stored in git. |
-| Providers | Defined in config; secrets resolved separately. |
-| Secrets | Bitwarden preferred, `.env.local` fallback only. |
-| Profiles | Stored under `profiles/`. |
-| Routing | Stored under `config/`. |
-| Contexts | Stored or referenced under `contexts/`, with profile boundaries. |
-| Validation | Implemented through `ai-bootstrap-check` and `ai-status`. |
-| Documentation | Stored under `docs/`. |
+| Area           | Rebuild approach                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------------------- |
+| Packages       | Declared in profile-aware package files.                                                          |
+| CLI tools      | Installed or linked through bootstrap.                                                            |
+| Gateway        | Defined through config and container/service files.                                               |
+| Chat UI        | LibreChat is defined through pinned Compose configuration with profile-scoped persistent storage. |
+| Local runtimes | Installed through documented/profile-specific steps.                                              |
+| Models         | Declared as desired models or aliases; model binaries are not stored in git.                      |
+| Providers      | Defined in config; secrets resolved separately.                                                   |
+| Secrets        | Bitwarden preferred, `.env.local` fallback only.                                                  |
+| Profiles       | Stored under `profiles/`.                                                                         |
+| Routing        | Stored under `config/`.                                                                           |
+| Contexts       | Stored or referenced under `contexts/`, with profile boundaries.                                  |
+| Validation     | Implemented through `ai-bootstrap-check` and `ai-status`.                                         |
+| Documentation  | Stored under `docs/`.                                                                             |
 
 The rebuild strategy does not mean the repo stores everything. It means the repo defines how to recreate everything.
 
@@ -148,16 +148,16 @@ The `macos-work` profile should support the MacBook Pro work device.
 
 ### Expected rebuild responsibilities
 
-| Area | Approach |
-|---|---|
-| Package management | Homebrew where appropriate. |
-| Local runtime | oMLX / MLX-compatible runtime preferred. |
-| Fallback runtime | Ollama. |
-| Gateway | Local service or container where practical. |
-| Chat UI | Containerised Open WebUI later. |
-| Secrets | Bitwarden preferred. |
-| Frontier / approved tools | Gemini and Cursor first; Anthropic/OpenAI use-case dependent. |
-| Validation | Confirm runtime, gateway, secrets and approved-tool posture. |
+| Area                      | Approach                                                                                                |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Package management        | Homebrew where appropriate.                                                                             |
+| Local runtime             | oMLX preferred.                                                                                         |
+| Fallback runtime          | Ollama.                                                                                                 |
+| Gateway                   | Containerised LiteLLM.                                                                                  |
+| Chat UI                   | Containerised LibreChat with MongoDB persistence.                                                       |
+| Secrets                   | Bitwarden preferred.                                                                                    |
+| Frontier / approved tools | Gemini and Cursor first; Anthropic/OpenAI use-case dependent.                                           |
+| Validation                | Run `just workstation-preflight`, `just workstation-up`, `just workstation-status` and `just ui-check`. |
 
 ### Design notes
 
@@ -180,17 +180,17 @@ The `windows-personal` profile should support the Windows personal AI developmen
 
 ### Expected rebuild responsibilities
 
-| Area | Approach |
-|---|---|
-| Base environment | Windows with WSL2. |
-| Package management | WSL2 package manager and optional Windows package tooling where useful. |
-| Local runtime | Ollama primary. |
-| GPU support | Use local GPU where available. |
-| Gateway | Local service or container. |
-| Chat UI | Containerised Open WebUI later. |
-| Secrets | Bitwarden preferred. |
-| Frontier providers | OpenAI and Anthropic first; Gemini where useful. |
-| Validation | Confirm WSL2, Ollama, GPU where applicable, gateway, secrets and CLI tools. |
+| Area               | Approach                                                                    |
+| ------------------ | --------------------------------------------------------------------------- |
+| Base environment   | Windows with WSL2.                                                          |
+| Package management | WSL2 package manager and optional Windows package tooling where useful.     |
+| Local runtime      | Ollama primary.                                                             |
+| GPU support        | Use local GPU where available.                                              |
+| Gateway            | Local service or container.                                                 |
+| Chat UI            | Profile-scoped LibreChat deployment planned.                                |
+| Secrets            | Bitwarden preferred.                                                        |
+| Frontier providers | OpenAI and Anthropic first; Gemini where useful.                            |
+| Validation         | Confirm WSL2, Ollama, GPU where applicable, gateway, secrets and CLI tools. |
 
 ### Design notes
 
@@ -217,15 +217,15 @@ It exists to keep the architecture honest about rebuildability, even if it is no
 
 ### Expected rebuild responsibilities
 
-| Area | Approach |
-|---|---|
-| Host model | Thin host. |
-| System packages | Minimal host mutation. |
-| Services | Podman-first. |
-| Dev tools | User-space, toolbox, distrobox or equivalent. |
-| Local runtime | TBD. |
-| Secrets | Bitwarden or Linux-compatible equivalent. |
-| Validation | Confirm profile, services, runtime and CLI tools. |
+| Area            | Approach                                          |
+| --------------- | ------------------------------------------------- |
+| Host model      | Thin host.                                        |
+| System packages | Minimal host mutation.                            |
+| Services        | Podman-first.                                     |
+| Dev tools       | User-space, toolbox, distrobox or equivalent.     |
+| Local runtime   | TBD.                                              |
+| Secrets         | Bitwarden or Linux-compatible equivalent.         |
+| Validation      | Confirm profile, services, runtime and CLI tools. |
 
 ### Design notes
 
@@ -256,19 +256,19 @@ ai-lab/
 
 ### Directory responsibilities
 
-| Directory | Rebuild responsibility |
-|---|---|
-| `bootstrap/` | Entry point scripts for setup and rebuild. |
-| `profiles/` | Device/profile definitions. |
-| `packages/` | Package lists by OS/profile. |
-| `containers/` | Gateway, Open WebUI and future service definitions. |
-| `config/` | Providers, models, routes, policies and capabilities. |
-| `contexts/` | Work, personal, shared and project context definitions. |
-| `dotfiles/` | Optional shell/editor configuration if needed. |
-| `tools/` | CLI commands and wrappers. |
-| `tests/` | Validation and health checks. |
-| `docs/` | Architecture and decisions. |
-| `archive/` | Historical material and retired experiments. |
+| Directory     | Rebuild responsibility                                  |
+| ------------- | ------------------------------------------------------- |
+| `bootstrap/`  | Entry point scripts for setup and rebuild.              |
+| `profiles/`   | Device/profile definitions.                             |
+| `packages/`   | Package lists by OS/profile.                            |
+| `containers/` | LiteLLM, LibreChat and future service definitions.      |
+| `config/`     | Providers, models, routes, policies and capabilities.   |
+| `contexts/`   | Work, personal, shared and project context definitions. |
+| `dotfiles/`   | Optional shell/editor configuration if needed.          |
+| `tools/`      | CLI commands and wrappers.                              |
+| `tests/`      | Validation and health checks.                           |
+| `docs/`       | Architecture and decisions.                             |
+| `archive/`    | Historical material and retired experiments.            |
 
 The structure should support rebuildability without becoming overly complicated.
 
@@ -320,14 +320,14 @@ The first implementation can be basic. It should focus on making the expected st
 
 Bootstrap scripts should aim to be:
 
-| Behaviour | Meaning |
-|---|---|
-| Idempotent | Safe to rerun without breaking the environment. |
-| Profile-aware | Install only what the selected profile needs. |
-| Transparent | Show what is being checked, installed or skipped. |
-| Conservative | Avoid destructive changes unless explicitly requested. |
-| Validated | Run or suggest validation after setup. |
-| Modular | Split platform-specific logic into separate scripts where useful. |
+| Behaviour     | Meaning                                                           |
+| ------------- | ----------------------------------------------------------------- |
+| Idempotent    | Safe to rerun without breaking the environment.                   |
+| Profile-aware | Install only what the selected profile needs.                     |
+| Transparent   | Show what is being checked, installed or skipped.                 |
+| Conservative  | Avoid destructive changes unless explicitly requested.            |
+| Validated     | Run or suggest validation after setup.                            |
+| Modular       | Split platform-specific logic into separate scripts where useful. |
 
 Possible structure:
 
@@ -367,11 +367,11 @@ packages/
 
 Examples:
 
-| Profile | Package approach |
-|---|---|
-| `macos-work` | Homebrew packages, Python tooling, Node tooling if needed. |
+| Profile            | Package approach                                               |
+| ------------------ | -------------------------------------------------------------- |
+| `macos-work`       | Homebrew packages, Python tooling, Node tooling if needed.     |
 | `windows-personal` | WSL2 Linux packages, Python tooling, optional Windows tooling. |
-| `fedora-atomic` | Minimal host packages, user-space tools, containers. |
+| `fedora-atomic`    | Minimal host packages, user-space tools, containers.           |
 
 The exact package strategy can evolve. The principle is that required packages should be declared somewhere in the repo.
 
@@ -383,12 +383,12 @@ Services should be containerised where practical.
 
 Good candidates for containers:
 
-| Service | Notes |
-|---|---|
-| Model gateway | LiteLLM or equivalent. |
-| Chat UI | Open WebUI. |
+| Service         | Notes                      |
+| --------------- | -------------------------- |
+| Model gateway   | LiteLLM.                   |
+| Chat UI         | LibreChat with MongoDB.    |
 | Vector database | Future RAG/project memory. |
-| Observability | Future, only if useful. |
+| Observability   | Future, only if useful.    |
 
 Not everything needs to be containerised.
 
@@ -542,25 +542,25 @@ A rebuild is not complete until validation passes.
 
 Validation should be split into two main commands:
 
-| Command | Purpose |
-|---|---|
-| `ai-bootstrap-check` | Confirms the workstation was set up correctly after bootstrap. |
-| `ai-status` | Shows current health and active profile status during normal use. |
+| Command              | Purpose                                                           |
+| -------------------- | ----------------------------------------------------------------- |
+| `ai-bootstrap-check` | Confirms the workstation was set up correctly after bootstrap.    |
+| `ai-status`          | Shows current health and active profile status during normal use. |
 
 Validation should check:
 
-| Check | Purpose |
-|---|---|
-| Active profile | Confirms the selected profile is known. |
-| Platform | Confirms expected OS/subsystem. |
-| Packages | Confirms required tools exist. |
-| Secrets | Confirms required secrets are available without exposing them. |
-| Gateway | Confirms gateway is running or reachable. |
-| Local runtime | Confirms Ollama, oMLX or relevant runtime is available. |
-| Models | Confirms expected models or aliases are available. |
-| Providers | Confirms configured providers are available where appropriate. |
-| CLI commands | Confirms commands such as `ask-ai` and `ai-route` work. |
-| Services | Confirms containers or local services are healthy. |
+| Check          | Purpose                                                        |
+| -------------- | -------------------------------------------------------------- |
+| Active profile | Confirms the selected profile is known.                        |
+| Platform       | Confirms expected OS/subsystem.                                |
+| Packages       | Confirms required tools exist.                                 |
+| Secrets        | Confirms required secrets are available without exposing them. |
+| Gateway        | Confirms gateway is running or reachable.                      |
+| Local runtime  | Confirms Ollama, oMLX or relevant runtime is available.        |
+| Models         | Confirms expected models or aliases are available.             |
+| Providers      | Confirms configured providers are available where appropriate. |
+| CLI commands   | Confirms commands such as `ask-ai` and `ai-route` work.        |
+| Services       | Confirms containers or local services are healthy.             |
 
 Example output:
 
@@ -587,19 +587,19 @@ Manual steps are allowed early, but they should be visible.
 
 For each manual step, document:
 
-| Field | Description |
-|---|---|
-| Step | What must be done manually. |
-| Profile | Which profile it applies to. |
-| Reason | Why it is manual for now. |
+| Field             | Description                      |
+| ----------------- | -------------------------------- |
+| Step              | What must be done manually.      |
+| Profile           | Which profile it applies to.     |
+| Reason            | Why it is manual for now.        |
 | Future automation | How it could be automated later. |
-| Validation | How to confirm it was done. |
+| Validation        | How to confirm it was done.      |
 
 Example:
 
 ```markdown
-| Step | Profile | Reason | Future automation | Validation |
-|---|---|---|---|---|
+| Step           | Profile    | Reason                                    | Future automation           | Validation                 |
+| -------------- | ---------- | ----------------------------------------- | --------------------------- | -------------------------- |
 | Install Cursor | macos-work | Work-approved tool installed outside repo | Document install/check only | `ai-status` detects Cursor |
 ```
 
@@ -611,18 +611,18 @@ Manual does not mean bad. Undocumented manual state is the problem.
 
 A profile is considered rebuildable when:
 
-| Requirement | Done? |
-|---|---:|
-| Profile config exists | Yes |
-| Required packages are declared | Yes |
-| Bootstrap can run without destructive side effects | Yes |
-| Secrets approach is documented | Yes |
-| Gateway can be started or checked | Yes |
-| Local runtime can be installed or checked | Yes |
-| Model aliases are defined | Yes |
-| Validation command exists | Yes |
-| Known manual steps are documented | Yes |
-| README/docs explain how to rebuild | Yes |
+| Requirement                                        | Done? |
+| -------------------------------------------------- | ----: |
+| Profile config exists                              |   Yes |
+| Required packages are declared                     |   Yes |
+| Bootstrap can run without destructive side effects |   Yes |
+| Secrets approach is documented                     |   Yes |
+| Gateway can be started or checked                  |   Yes |
+| Local runtime can be installed or checked          |   Yes |
+| Model aliases are defined                          |   Yes |
+| Validation command exists                          |   Yes |
+| Known manual steps are documented                  |   Yes |
+| README/docs explain how to rebuild                 |   Yes |
 
 For Milestone 1, “rebuildable” can mean:
 
@@ -636,16 +636,16 @@ It does not need to mean perfect one-command automation yet.
 
 ## 20. Risks and mitigations
 
-| Risk | Mitigation |
-|---|---|
-| Bootstrap becomes too complex | Start simple and modularise only when needed. |
-| Manual setup remains hidden | Document manual steps as technical debt. |
-| Secrets leak into config | Use Bitwarden, `.env.example` and ignored fallback only. |
-| Work and personal profiles drift | Make validation profile-aware. |
-| Models are too large or slow | Use llmfit and model aliases. |
-| Containers add unnecessary complexity | Containerise services, not every tool. |
-| Cross-platform support becomes messy | Keep shared contracts, profile-specific implementation. |
-| Rebuild is never tested | Run validation after each milestone and profile change. |
+| Risk                                  | Mitigation                                               |
+| ------------------------------------- | -------------------------------------------------------- |
+| Bootstrap becomes too complex         | Start simple and modularise only when needed.            |
+| Manual setup remains hidden           | Document manual steps as technical debt.                 |
+| Secrets leak into config              | Use Bitwarden, `.env.example` and ignored fallback only. |
+| Work and personal profiles drift      | Make validation profile-aware.                           |
+| Models are too large or slow          | Use llmfit and model aliases.                            |
+| Containers add unnecessary complexity | Containerise services, not every tool.                   |
+| Cross-platform support becomes messy  | Keep shared contracts, profile-specific implementation.  |
+| Rebuild is never tested               | Run validation after each milestone and profile change.  |
 
 ---
 

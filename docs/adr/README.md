@@ -42,7 +42,7 @@ Examples:
 - choosing LiteLLM as the model gateway
 - deciding that the CLI is the primary interface
 - adopting Ollama for the Windows personal profile
-- adding Open WebUI as the chat UI
+- selecting or replacing the browser chat UI
 - selecting Aider or OpenCode as the preferred coding assistant
 - introducing Goose for constrained agents
 - changing how secrets are managed

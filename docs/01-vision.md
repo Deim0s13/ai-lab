@@ -104,7 +104,7 @@ ask-ai
 dev-ai
 architect-ai
 write-ai
-Open WebUI
+LibreChat
 coding tools
 agents
 ```
@@ -161,7 +161,7 @@ The long-term target is a personal AI operating layer that supports:
 - frontier escalation
 - model routing
 - CLI-first workflows
-- Open WebUI parity
+- browser UI parity through LibreChat
 - IDE integration
 - vibe coding
 - project-aware development
@@ -187,7 +187,7 @@ ask-ai becomes useful.
 ai-status becomes trusted.
 ai-route explains decisions.
 llmfit informs model choices.
-Open WebUI connects to the same gateway.
+LibreChat connects to the same gateway.
 Coding tools can use the same provider layer.
 ```
 

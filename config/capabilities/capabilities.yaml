@@ -18,13 +18,17 @@ capabilities:
       - windows-personal
 
   local_runtime_macos:
-    status: candidate
+    status: adopted
     priority: milestone_1
     candidates:
       - omlx
       - ollama
     profiles:
       - macos-work
+    notes:
+      - oMLX is the preferred Apple Silicon runtime.
+      - Ollama remains the local fallback runtime.
+      - Both runtimes are managed by the unified workstation lifecycle.
 
   routing_policy:
     status: planned
@@ -70,7 +74,9 @@ capabilities:
     notes:
       - LibreChat v0.8.7 is the selected browser chat UI.
       - Its reproducible service lifecycle is defined under containers/librechat.
-      - LiteLLM remains its only configured model endpoint.
+      - LiteLLM is its only configured model endpoint.
+      - The UI is localhost-bound and validated with just ui-check.
+      - Accounts and conversations use profile-scoped persistent storage.
 
   cli_coding_assistant:
     status: planned

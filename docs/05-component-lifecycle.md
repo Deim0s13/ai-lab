@@ -22,23 +22,23 @@ A component is any tool, service, runtime, provider or project-specific script t
 
 Examples include:
 
-| Component type | Examples |
-|---|---|
-| Model gateway | LiteLLM or equivalent |
-| Local runtime | Ollama, oMLX / MLX-compatible runtime |
-| Frontier / approved provider | Gemini, Cursor, OpenAI, Anthropic |
-| Chat UI | Open WebUI |
-| CLI coding assistant | Aider, OpenCode |
-| Agent runner | Goose |
-| Model fitness tool | llmfit |
-| Secrets tool | Bitwarden CLI / Secrets Manager CLI |
-| Custom command | `ask-ai`, `ai-route`, `ai-status`, `ai-bootstrap-check` |
-| Containerised service | Gateway, Open WebUI, future vector database |
-| Configuration model | Routing config, provider config, profile config |
+| Component type               | Examples                                                |
+| ---------------------------- | ------------------------------------------------------- |
+| Model gateway                | LiteLLM or equivalent                                   |
+| Local runtime                | Ollama, oMLX / MLX-compatible runtime                   |
+| Frontier / approved provider | Gemini, Cursor, OpenAI, Anthropic                       |
+| Chat UI                      | LibreChat                                               |
+| CLI coding assistant         | Aider, OpenCode                                         |
+| Agent runner                 | Goose                                                   |
+| Model fitness tool           | llmfit                                                  |
+| Secrets tool                 | Bitwarden CLI / Secrets Manager CLI                     |
+| Custom command               | `ask-ai`, `ai-route`, `ai-status`, `ai-bootstrap-check` |
+| Containerised service        | Gateway, LibreChat, future vector database              |
+| Configuration model          | Routing config, provider config, profile config         |
 
 Components are different from capabilities.
 
-A capability describes what the workstation needs to do.  
+A capability describes what the workstation needs to do.
 A component is the current implementation of that capability.
 
 ---
@@ -72,15 +72,15 @@ Candidate → Trial → Adopted → Preferred → Deprecated → Removed
 
 ## 4. Lifecycle states
 
-| State | Meaning |
-|---|---|
-| Candidate | A tool or component looks relevant and may be assessed. |
-| Trial | I am actively testing it against a real workflow. |
-| Adopted | It is part of the workstation build or regular workflow. |
-| Preferred | It is the default implementation for a capability or profile. |
-| Deprecated | It is still present but should be replaced or removed. |
-| Removed | It has been removed from the active workstation. |
-| Rejected | It was considered but not taken forward. |
+| State      | Meaning                                                       |
+| ---------- | ------------------------------------------------------------- |
+| Candidate  | A tool or component looks relevant and may be assessed.       |
+| Trial      | I am actively testing it against a real workflow.             |
+| Adopted    | It is part of the workstation build or regular workflow.      |
+| Preferred  | It is the default implementation for a capability or profile. |
+| Deprecated | It is still present but should be replaced or removed.        |
+| Removed    | It has been removed from the active workstation.              |
+| Rejected   | It was considered but not taken forward.                      |
 
 ---
 
@@ -119,13 +119,13 @@ A trial should have:
 
 Examples:
 
-| Component | Trial workflow |
-|---|---|
-| LiteLLM | Can CLI and Open WebUI route through a common gateway? |
-| Open WebUI | Can the chat UI use the same gateway as the CLI? |
-| Aider | Can it support local-first coding workflows? |
-| llmfit | Can it produce useful model shortlists per device? |
-| Goose | Can it run constrained agent workflows safely? |
+| Component | Trial workflow                                                        |
+| --------- | --------------------------------------------------------------------- |
+| LiteLLM   | Can CLI and LibreChat route through a common gateway?                 |
+| LibreChat | Can the chat UI use the same gateway as the CLI without bypassing it? |
+| Aider     | Can it support local-first coding workflows?                          |
+| llmfit    | Can it produce useful model shortlists per device?                    |
+| Goose     | Can it run constrained agent workflows safely?                        |
 
 A trial should not become permanent just because it was installed.
 
@@ -161,14 +161,15 @@ Preferred status means:
 - replacement requires a deliberate decision
 - it should have clear documentation and validation
 
-Examples might become:
+Current adopted or preferred examples include:
 
-| Capability | Preferred component |
-|---|---|
-| Windows local runtime | Ollama |
-| Secrets management | Bitwarden |
-| Model gateway | LiteLLM, if trial succeeds |
-| Chat UI | Open WebUI, if trial succeeds |
+| Capability            | Preferred component        |
+| --------------------- | -------------------------- |
+| Windows local runtime | Ollama                     |
+| macOS local runtime   | oMLX, with Ollama fallback |
+| Secrets management    | Bitwarden                  |
+| Model gateway         | LiteLLM                    |
+| Chat UI               | LibreChat                  |
 
 Preferred does not mean permanent. It means this is the best current fit.
 
@@ -260,7 +261,7 @@ why_considered:
   - OpenAI-compatible endpoint
   - Works with local and frontier providers
 selection_criteria:
-  - Open WebUI compatibility
+  - Browser UI compatibility
   - CLI compatibility
   - Local runtime support
   - Gemini/OpenAI/Anthropic support
@@ -320,19 +321,19 @@ flowchart TD
 
 Before marking a component as **Adopted**, I should be able to answer:
 
-| Question | Required? |
-|---|---:|
-| What capability does it implement? | Yes |
-| What workflow does it support? | Yes |
-| Which profiles use it? | Yes |
-| Can it be installed repeatably? | Yes |
-| Can it be configured from the repo? | Yes |
-| Does it need secrets? | Yes |
-| If it needs secrets, are they managed securely? | Yes |
-| Can it be validated? | Yes |
-| Can it be removed cleanly? | Yes |
-| Does it align to the architecture principles? | Yes |
-| Is it useful enough for regular use? | Yes |
+| Question                                        | Required? |
+| ----------------------------------------------- | --------: |
+| What capability does it implement?              |       Yes |
+| What workflow does it support?                  |       Yes |
+| Which profiles use it?                          |       Yes |
+| Can it be installed repeatably?                 |       Yes |
+| Can it be configured from the repo?             |       Yes |
+| Does it need secrets?                           |       Yes |
+| If it needs secrets, are they managed securely? |       Yes |
+| Can it be validated?                            |       Yes |
+| Can it be removed cleanly?                      |       Yes |
+| Does it align to the architecture principles?   |       Yes |
+| Is it useful enough for regular use?            |       Yes |
 
 A tool should not be adopted simply because it is interesting.
 
@@ -342,14 +343,14 @@ A tool should not be adopted simply because it is interesting.
 
 Before deprecating a component, I should capture:
 
-| Question | Notes |
-|---|---|
-| Why is it being deprecated? | Better tool, poor fit, unused, security concern, etc. |
-| What replaces it? | Replacement component or none. |
-| Which profiles are affected? | Work, personal, future Linux. |
-| What needs to change? | Config, docs, scripts, containers, packages, tests. |
+| Question                     | Notes                                                           |
+| ---------------------------- | --------------------------------------------------------------- |
+| Why is it being deprecated?  | Better tool, poor fit, unused, security concern, etc.           |
+| What replaces it?            | Replacement component or none.                                  |
+| Which profiles are affected? | Work, personal, future Linux.                                   |
+| What needs to change?        | Config, docs, scripts, containers, packages, tests.             |
 | What is the removal trigger? | Date, milestone, successful migration, no remaining references. |
-| What should be archived? | Notes, ADRs, previous config, lessons learned. |
+| What should be archived?     | Notes, ADRs, previous config, lessons learned.                  |
 
 Deprecation should be explicit so the repo does not accumulate stale components.
 
@@ -371,15 +372,15 @@ An ADR is useful when the decision:
 
 Examples that likely need ADRs:
 
-| Decision | ADR? |
-|---|---:|
-| Gateway-first architecture | Yes |
-| Bitwarden as preferred secrets source | Yes |
-| LiteLLM as preferred gateway | Yes, if adopted/preferred |
-| Open WebUI as chat UI | Maybe |
-| Trying Aider for a week | No |
-| Replacing Ollama with another runtime | Yes |
-| Removing an unused experiment | No |
+| Decision                              |                      ADR? |
+| ------------------------------------- | ------------------------: |
+| Gateway-first architecture            |                       Yes |
+| Bitwarden as preferred secrets source |                       Yes |
+| LiteLLM as preferred gateway          | Yes, if adopted/preferred |
+| LibreChat as the adopted chat UI      |                       Yes |
+| Trying Aider for a week               |                        No |
+| Replacing Ollama with another runtime |                       Yes |
+| Removing an unused experiment         |                        No |
 
 ADRs preserve decision history. Component records track implementation status.
 
@@ -393,39 +394,39 @@ A lightweight review is enough.
 
 Suggested review points:
 
-| Review point | What to check |
-|---|---|
-| After each milestone | Did any candidates become adopted or rejected? |
-| Before adding a new tool | Does it map to a capability? |
-| Before changing profiles | Are profile-specific components still correct? |
-| After model fitness review | Should model or runtime choices change? |
-| When a tool becomes painful | Should it be deprecated or replaced? |
-| Quarterly or ad hoc | Is the workstation accumulating unused components? |
+| Review point                | What to check                                      |
+| --------------------------- | -------------------------------------------------- |
+| After each milestone        | Did any candidates become adopted or rejected?     |
+| Before adding a new tool    | Does it map to a capability?                       |
+| Before changing profiles    | Are profile-specific components still correct?     |
+| After model fitness review  | Should model or runtime choices change?            |
+| When a tool becomes painful | Should it be deprecated or replaced?               |
+| Quarterly or ad hoc         | Is the workstation accumulating unused components? |
 
 ---
 
-## 12. Initial lifecycle view
+## 12. Current lifecycle view
 
-Current expected lifecycle view:
+Current lifecycle view:
 
-| Component | Capability | Initial status |
-|---|---|---:|
-| Ollama | Local Runtime — Windows | Adopted |
-| oMLX / MLX-compatible runtime | Local Runtime — macOS | Candidate |
-| Ollama on macOS | Local Runtime fallback | Candidate |
-| LiteLLM | Model Gateway | Candidate / Trial |
-| Open WebUI | Chat UI | Candidate / Trial |
-| Bitwarden | Secrets Management | Preferred direction |
-| llmfit | Model Fitness | Candidate / Planned |
-| Aider | CLI Coding Assistant | Candidate |
-| OpenCode | CLI Coding Assistant | Candidate |
-| Goose | Agent Runner | Future candidate |
-| `ask-ai` | CLI General Assistant | Planned |
-| `ai-route` | Routing Explanation | Planned |
-| `ai-status` | Validation | Planned |
-| `ai-bootstrap-check` | Validation | Planned |
+| Component            | Capability              |      Current status |
+| -------------------- | ----------------------- | ------------------: |
+| Ollama               | Local Runtime — Windows |             Adopted |
+| oMLX                 | Local Runtime — macOS   |           Preferred |
+| Ollama on macOS      | Local Runtime fallback  |             Adopted |
+| LiteLLM              | Model Gateway           |             Adopted |
+| LibreChat            | Chat UI                 |             Adopted |
+| Bitwarden            | Secrets Management      | Preferred direction |
+| llmfit               | Model Fitness           | Candidate / Planned |
+| Aider                | CLI Coding Assistant    |           Candidate |
+| OpenCode             | CLI Coding Assistant    |           Candidate |
+| Goose                | Agent Runner            |    Future candidate |
+| `ask-ai`             | CLI General Assistant   |             Planned |
+| `ai-route`           | Routing Explanation     |             Planned |
+| `ai-status`          | Validation              |             Planned |
+| `ai-bootstrap-check` | Validation              |             Planned |
 
-This table should evolve as the project moves from design into implementation.
+This table should continue to evolve as components are evaluated, adopted or replaced.
 
 ---
 

@@ -14,16 +14,16 @@ The profile model exists to make that explicit.
 
 ## 2. Profile principles
 
-| Principle | Meaning |
-|---|---|
-| Same architecture, different behaviour | Profiles share the same overall architecture but apply different defaults and policies. |
-| Work and personal separation | Work context, providers and tooling posture must not accidentally mix with personal experimentation. |
-| Local-first by default | Each profile should use local models where appropriate. |
-| Profile-aware escalation | Frontier escalation should depend on profile, use case and approval context. |
-| Approved-tool posture for work | The work profile should prioritise approved AI tools first. |
-| Experimentation belongs in personal profiles | Experimental tools and agents should start in the personal profile, not the work profile. |
-| Rebuildable per device | Each profile should be able to drive bootstrap, configuration and validation. |
-| Config over assumption | Profile behaviour should be expressed in configuration, not hidden in scripts. |
+| Principle                                    | Meaning                                                                                              |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Same architecture, different behaviour       | Profiles share the same overall architecture but apply different defaults and policies.              |
+| Work and personal separation                 | Work context, providers and tooling posture must not accidentally mix with personal experimentation. |
+| Local-first by default                       | Each profile should use local models where appropriate.                                              |
+| Profile-aware escalation                     | Frontier escalation should depend on profile, use case and approval context.                         |
+| Approved-tool posture for work               | The work profile should prioritise approved AI tools first.                                          |
+| Experimentation belongs in personal profiles | Experimental tools and agents should start in the personal profile, not the work profile.            |
+| Rebuildable per device                       | Each profile should be able to drive bootstrap, configuration and validation.                        |
+| Config over assumption                       | Profile behaviour should be expressed in configuration, not hidden in scripts.                       |
 
 ---
 
@@ -65,11 +65,11 @@ flowchart TD
 
 The initial profile status is:
 
-| Profile | Status | Device / environment | Primary purpose |
-|---|---|---|---|
-| `macos-work` | Active | MacBook Pro | Work AI workstation |
-| `windows-personal` | Active | Windows laptop / WSL2 | Personal AI development lab |
-| `fedora-atomic` | Future / reference | Future Linux target | Rebuildable atomic workstation pattern |
+| Profile            | Status             | Device / environment  | Primary purpose                        |
+| ------------------ | ------------------ | --------------------- | -------------------------------------- |
+| `macos-work`       | Active             | MacBook Pro           | Work AI workstation                    |
+| `windows-personal` | Active             | Windows laptop / WSL2 | Personal AI development lab            |
+| `fedora-atomic`    | Future / reference | Future Linux target   | Rebuildable atomic workstation pattern |
 
 Only the active profiles are expected to be implemented during the first milestones.
 
@@ -95,14 +95,14 @@ It should be conservative by default because it may involve work context, custom
 
 ### Primary use cases
 
-| Use case | Notes |
-|---|---|
-| Architecture thinking | Option analysis, patterns, customer scenarios, platform decisions |
-| Writing and summarisation | Drafting, refining, summarising, restructuring |
-| Customer preparation | Notes, talking points, discovery framing |
-| Local-first coding help | Explanations, low-risk snippets, learning |
-| Work-safe research support | Synthesis where data sensitivity allows |
-| Model fitness review | Assess what runs well on the MBP |
+| Use case                   | Notes                                                             |
+| -------------------------- | ----------------------------------------------------------------- |
+| Architecture thinking      | Option analysis, patterns, customer scenarios, platform decisions |
+| Writing and summarisation  | Drafting, refining, summarising, restructuring                    |
+| Customer preparation       | Notes, talking points, discovery framing                          |
+| Local-first coding help    | Explanations, low-risk snippets, learning                         |
+| Work-safe research support | Synthesis where data sensitivity allows                           |
+| Model fitness review       | Assess what runs well on the MBP                                  |
 
 ### Local runtime posture
 
@@ -120,6 +120,14 @@ Ollama
 
 The Mac profile should favour a Mac-native runtime if it provides better Apple Silicon performance and a good workflow. Ollama remains useful as a compatibility fallback, particularly where tools expect an Ollama-compatible interface or where model availability is better.
 
+### Browser UI posture
+
+LibreChat is the adopted browser UI for `macos-work`. It uses LiteLLM as its only model endpoint and remains bound to localhost.
+
+Accounts and conversations are stored in a profile-scoped MongoDB volume. The Compose project, local environment file and persistent volume include the active profile name so work and personal UI state are not shared accidentally.
+
+The complete workstation, including LibreChat, is managed through the `workstation-*` commands.
+
 ### Frontier / approved AI posture
 
 Approved / first-use AI tools:
@@ -136,20 +144,20 @@ This wording is deliberate. For the work profile, the documented first port of c
 
 ### Policy posture
 
-| Area | Policy |
-|---|---|
-| Default route | Local where appropriate |
-| Work-approved tools | Gemini and Cursor first |
-| Anthropic/OpenAI | Use-case dependent |
-| Agents | Disabled or highly restricted initially |
-| RAG/project memory | Future, with strict work/personal separation |
-| Secrets | Bitwarden preferred |
-| Data sensitivity | Conservative |
-| Experimental tools | Avoid by default |
+| Area                | Policy                                       |
+| ------------------- | -------------------------------------------- |
+| Default route       | Local where appropriate                      |
+| Work-approved tools | Gemini and Cursor first                      |
+| Anthropic/OpenAI    | Use-case dependent                           |
+| Agents              | Disabled or highly restricted initially      |
+| RAG/project memory  | Future, with strict work/personal separation |
+| Secrets             | Bitwarden preferred                          |
+| Data sensitivity    | Conservative                                 |
+| Experimental tools  | Avoid by default                             |
 
 ### Enabled capabilities
 
-Initial:
+Current:
 
 - local runtime
 - model gateway
@@ -158,10 +166,10 @@ Initial:
 - CLI general assistant
 - validation
 - model fitness
+- chat UI
 
 Later:
 
-- Open WebUI
 - architecture assistant
 - writing assistant
 - limited coding assistant
@@ -233,8 +241,8 @@ capabilities:
     - cli_general_assistant
     - validation
     - model_fitness
-  planned:
     - chat_ui
+  planned:
     - architecture_assistant
     - writing_assistant
     - cli_coding_assistant
@@ -293,14 +301,14 @@ It can have a more experimental posture than the work profile because it is not 
 
 ### Primary use cases
 
-| Use case | Notes |
-|---|---|
-| Personal AI development | Build and test workstation capabilities |
-| Vibe coding | Coding experiments and repo workflows |
-| Local model testing | Compare local models and runtimes |
-| Routing experiments | Test local/frontier routing behaviour |
-| Agent experiments | Trial constrained agent workflows later |
-| Model fitness review | Assess what the Windows GPU can run well |
+| Use case                | Notes                                    |
+| ----------------------- | ---------------------------------------- |
+| Personal AI development | Build and test workstation capabilities  |
+| Vibe coding             | Coding experiments and repo workflows    |
+| Local model testing     | Compare local models and runtimes        |
+| Routing experiments     | Test local/frontier routing behaviour    |
+| Agent experiments       | Trial constrained agent workflows later  |
+| Model fitness review    | Assess what the Windows GPU can run well |
 
 ### Local runtime posture
 
@@ -327,16 +335,16 @@ The Windows profile is the better place to experiment with OpenAI and Anthropic 
 
 ### Policy posture
 
-| Area | Policy |
-|---|---|
-| Default route | Local where appropriate |
-| Primary frontier providers | OpenAI and Anthropic |
-| Gemini | Available where useful |
-| Agents | Candidate for later experimentation |
-| RAG/project memory | Future personal project capability |
-| Secrets | Bitwarden preferred |
-| Data sensitivity | Personal context only |
-| Experimental tools | Allowed, but tracked through lifecycle |
+| Area                       | Policy                                 |
+| -------------------------- | -------------------------------------- |
+| Default route              | Local where appropriate                |
+| Primary frontier providers | OpenAI and Anthropic                   |
+| Gemini                     | Available where useful                 |
+| Agents                     | Candidate for later experimentation    |
+| RAG/project memory         | Future personal project capability     |
+| Secrets                    | Bitwarden preferred                    |
+| Data sensitivity           | Personal context only                  |
+| Experimental tools         | Allowed, but tracked through lifecycle |
 
 ### Enabled capabilities
 
@@ -353,7 +361,7 @@ Initial:
 Next:
 
 - CLI coding assistant
-- Open WebUI
+- LibreChat deployment
 - development workflows
 
 Later:
@@ -457,13 +465,13 @@ This profile is not the first implementation target, but it influences the archi
 
 ### Primary use cases
 
-| Use case | Notes |
-|---|---|
-| Rebuildability test | Prove the repo can recreate the environment |
-| Atomic desktop workflow | Test thin-host assumptions |
-| Podman-first services | Run gateway, UI and future services cleanly |
-| User-space tooling | Avoid unnecessary host mutation |
-| Future Linux workstation | Validate cross-platform design |
+| Use case                 | Notes                                       |
+| ------------------------ | ------------------------------------------- |
+| Rebuildability test      | Prove the repo can recreate the environment |
+| Atomic desktop workflow  | Test thin-host assumptions                  |
+| Podman-first services    | Run gateway, UI and future services cleanly |
+| User-space tooling       | Avoid unnecessary host mutation             |
+| Future Linux workstation | Validate cross-platform design              |
 
 ### Runtime posture
 
@@ -477,15 +485,15 @@ Potential options:
 
 ### Policy posture
 
-| Area | Policy |
-|---|---|
-| Default route | Local where appropriate |
-| Services | Podman-first |
-| Host changes | Minimise |
-| Secrets | Bitwarden preferred or Linux-compatible equivalent |
-| Agents | Future |
-| RAG/project memory | Future |
-| Experimental tools | Allowed only if rebuildable |
+| Area               | Policy                                             |
+| ------------------ | -------------------------------------------------- |
+| Default route      | Local where appropriate                            |
+| Services           | Podman-first                                       |
+| Host changes       | Minimise                                           |
+| Secrets            | Bitwarden preferred or Linux-compatible equivalent |
+| Agents             | Future                                             |
+| RAG/project memory | Future                                             |
+| Experimental tools | Allowed only if rebuildable                        |
 
 ### Enabled capabilities
 
@@ -497,7 +505,7 @@ Future baseline:
 - secrets management
 - validation
 - model fitness
-- Open WebUI
+- LibreChat deployment
 
 ### Example profile configuration
 
@@ -602,14 +610,14 @@ flowchart TD
 
 Examples:
 
-| Profile | Request | Preferred route |
-|---|---|---|
-| `macos-work` | Summarise work notes | Local model if appropriate |
-| `macos-work` | Customer-facing architecture review | Approved tool first, frontier only by use case |
-| `macos-work` | Coding explanation | Local or approved tool first |
-| `windows-personal` | Personal coding task | Local model or OpenAI/Anthropic |
-| `windows-personal` | Vibe coding | OpenAI/Anthropic or local model depending on task |
-| `fedora-atomic` | Rebuild test | Local and validation focused |
+| Profile            | Request                             | Preferred route                                   |
+| ------------------ | ----------------------------------- | ------------------------------------------------- |
+| `macos-work`       | Summarise work notes                | Local model if appropriate                        |
+| `macos-work`       | Customer-facing architecture review | Approved tool first, frontier only by use case    |
+| `macos-work`       | Coding explanation                  | Local or approved tool first                      |
+| `windows-personal` | Personal coding task                | Local model or OpenAI/Anthropic                   |
+| `windows-personal` | Vibe coding                         | OpenAI/Anthropic or local model depending on task |
+| `fedora-atomic`    | Rebuild test                        | Local and validation focused                      |
 
 ---
 
@@ -621,18 +629,18 @@ Validation should also be profile-aware.
 
 Example checks:
 
-| Check | `macos-work` | `windows-personal` | `fedora-atomic` |
-|---|---:|---:|---:|
-| Profile file exists | Yes | Yes | Yes |
-| Bitwarden access available | Yes | Yes | Yes |
-| Ollama available | Fallback | Yes | TBD |
-| oMLX / MLX runtime available | Yes | No | TBD |
-| Gateway running | Yes | Yes | Yes |
-| Approved work tools configured | Yes | No | No |
-| OpenAI/Anthropic keys configured | Optional / use-case dependent | Yes | TBD |
-| GPU available | No / optional | Yes | TBD |
-| Open WebUI running | Later | Later | Later |
-| Agents enabled | No | Later | Later |
+| Check                            |                  `macos-work` | `windows-personal` | `fedora-atomic` |
+| -------------------------------- | ----------------------------: | -----------------: | --------------: |
+| Profile file exists              |                           Yes |                Yes |             Yes |
+| Bitwarden access available       |                           Yes |                Yes |             Yes |
+| Ollama available                 |                      Fallback |                Yes |             TBD |
+| oMLX / MLX runtime available     |                           Yes |                 No |             TBD |
+| Gateway running                  |                           Yes |                Yes |             Yes |
+| Approved work tools configured   |                           Yes |                 No |              No |
+| OpenAI/Anthropic keys configured | Optional / use-case dependent |                Yes |             TBD |
+| GPU available                    |                 No / optional |                Yes |             TBD |
+| LibreChat running                |                           Yes |              Later |           Later |
+| Agents enabled                   |                            No |              Later |           Later |
 
 Validation should not simply check whether everything exists. It should check whether the right things exist for the selected profile.
 
@@ -652,13 +660,13 @@ The workstation should not rely only on manual judgement to keep work and person
 
 Initial context categories:
 
-| Context | Description |
-|---|---|
-| `work` | Work-related context, internal notes, customer material, work personas and work-specific architecture context. |
-| `personal` | Personal projects, personal notes, experiments and personal preferences. |
-| `shared` | Non-sensitive reusable context that is safe for both work and personal profiles. |
-| `project` | Context specific to this repo and the AI workstation project. |
-| `work-sensitive` | Work context that should never be available to personal workflows. |
+| Context          | Description                                                                                                    |
+| ---------------- | -------------------------------------------------------------------------------------------------------------- |
+| `work`           | Work-related context, internal notes, customer material, work personas and work-specific architecture context. |
+| `personal`       | Personal projects, personal notes, experiments and personal preferences.                                       |
+| `shared`         | Non-sensitive reusable context that is safe for both work and personal profiles.                               |
+| `project`        | Context specific to this repo and the AI workstation project.                                                  |
+| `work-sensitive` | Work context that should never be available to personal workflows.                                             |
 
 ```mermaid id="5plk22"
 flowchart TD
@@ -699,11 +707,11 @@ flowchart TD
 
 Initial context access rules:
 
-| Profile | Allowed context | Blocked context |
-|---|---|---|
-| `macos-work` | `work`, `work-sensitive`, `shared`, selected `project` | `personal` |
-| `windows-personal` | `personal`, `shared`, selected `project` | `work`, `work-sensitive` |
-| `fedora-atomic` | `shared`, selected `project` | `work-sensitive` until explicitly enabled |
+| Profile            | Allowed context                                        | Blocked context                           |
+| ------------------ | ------------------------------------------------------ | ----------------------------------------- |
+| `macos-work`       | `work`, `work-sensitive`, `shared`, selected `project` | `personal`                                |
+| `windows-personal` | `personal`, `shared`, selected `project`               | `work`, `work-sensitive`                  |
+| `fedora-atomic`    | `shared`, selected `project`                           | `work-sensitive` until explicitly enabled |
 
 Context rules should apply to:
 
@@ -748,11 +756,11 @@ Profiles may require different secrets.
 
 Examples:
 
-| Profile | Expected secrets |
-|---|---|
-| `macos-work` | Gemini / approved work tool configuration, optional provider keys depending on use case |
-| `windows-personal` | OpenAI, Anthropic, optional Gemini |
-| `fedora-atomic` | TBD |
+| Profile            | Expected secrets                                                                        |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| `macos-work`       | Gemini / approved work tool configuration, optional provider keys depending on use case |
+| `windows-personal` | OpenAI, Anthropic, optional Gemini                                                      |
+| `fedora-atomic`    | TBD                                                                                     |
 
 `.env.local` may be used as an ignored fallback, but it should not be the preferred long-term pattern.
 
@@ -819,15 +827,15 @@ Examples:
 
 Before adding a profile, I should answer:
 
-| Question | Answer needed |
-|---|---|
-| What makes this profile different? | Device, OS, policy, runtime, provider posture or risk level |
-| Which capabilities are enabled? | CLI, UI, coding, agents, RAG, etc. |
-| Which providers are allowed? | Local, approved tools, frontier providers |
-| Which secrets are required? | Referenced by name only |
-| Which contexts are allowed? | Work, personal, project, shared |
-| What validation checks are required? | Runtime, gateway, tools, secrets |
-| Does this profile need its own ADR? | Only if it changes the architecture direction |
+| Question                             | Answer needed                                               |
+| ------------------------------------ | ----------------------------------------------------------- |
+| What makes this profile different?   | Device, OS, policy, runtime, provider posture or risk level |
+| Which capabilities are enabled?      | CLI, UI, coding, agents, RAG, etc.                          |
+| Which providers are allowed?         | Local, approved tools, frontier providers                   |
+| Which secrets are required?          | Referenced by name only                                     |
+| Which contexts are allowed?          | Work, personal, project, shared                             |
+| What validation checks are required? | Runtime, gateway, tools, secrets                            |
+| Does this profile need its own ADR?  | Only if it changes the architecture direction               |
 
 ---
 
