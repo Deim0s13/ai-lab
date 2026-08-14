@@ -6,7 +6,7 @@
 
 ## Date
 
-`2026-08-13`
+`2026-08-14`
 
 ## Capability Area
 
@@ -95,7 +95,7 @@ The tool should support:
 | OpenCode    | Coding-first candidate with controlled-workflow potential         | Selected with caveats               |
 | Goose       | General workflow candidate with coding and future agent potential | Extended practical trial complete   |
 | Qwen Code   | Qwen-native coding agent and local-model harness                  | Practical trial — not selected      |
-| Cline CLI   | Cross-interface coding agent with mature controls                 | Advance to practical trial          |
+| Cline CLI   | Cross-interface coding agent with mature controls                 | Platform gate failed — not selected |
 | Aider       | Focused coding-assistant benchmark and fallback                   | Practical trial — not selected      |
 | Crush       | Local-model terminal agent with MCP and LSP support               | Park as reserve                     |
 | Osaurus     | Apple-local runtime, memory and agent-platform alternative        | Park for future architecture review |
@@ -595,7 +595,7 @@ Status: `Selected for supervised interactive use with caveats`
 
 ### Goose
 
-Status: `Extended practical trial complete — final decision pending`
+Status: `Extended practical trial complete — not selected`
 
 - Clearer interactive approvals, bounded visible gateway failure and broader future workflow path
 - Reached a visible conclusion when OpenCode did not
