@@ -10,7 +10,7 @@ Accepted
 
 ## Context
 
-The workstation needs a repository-aware terminal coding workflow that complements `ai code`, Claude Code, Codex and Cursor without creating a custom coding or agent platform.
+The workstation needs a repository-aware terminal coding workflow that makes local gateway-backed coding the default for suitable tasks, reduces routine reliance on Claude Code and Codex, and retains frontier or approved work tools for deliberate escalation without creating a custom coding or agent platform.
 
 Issue #40 evaluated OpenCode, Goose, Aider, Qwen Code and Cline CLI. The evaluation considered current supervised coding quality, LiteLLM compatibility, local-model usefulness, repository and command safety, rebuildability and the potential to support future controlled workflows.
 
@@ -45,7 +45,12 @@ The adopted workflow will:
 - keep configuration and state local, inspectable and removable
 - preserve existing working-tree changes
 - require operator review of plans, diffs, commands, tests and final claims
-- remain complementary to Claude Code, Codex, Cursor and `ai code`
+- become the preferred supervised interface for suitable routine repository coding
+- reduce routine dependence on Claude Code and Codex
+- retain Claude Code, Codex and Cursor as deliberate frontier or approved-work escalation paths
+- retain `ai code` as the thin gateway-first interface for direct coding prompts
+
+This decision shifts the default workflow without immediately removing or deprecating existing frontier tools. Replacement should be measured by actual daily use: as the local OpenCode workflow proves capable, Claude Code and Codex should be reserved increasingly for work that justifies frontier capability.
 
 OpenCode is not approved for:
 
@@ -205,7 +210,8 @@ Selecting OpenCode also avoids creating a custom coding frontend, timeout layer 
 - Gateway failures may require manual interruption.
 - Operator review remains mandatory.
 - Local-model planning and tool calling may need correction or retry.
-- OpenCode does not replace existing frontier coding tools.
+- Frontier coding tools remain necessary for work that exceeds the proven local workflow.
+- The reduction in frontier-tool reliance depends on OpenCode and local-model performance in daily use.
 - The selected workflow cannot currently be used for dependable automation.
 
 ### Risks or Follow-ups

@@ -537,7 +537,7 @@ Add practical coding workflows to the workstation.
 
 This milestone should explore CLI coding tools such as Aider or OpenCode and decide how they fit alongside existing tools such as Claude Code, Codex and Cursor.
 
-The goal is not to replace everything. The goal is to create a useful local-first and routed coding workflow inside this workstation.
+The goal is not immediate removal of every existing tool. The goal is to make local-first coding the normal workflow where it is capable, reduce routine dependence on frontier coding tools, and retain those tools for deliberate escalation.
 
 Coding tools should be treated as harnessed workflows, not just direct model calls. That means task framing, context selection, routing, verification and failure handling should be explicit.
 
@@ -586,7 +586,7 @@ This milestone is successful when:
 
 - fully autonomous coding agents
 - large-scale repo automation
-- replacing Claude Code, Codex or Cursor
+- fully removing or deprecating Claude Code, Codex or Cursor before the local-first workflow is proven
 - work-profile agentic coding without safeguards
 
 ---

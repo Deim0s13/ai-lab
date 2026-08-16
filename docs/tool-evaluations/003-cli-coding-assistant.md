@@ -658,7 +658,11 @@ The following limitations are accepted:
 - all edits, commands and final claims require operator review
 - headless and unattended use are out of scope
 
-OpenCode does not replace Claude Code, Codex, Cursor or `ai code`. It adds a supervised local-first coding interface using the same gateway-led architecture.
+OpenCode becomes the preferred supervised CLI coding interface for routine repository work that the local coding route can handle.
+
+Its adoption is intended to reduce routine dependence on Claude Code and Codex rather than simply add another equivalent tool. Claude Code, Codex and Cursor remain available as deliberate frontier or approved-work escalation paths for difficult debugging, complex repository changes, architecture work and profile-specific requirements.
+
+`ai code` remains the thin gateway-first habit-layer for direct coding prompts. OpenCode provides the repository-aware planning, editing and verification workflow above that layer.
 
 ## Rationale
 
