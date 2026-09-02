@@ -12,7 +12,7 @@ route_for_mode() {
       echo "local-capable-mlx"
       ;;
     code)
-      echo "local-code-mlx"
+      echo "local-code"
       ;;
     *)
       error "Unknown mode: ${mode}"

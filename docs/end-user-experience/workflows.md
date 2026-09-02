@@ -30,8 +30,8 @@ The end-user experience should:
 | Quick ask                     | Short answers, simple help, command reminders                | local-fast                                               | `just ask`                                                             | `ai ask`                                  |
 | Explain / summarise           | Explain concepts, summarise notes, structure information     | local-fast for short work; local-capable for longer work | `just ask` or `just ask-model local-capable-mlx`                       | `ai explain`, `ai summarise`              |
 | Planning / trade-off analysis | Compare options, structure decisions, plan implementation    | local-capable                                            | `just ask-model local-capable-mlx`                                     | `ai plan`, `ai ask --route local-capable` |
-| Command / config review       | Review shell, YAML, Markdown, LiteLLM config or just recipes | local-code                                               | `just ask-model local-code-mlx`                                        | `ai review`, `ai explain-command`         |
-| Coding assistance             | Help with scripts, errors, tests and repo structure          | local-code                                               | `just ask-model local-code-mlx`                                        | `ai code`, OpenCode if proven useful      |
+| Command / config review       | Review shell, YAML, Markdown, LiteLLM config or just recipes | local-code                                               | `just ask-model local-code`                                            | `ai review`, `ai explain-command`         |
+| Coding assistance             | Help with scripts, errors, tests and repo structure          | local-code                                               | `just ask-model local-code`                                            | `ai code`, OpenCode for repository-aware work |
 | Route / model inspection      | Show available routes and current aliases                    | none                                                     | `just gateway-routes`, `just gateway-mlx-models`, `just model-aliases` | `ai routes`, `ai models`                  |
 
 ## Operator Workflows
@@ -46,11 +46,11 @@ The end-user experience should:
 
 ## Route Mapping
 
-| Gateway group | Current candidate route | Intended use                                         |
-| ------------- | ----------------------- | ---------------------------------------------------- |
-| local-fast    | local-fast-mlx          | Default daily help and quick responses               |
-| local-capable | local-capable-mlx       | Longer explanations, planning and trade-off analysis |
-| local-code    | local-code-mlx          | Coding, command, config and repository assistance    |
+| Gateway group | Implementation-specific alias | Intended use                                         |
+| ------------- | ----------------------------- | ---------------------------------------------------- |
+| local-fast    | local-fast-mlx                | Default daily help and quick responses               |
+| local-capable | local-capable-mlx             | Longer explanations, planning and trade-off analysis |
+| local-code    | local-code-mlx                | Coding, command, config and repository assistance    |
 
 ## Current Direction
 

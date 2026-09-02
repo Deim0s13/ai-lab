@@ -345,7 +345,7 @@ command_code() {
   run_prompt_command \
     "code" \
     "code" \
-    "local-code-mlx" \
+    "local-code" \
     "$prompt" \
     "explicit"
 }
@@ -414,7 +414,8 @@ command_status() {
   fi
 
   echo "Frontier:   not configured"
-  echo "Routes:     local-fast, local-capable-mlx, local-code-mlx"
+  echo "Routes:     local-fast, local-capable-mlx, local-code"
+  echo "MLX aliases: local-fast-mlx, local-capable-mlx, local-code-mlx"
   echo "Last route: $(last_route_summary)"
 }
 

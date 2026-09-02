@@ -81,7 +81,7 @@ Simple prompts do not need quotes. Prompts with shell-special characters should 
 | --------- | ------------------- | ---------------------------------------------------- |
 | `fast`    | `local-fast`        | Default daily questions and quick responses          |
 | `capable` | `local-capable-mlx` | Longer explanations, planning and trade-off analysis |
-| `code`    | `local-code-mlx`    | Coding, command and configuration assistance         |
+| `code`    | `local-code`        | Coding, command and configuration assistance         |
 
 Examples:
 
@@ -95,7 +95,7 @@ The shortcut commands map to the same routes:
 | ------------ | ------------------- |
 | `ai fast`    | `local-fast`        |
 | `ai capable` | `local-capable-mlx` |
-| `ai code`    | `local-code-mlx`    |
+| `ai code`    | `local-code`        |
 
 ## Frontier Escalation Acknowledgement
 
@@ -145,7 +145,8 @@ Example output:
     Gateway:    running
     Local:      fast (ready), capable (ready), code (ready)
     Frontier:   not configured
-    Routes:     local-fast, local-capable-mlx, local-code-mlx
+    Routes:     local-fast, local-capable-mlx, local-code
+    MLX aliases: local-fast-mlx, local-capable-mlx, local-code-mlx
     Last route: not recorded yet
 
 ## Usage History
@@ -201,7 +202,7 @@ Example output:
     2026-07-09T01:56:42Z | prompt | ask | capable -> local-capable-mlx | local | success | 21721ms
       Prompt: Reply with exactly: history works.
 
-    2026-07-09T01:56:42Z | dry_run | routes test | code -> local-code-mlx | local | success | n/a
+    2026-07-09T01:56:42Z | dry_run | routes test | code -> local-code | local | success | n/a
       Prompt: Review this command
 
 The history command reads local JSONL history. It does not send anything to a model.
@@ -265,7 +266,7 @@ Example output:
     AI Route Dry Run
 
     Mode:       code
-    Route:      local-code-mlx
+    Route:      local-code
     Provider:   local
     Gateway:    reachable
     Action:     would route locally

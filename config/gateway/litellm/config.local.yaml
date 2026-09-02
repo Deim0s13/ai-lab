@@ -27,6 +27,12 @@ model_list:
       api_base: http://host.containers.internal:8000/v1
       api_key: os.environ/OMLX_API_KEY
 
+  - model_name: local-code
+    litellm_params:
+      model: openai/lmstudio-community--Qwen3-Coder-30B-A3B-Instruct-MLX-5bit
+      api_base: http://host.containers.internal:8000/v1
+      api_key: os.environ/OMLX_API_KEY
+
   - model_name: local-code-mlx
     litellm_params:
       model: openai/lmstudio-community--Qwen3-Coder-30B-A3B-Instruct-MLX-5bit

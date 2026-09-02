@@ -511,11 +511,9 @@ Routing:
 Model aliases:
 - local_fast: configured
 - local_capable: configured
-- local_code: unresolved
+- local_code: active via oMLX
 
-Status: WARN
-Next action:
-- configure local_code alias or run ai-model-review
+Status: OK
 ```
 
 Gateway down:
@@ -628,7 +626,7 @@ Config:
 - profile.yaml: OK
 - providers.yaml: OK
 - routes.yaml: OK
-- models.yaml: WARN local_code unresolved
+- aliases.yaml: OK local_code active via oMLX
 
 Secrets:
 - Bitwarden: OK
@@ -759,17 +757,17 @@ Runtime:
 Aliases:
 - local_fast: candidate model tbd
 - local_capable: candidate model tbd
-- local_code: unresolved
+- local_code: active via oMLX
 
 Findings:
 - local_fast needs a small, responsive model.
 - local_capable should prioritise summarisation and reasoning quality.
-- local_code may be better served by Ollama fallback if oMLX model support is limited.
+- local_code is backed by the selected Qwen3 Coder MLX model through the stable gateway group.
 
 Recommendations:
 1. run llmfit or gateway-based checks for local_fast
-2. test local_code through Ollama fallback
-3. update config/models.yaml once candidates are selected
+2. retain local-code-mlx for implementation-specific diagnostics
+3. review local_code if model fitness, gateway compatibility or runtime reliability changes
 ```
 
 ## 9.7 Exit code expectations

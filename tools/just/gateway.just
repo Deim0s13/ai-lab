@@ -77,8 +77,10 @@ gateway-models:
     @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
     @curl -fsS "{{ gateway_url }}/v1/models" \
       -H "Authorization: Bearer {{ gateway_key }}" \
-      | jq -e '.data[] | select(.id == "local-fast")' >/dev/null
-    @echo "OK local-fast listed by LiteLLM"
+      | jq -e \
+          '([.data[].id] | index("local-fast")) != null and ([.data[].id] | index("local-code")) != null' \
+          >/dev/null
+    @echo "OK required stable model groups listed by LiteLLM"
 
 gateway-mlx-models:
     @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
@@ -143,4 +145,4 @@ ai-capable prompt:
     @just ask-model local-capable-mlx "{{ prompt }}"
 
 ai-code prompt:
-    @just ask-model local-code-mlx "{{ prompt }}"
+    @just ask-model local-code "{{ prompt }}"

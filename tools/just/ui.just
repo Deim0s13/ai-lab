@@ -48,7 +48,7 @@ ui-check:
         exit 8; \
       fi; \
       if ! jq -e \
-          '([.data[].id] | index("local-fast")) != null and ([.data[].id] | index("local-fast-mlx")) != null and ([.data[].id] | index("local-capable-mlx")) != null and ([.data[].id] | index("local-code-mlx")) != null' \
+          '([.data[].id] | index("local-fast")) != null and ([.data[].id] | index("local-fast-mlx")) != null and ([.data[].id] | index("local-capable-mlx")) != null and ([.data[].id] | index("local-code")) != null and ([.data[].id] | index("local-code-mlx")) != null' \
           <<<"$models" >/dev/null; then \
         echo "FAIL one or more required LiteLLM model aliases are unavailable"; \
         exit 8; \
