@@ -1,4 +1,22 @@
-export LITELLM_MASTER_KEY="${LITELLM_MASTER_KEY:-sk-local-dev}"
+profile="${AI_LAB_PROFILE:-macos-work}"
+gateway_env_file="$(
+  printf '%s/containers/librechat/.env.%s.local' \
+    "${AI_LAB_ROOT}" \
+    "${profile}"
+)"
+
+if [[ -z "${LITELLM_MASTER_KEY:-}" && -r "${gateway_env_file}" ]]; then
+  LITELLM_MASTER_KEY="$(
+    awk '$0 ~ /^LITELLM_MASTER_KEY=/ {
+      sub(/^LITELLM_MASTER_KEY=/, "")
+      sub(/\r$/, "")
+      print
+      exit
+    }' "${gateway_env_file}"
+  )"
+fi
+
+export LITELLM_MASTER_KEY="${LITELLM_MASTER_KEY:-}"
 
 GATEWAY_URL="${AI_LAB_GATEWAY_URL:-http://localhost:4000}"
 
