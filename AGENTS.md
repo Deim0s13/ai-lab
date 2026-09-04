@@ -23,7 +23,10 @@ Start with:
 - `docs/11-cli-interface-contracts.md` — CLI behaviour contracts
 - `docs/12-cli-habit-layer.md` — thin CLI habit-layer boundary
 - `docs/adr/README.md` — ADR purpose and when to create one
+- `docs/adr/0011-secrets-management-strategy.md` — Bitwarden-first secrets strategy
 - `docs/adr/0016-use-existing-tools-for-routing-and-validation-where-practical.md` — key guardrail against custom-code creep
+- `docs/adr/0017-select-librechat-as-browser-chat-ui.md` — selected browser UI and its boundaries
+- `docs/adr/0018-select-opencode-for-supervised-cli-coding.md` — selected supervised coding frontend and its boundaries
 
 When working on a tool evaluation, use:
 
@@ -66,13 +69,26 @@ The intended architecture is:
 
 - `just` handles local task orchestration and repeatable operator workflows.
 - LiteLLM or an equivalent gateway handles model/provider access where practical.
-- Local runtimes such as MLX, oMLX, or Ollama provide local model execution.
+- oMLX is the preferred Apple Silicon runtime for `macos-work`; Ollama is the fallback and compatibility runtime.
 - Profiles define work/personal posture and routing constraints.
-- The CLI provides stable daily-use entry points.
-- UI and IDE tools should connect to the same gateway/configuration model where practical.
+- `bin/ai` provides the stable, thin daily-use habit layer.
+- LibreChat is the selected browser UI and must use LiteLLM as its only model endpoint.
+- OpenCode is the selected additional frontend for supervised, local-first repository coding. It must remain gateway-only, profile-aware and conservatively permissioned.
+- `local-code` is the stable coding route; `local-code-mlx` remains the explicit implementation route for diagnostics.
+- UI, coding and future agent tools should connect to the same gateway/configuration model where practical.
 - Agents and RAG come later, after routing, context boundaries, and access controls are trusted.
 
 Do not create separate AI environments for CLI, UI, IDE, and agents unless there is a documented reason.
+
+OpenCode approval is limited to supervised coding. Do not infer approval for autonomous execution, subagents, MCP, ACP, external-directory access, unattended operation or broad work-profile agency from ADR-0018.
+
+## Collaboration and authorization
+
+The operator is learning and implementing this project deliberately.
+
+Default to inspecting, explaining, planning and providing exact copy-and-paste changes for the operator to apply. Modify repository files, create commits, push changes, close issues, change milestones or mutate external services only when the operator explicitly asks for that action.
+
+Read-only inspection and proportionate validation are acceptable when they help answer the request. Preserve unrelated work and never turn a narrow task into a broad refactor.
 
 ## Current drift warning
 
@@ -253,6 +269,8 @@ Do not store secrets in committed files.
 
 Use the existing secrets strategy and relevant ADRs before changing provider or credential behaviour.
 
+Bitwarden is the preferred source. Committed `.env.example` files contain variable names and placeholders only. Ignored `.env.*.local` files are temporary local fallbacks, not the desired long-term source. Never introduce usable default credentials, print secret values, include them in diffs or duplicate the gateway master key into client configuration when scoped credentials are available.
+
 ## Routing expectations
 
 Routing should remain:
@@ -286,16 +304,21 @@ When making changes, provide the commands run and the result.
 Useful validation patterns may include:
 
 ```bash
-bash -n ./bin/ai
-just ai-check
-just ai-up
-just ai-down
-./bin/ai status
-./bin/ai routes test "Review this shell command"
-./bin/ai history --limit 5
+bash -n bin/ai tools/ai/*.sh
+just --fmt --check
+just check-yaml
+just workstation-status
+just ui-check
+just opencode-config-check
+just opencode-check
+AI_LAB_PROFILE=macos-work bin/ai status
+AI_LAB_PROFILE=macos-work bin/ai routes test "Review this shell command"
+AI_LAB_PROFILE=macos-work bin/ai history --limit 5
 ```
 
 Only use commands that actually exist in the current repo.
+
+Run lifecycle commands such as `just workstation-up`, `just workstation-down`, `just ui-up` or `just ui-down` only when runtime mutation is relevant and authorized. Static checks should not start services, modify live containers or read secret values.
 
 ## Working style
 
@@ -323,6 +346,8 @@ Do not add unrelated improvements.
 
 Do not introduce new dependencies without checking `docs/09-tool-selection.md` and using the tool evaluation template when appropriate.
 
+Do not commit, push, close issues or change GitHub metadata unless the operator explicitly requests it. Before editing in a dirty worktree, inspect `git status --short` and preserve all unrelated changes.
+
 ## Strong guardrail
 
 If the work starts turning into building a private platform, stop and reassess.
@@ -341,34 +366,37 @@ Document everything.
 
 Daily usefulness is more important than novelty.
 
-# Repository Guidelines
+## Repository Guidelines
 
-## Project Structure & Module Organization
+### Project Structure & Module Organization
 
-`bin/ai` is the primary user-facing CLI. Supporting commands live in `tools/`, with routing logic under `tools/routing/` and evaluation utilities under `tools/evals/`. Declarative gateway, routing, policy, provider, and evaluation settings belong in `config/`. Machine-specific behavior lives in `profiles/<profile>/profile.yaml`; never duplicate profile policy in scripts. Architecture, ADRs, proofs, and workflows live in `docs/`. Reusable prompts belong in `contexts/`. Treat `tmp/` as generated output and `archive/` as historical reference.
+`bin/ai` is the thin user-facing habit layer. Its shell modules live in `tools/ai/`; reusable `just` orchestration is split by capability under `tools/just/`. Routing and evaluation utilities live under `tools/routing/` and `tools/evals/`. Declarative gateway, routing, policy, provider, model and OpenCode settings belong in `config/`. LibreChat deployment belongs in `containers/librechat/`, while pinned host-tool manifests belong in `packages/<profile>/`. Machine-specific policy lives in `profiles/<profile>/profile.yaml`; never duplicate profile policy in scripts. Architecture, ADRs, proofs and workflows live in `docs/`. Reusable context belongs in `contexts/`. Treat `tmp/` as generated output and `archive/` as historical reference.
 
-## Build, Test, and Development Commands
+### Build, Test, and Development Commands
 
 Run `just` to list available recipes. Common checks and workflows are:
 
 - `just check-yaml` — parse all YAML under `config/` and `profiles/`.
-- `just ai-up` / `just ai-down` — start or stop the LiteLLM gateway.
-- `just ai-check` — validate configuration, gateway models, and health.
-- `just gateway-status` — inspect the gateway container.
+- `just workstation-up` / `just workstation-down` — start or stop the complete repo-managed workstation stack.
+- `just workstation-status` — report Podman, runtimes, LiteLLM and LibreChat readiness.
+- `just ai-check` — validate core configuration, gateway models and health.
+- `just ui-check` — validate committed LibreChat policy and its live gateway path.
+- `just opencode-config-check` — validate pinned OpenCode configuration without requiring a live model call.
+- `just opencode-check` — validate the installed OpenCode version and gateway-only model selection.
 - `just eval-model-fitness` — run Promptfoo evaluation through LiteLLM.
-- `just eval-model-fitness-mlx` — run direct MLX fitness evaluation.
+- `just eval-model-fitness-mlx` — run direct MLX/oMLX fitness evaluation.
 - `AI_LAB_PROFILE=macos-work bin/ai status` — exercise the CLI for a profile.
 
-Python commands expect `.venv/bin/python`; gateway workflows require `just`, Podman, `curl`, and `jq`.
+Python commands expect `.venv/bin/python`; workstation workflows require `just`, Podman, `curl` and `jq`. Runtime checks also require the profile-selected local runtimes.
 
-## Coding Style & Naming Conventions
+### Coding Style & Naming Conventions
 
 Use four spaces in Python, `snake_case` identifiers, type hints where they clarify interfaces, and `pathlib.Path` for repository paths. Bash scripts must begin with `#!/usr/bin/env bash` and use `set -euo pipefail`; quote expansions and prefer lowercase function names. Use two-space indentation in YAML and kebab-case for recipe, command, and directory names (`gateway-health`, `macos-work`). Keep scripts thin and policy in configuration. Do not hard-code credentials or provider secrets.
 
-## Testing Guidelines
+### Testing Guidelines
 
-The current test strategy emphasizes behavior and smoke checks rather than a unit-test framework. Before submitting, run `just check-yaml` and the smallest relevant recipe or CLI command. Gateway changes should pass `just ai-check`; model changes should run the relevant fitness evaluation. Use only synthetic prompts and data—never customer, work, personal, or secret material. Add future behavioral tests under `tests/` and name routing cases with stable IDs such as `route-001`.
+The current test strategy emphasizes static policy checks, behaviour checks and smoke tests rather than a general unit-test framework. Before submitting, run `just --fmt --check`, `just check-yaml` and the smallest relevant recipe or CLI command. Gateway changes should pass `just ai-check`; UI changes should pass `just ui-check`; OpenCode changes should pass `just opencode-config-check` and, when runtime validation is relevant, `just opencode-check`. Model changes should run the relevant fitness evaluation. Use only synthetic prompts and data—never customer, work, personal or secret material. Add future behavioural tests under `tests/` and give stable routing cases identifiers such as `route-001`.
 
-## Commit & Pull Request Guidelines
+### Commit & Pull Request Guidelines
 
 Recent history uses short, imperative subjects such as `Add AI history command` and `Improve AI prompt input handling`. Keep each commit focused and avoid mixing generated `tmp/` output with implementation unless it is intentional evidence. Pull requests should explain the user-visible behavior, affected profiles/configuration, validation commands run, and any architecture or security implications. Link relevant issues or ADRs; include terminal output or screenshots when CLI/UI behavior changes.
