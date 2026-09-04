@@ -1,0 +1,74 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "ai-lab/local-code",
+  "small_model": "ai-lab/local-code",
+  "default_agent": "plan",
+  "autoupdate": false,
+  "share": "disabled",
+  "snapshot": true,
+  "enabled_providers": [
+    "ai-lab"
+  ],
+  "provider": {
+    "ai-lab": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "AI Lab LiteLLM",
+      "options": {
+        "baseURL": "http://127.0.0.1:4000/v1",
+        "apiKey": "{env:LITELLM_MASTER_KEY}"
+      },
+      "models": {
+        "local-code": {
+          "name": "AI Lab local-code"
+        }
+      }
+    }
+  },
+  "permission": {
+    "*": "ask",
+    "read": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow",
+      "**/.secrets/**": "deny",
+      "**/*.key": "deny",
+      "**/*.pem": "deny"
+    },
+    "edit": "ask",
+    "bash": {
+      "*": "ask",
+      "git commit*": "deny",
+      "git push*": "deny",
+      "git reset*": "deny",
+      "git checkout*": "deny",
+      "git clean*": "deny",
+      "rm *": "deny",
+      "sudo *": "deny",
+      "curl *": "deny",
+      "wget *": "deny",
+      "ssh *": "deny",
+      "scp *": "deny",
+      "gh *": "deny"
+    },
+    "task": "deny",
+    "skill": "deny",
+    "webfetch": "deny",
+    "websearch": "deny",
+    "external_directory": "deny",
+    "mcp_*": "deny",
+    "doom_loop": "ask"
+  },
+  "mcp": {},
+  "plugin": [],
+  "watcher": {
+    "ignore": [
+      ".git/**",
+      "**/.env",
+      "**/.env.*",
+      "**/.secrets/**",
+      "**/*.key",
+      "**/*.pem"
+    ]
+  }
+}

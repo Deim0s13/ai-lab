@@ -409,22 +409,22 @@ Suggested review points:
 
 Current lifecycle view:
 
-| Component            | Capability              |      Current status |
-| -------------------- | ----------------------- | ------------------: |
-| Ollama               | Local Runtime — Windows |             Adopted |
-| oMLX                 | Local Runtime — macOS   |           Preferred |
-| Ollama on macOS      | Local Runtime fallback  |             Adopted |
-| LiteLLM              | Model Gateway           |             Adopted |
-| LibreChat            | Chat UI                 |             Adopted |
-| Bitwarden            | Secrets Management      | Preferred direction |
-| llmfit               | Model Fitness           | Candidate / Planned |
-| Aider                | CLI Coding Assistant    |           Candidate |
-| OpenCode             | CLI Coding Assistant    |           Candidate |
-| Goose                | Agent Runner            |    Future candidate |
-| `ask-ai`             | CLI General Assistant   |             Planned |
-| `ai-route`           | Routing Explanation     |             Planned |
-| `ai-status`          | Validation              |             Planned |
-| `ai-bootstrap-check` | Validation              |             Planned |
+| Component            | Capability              |         Current status |
+| -------------------- | ----------------------- | ---------------------: |
+| Ollama               | Local Runtime — Windows |                Adopted |
+| oMLX                 | Local Runtime — macOS   |              Preferred |
+| Ollama on macOS      | Local Runtime fallback  |                Adopted |
+| LiteLLM              | Model Gateway           |                Adopted |
+| LibreChat            | Chat UI                 |                Adopted |
+| Bitwarden            | Secrets Management      |    Preferred direction |
+| llmfit               | Model Fitness           |    Candidate / Planned |
+| Aider                | CLI Coding Assistant    |           Not selected |
+| OpenCode             | CLI Coding Assistant    | Preferred (supervised) |
+| Goose                | Agent Runner            |       Future candidate |
+| `ask-ai`             | CLI General Assistant   |                Planned |
+| `ai-route`           | Routing Explanation     |                Planned |
+| `ai-status`          | Validation              |                Planned |
+| `ai-bootstrap-check` | Validation              |                Planned |
 
 This table should continue to evolve as components are evaluated, adopted or replaced.
 

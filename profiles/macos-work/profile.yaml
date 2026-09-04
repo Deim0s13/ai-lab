@@ -59,13 +59,13 @@ capabilities:
     - routing_policy
     - secrets_management
     - cli_general_assistant
+    - cli_coding_assistant
     - validation
   planned:
     - model_fitness
     - chat_ui
     - architecture_assistant
     - writing_assistant
-    - cli_coding_assistant
     - research_assistant
   restricted:
     - agent_runner
@@ -109,3 +109,5 @@ notes:
   - Anthropic and OpenAI are use-case dependent and subject to approval context.
   - Direct runtime access is limited to validation and model review workflows.
   - Work and work-sensitive context must not be available to personal workflows.
+  - OpenCode is the preferred supervised CLI coding interface and uses the stable local-code route through LiteLLM.
+  - OpenCode is not approved for unattended operation, subagents, MCP, ACP or external-directory access.

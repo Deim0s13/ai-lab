@@ -676,9 +676,13 @@ The selected configuration must remain tool-native, profile-aware, gateway-first
 
 ## Implementation Notes
 
-- Do not add permanent configuration before the decision is accepted.
-- Prefer tool-native configuration over new `bin/ai` logic.
-- Any adopted configuration must remain profile-aware and gateway-first.
+- `config/opencode/opencode.json` provides gateway-only, conservatively permissioned configuration.
+- `packages/macos-work/opencode.env` pins the tested OpenCode release and archive checksum.
+- `tools/just/opencode.just` provides installation, validation, model inspection and supervised launch workflows.
+- `profiles/macos-work/profile.yaml` enables OpenCode as the supervised CLI coding assistant.
+- OpenCode uses the stable `local-code` route while `local-code-mlx` remains available for implementation diagnostics.
+- No additional OpenCode-specific logic is added to `bin/ai`.
+- The ignored local credential file remains a temporary fallback pending issue 64.
 
 ## Follow-up Issues
 

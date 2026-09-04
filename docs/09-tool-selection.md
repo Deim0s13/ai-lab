@@ -314,15 +314,17 @@ The custom layer should stay thin. It should hide complexity, not create a priva
 
 ### 9.6 CLI Coding Assistant
 
-| Field              | Selection posture                                                                                                   |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| Capability         | CLI Coding Assistant                                                                                                |
-| Current candidates | Aider, OpenCode                                                                                                     |
-| Why considered     | Support terminal-native coding, local-first coding and personal vibe coding workflows.                              |
-| Must support       | Repo-aware coding, safe file modification, local/frontier model usage, CLI ergonomics and repeatable install.       |
-| Key tests          | Does it fit my Claude Code-style habits? Can it use local/routed models? Is file modification transparent and safe? |
-| Risks              | Workflow mismatch, unsafe edits, weak local model support, provider lock-in.                                        |
-| Initial status     | Candidate                                                                                                           |
+| Field                  | Selection posture                                                                                                                            |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Capability             | CLI Coding Assistant                                                                                                                         |
+| Current implementation | OpenCode v1.18.16                                                                                                                            |
+| Alternatives evaluated | Goose, Aider, Qwen Code and Cline CLI                                                                                                        |
+| Why selected           | Produced the strongest functional result while preserving repository, secret and gateway boundaries.                                         |
+| Must support           | Supervised repository-aware coding, gateway-only `local-code` access, explicit approvals, transparent changes and reproducible installation. |
+| Validated behaviour    | Pinned installation, LiteLLM model discovery, conservative permissions, repository-aware editing and operator-controlled commands.           |
+| Risks                  | Gateway failures may retry indefinitely; local-model planning and completion claims remain inconsistent; operator verification is mandatory. |
+| Decision record        | `docs/tool-evaluations/003-cli-coding-assistant.md` and ADR 0018                                                                             |
+| Current status         | Preferred for supervised interactive use                                                                                                     |
 
 ---
 
