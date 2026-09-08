@@ -79,3 +79,9 @@ state and should only be done when a clean rebuild is intended.
 
 Credential migration to Bitwarden-backed scoped gateway credentials is
 tracked separately in issue 64.
+
+## Related Documentation
+
+- `../../docs/end-user-experience/development-workflow.md`
+- `../../docs/proofs/002-opencode-supervised-development-workflow.md`
+- `../../docs/adr/0018-select-opencode-for-supervised-cli-coding.md`

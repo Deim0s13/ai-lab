@@ -79,11 +79,16 @@ capabilities:
       - Accounts and conversations use profile-scoped persistent storage.
 
   cli_coding_assistant:
-    status: planned
+    status: preferred
     priority: milestone_5
     candidates:
-      - aider
       - opencode
+    profiles:
+      - macos-work
+    notes:
+      - OpenCode is selected for supervised interactive repository work.
+      - Model access is gateway-only through the stable local-code route.
+      - Autonomous operation, subagents, MCP, ACP and external-directory access remain out of scope.
 
   agent_runner:
     status: future

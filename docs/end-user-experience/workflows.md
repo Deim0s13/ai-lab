@@ -31,7 +31,7 @@ The end-user experience should:
 | Explain / summarise           | Explain concepts, summarise notes, structure information     | local-fast for short work; local-capable for longer work | `just ask` or `just ask-model local-capable-mlx`                       | `ai explain`, `ai summarise`              |
 | Planning / trade-off analysis | Compare options, structure decisions, plan implementation    | local-capable                                            | `just ask-model local-capable-mlx`                                     | `ai plan`, `ai ask --route local-capable` |
 | Command / config review       | Review shell, YAML, Markdown, LiteLLM config or just recipes | local-code                                               | `just ask-model local-code`                                            | `ai review`, `ai explain-command`         |
-| Coding assistance             | Help with scripts, errors, tests and repo structure          | local-code                                               | `just ask-model local-code`                                            | `ai code`, OpenCode for repository-aware work |
+| Coding assistance             | Help with scripts, errors, tests and repo structure          | local-code                                               | `ai code` or `just opencode /path/to/project`                           | OpenCode for supervised repository-aware work |
 | Route / model inspection      | Show available routes and current aliases                    | none                                                     | `just gateway-routes`, `just gateway-mlx-models`, `just model-aliases` | `ai routes`, `ai models`                  |
 
 ## Operator Workflows
@@ -86,6 +86,8 @@ The split is:
 
 The first implementation should stay small. This is not a desktop app, semantic router or full agent framework.
 
+The adopted repository-aware workflow is documented in `docs/end-user-experience/development-workflow.md`.
+
 ## Out of Scope
 
 This workflow map does not implement:
@@ -93,6 +95,6 @@ This workflow map does not implement:
 - a new CLI wrapper
 - semantic routing
 - provider fallback
-- OpenCode integration
+- autonomous or unattended OpenCode operation
 - a desktop app
 - scheduled model fitness automation

@@ -52,7 +52,7 @@ UI and IDE integrations are useful, but they should not be the only way to use t
 ### Implications
 
 - Important workflows should have a CLI path where practical.
-- Commands such as `ask-ai`, `ai-route`, `ai-status`, `ai-model-review`, `dev-ai`, `architect-ai` and `write-ai` should be treated as stable user-facing interfaces.
+- Commands such as `ai`, `just opencode`, `architect-ai` and `write-ai` should be treated as stable user-facing interfaces where they represent an established workflow.
 - UI and IDE tools should complement the CLI rather than replace it.
 - CLI commands should be scriptable, explainable and usable across devices.
 - Where a workflow starts in a UI, there should be a clear equivalent or supporting CLI path where practical.
@@ -261,7 +261,7 @@ Stable commands and patterns help the workstation survive changes in models, pro
 
 ### Implications
 
-- Commands such as `ask-ai`, `dev-ai`, `architect-ai` and `write-ai` should remain stable where possible.
+- Interfaces such as `ai`, `just opencode`, `architect-ai` and `write-ai` should remain stable where possible.
 - Underlying providers, models and tools can change through config.
 - Model aliases should be used instead of direct model names in daily workflows.
 - Wrappers should be thin and replaceable.

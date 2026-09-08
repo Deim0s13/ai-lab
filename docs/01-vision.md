@@ -101,7 +101,7 @@ For example:
 
 ```text
 ask-ai
-dev-ai
+just opencode
 architect-ai
 write-ai
 LibreChat

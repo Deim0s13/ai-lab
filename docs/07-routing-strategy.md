@@ -795,7 +795,7 @@ flowchart LR
     Shortlist[Device Model Shortlist]
     Aliases[Model Aliases]
     Routes[Routing Config]
-    CLI[ask-ai / dev-ai / architect-ai]
+    CLI[ai / OpenCode / future specialist interfaces]
 
     LLMFit --> Shortlist
     Shortlist --> Aliases

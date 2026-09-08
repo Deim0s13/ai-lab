@@ -37,7 +37,7 @@ Select OpenCode as the preferred additional CLI coding frontend for supervised i
 The adopted workflow will:
 
 - use LiteLLM as the only model-provider endpoint
-- initially use the tested `local-code-mlx` route and move to the stable `local-code` alias when delivered
+- use the stable `local-code` route while retaining `local-code-mlx` for implementation diagnostics
 - require explicit approval for edits and commands
 - restrict access to the selected repository
 - exclude secrets, ignored files and external directories
@@ -226,7 +226,7 @@ Selecting OpenCode also avoids creating a custom coding frontend, timeout layer 
 
 ## Implementation Impact
 
-Issue #60 should add reproducible, profile-aware OpenCode installation and configuration using tool-native mechanisms.
+Issue #60 delivered reproducible, profile-aware OpenCode installation and configuration using tool-native mechanisms.
 
 The implementation should:
 
@@ -240,7 +240,7 @@ The implementation should:
 - provide clean removal and rebuild steps
 - avoid adding provider, retry or agent logic to `bin/ai`
 
-Issue #61 should validate and document the supervised workflow, including startup, repository selection, approvals, diff review, verification, gateway failure, state inspection and cleanup.
+Issue #61 validated and documented the supervised workflow, including startup, repository selection, approvals, diff review, verification, gateway failure, state inspection and cleanup. The evidence is recorded in `docs/proofs/002-opencode-supervised-development-workflow.md`.
 
 ## Review Trigger
 

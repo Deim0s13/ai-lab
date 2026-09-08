@@ -535,7 +535,7 @@ The adopted deployment has demonstrated:
 
 Add practical coding workflows to the workstation.
 
-This milestone should explore CLI coding tools such as Aider or OpenCode and decide how they fit alongside existing tools such as Claude Code, Codex and Cursor.
+This milestone selects and proves OpenCode as the preferred supervised, local-first repository coding interface. Claude Code, Codex and Cursor remain deliberate escalation paths for work that justifies frontier capability.
 
 The goal is not immediate removal of every existing tool. The goal is to make local-first coding the normal workflow where it is capable, reduce routine dependence on frontier coding tools, and retain those tools for deliberate escalation.
 
@@ -545,15 +545,15 @@ Coding tools should be treated as harnessed workflows, not just direct model cal
 
 | Capability            | Expected state                                            |
 | --------------------- | --------------------------------------------------------- |
-| CLI coding assistant  | Aider, OpenCode or equivalent trialled.                   |
-| Local coding route    | Local coding model tested.                                |
+| CLI coding assistant  | OpenCode selected, configured and validated.              |
+| Local coding route    | Stable `local-code` route backed by oMLX and tested.       |
 | Frontier coding route | OpenAI/Anthropic/Cursor/Gemini posture tested by profile. |
 | File safety           | Editing behaviour understood.                             |
 | Rebuildability        | Tool install and config documented.                       |
 
 ## Expected deliverables
 
-- trial record for Aider and/or OpenCode
+- comparative CLI coding-assistant evaluation
 - coding assistant install steps
 - gateway compatibility assessment
 - local coding model test
@@ -565,12 +565,11 @@ Coding tools should be treated as harnessed workflows, not just direct model cal
 ## Example target flow
 
 ```bash
-dev-ai explain ./scripts/bootstrap.sh
-dev-ai fix failing-test
-dev-ai --local explain this error
+just workstation-up
+just opencode /path/to/project
 ```
 
-Exact commands may change depending on selected tool.
+Use `ai code "..."` when repository-aware editing is not required.
 
 ## Success criteria
 
@@ -580,7 +579,7 @@ This milestone is successful when:
 - I understand whether local models are good enough for useful coding tasks.
 - I know when to escalate to frontier coding models.
 - File modification behaviour feels safe and transparent.
-- The coding workflow complements rather than duplicates existing tools.
+- The coding workflow reduces routine frontier-tool use while keeping deliberate escalation available.
 
 ## Not included
 

@@ -189,6 +189,8 @@ docs/09-tool-selection.md
 docs/10-milestones.md
 docs/11-cli-interface-contracts.md
 docs/12-cli-habit-layer.md
+docs/end-user-experience/development-workflow.md
+docs/proofs/
 docs/adr/
 ```
 

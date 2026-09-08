@@ -152,7 +152,7 @@ The repository is the source of truth for the workstation. Local machine state s
 ```mermaid
 flowchart TD
     A[Interface Layer<br/>CLI, IDE, LibreChat, Agents]
-    B[Command Layer<br/>ask-ai, ai-route, ai-status, dev-ai, architect-ai]
+    B[Command Layer<br/>ai, just, OpenCode, future specialist interfaces]
     C[Gateway Layer<br/>LiteLLM or equivalent, model aliases, routing]
     D[Policy and Config Layer<br/>profiles, providers, routes, capabilities]
     E[Provider Layer<br/>Ollama, oMLX, Gemini, Cursor, OpenAI, Anthropic]
@@ -177,7 +177,7 @@ flowchart TD
 | Layer                   | Responsibility                                                                                                          |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | Interface layer         | Provides the ways I interact with the workstation: CLI, IDE, UI and future agents.                                      |
-| Command layer           | Provides stable commands and habits such as `ask-ai`, `ai-route`, `ai-status`, `dev-ai`, `architect-ai` and `write-ai`. |
+| Command layer           | Provides stable commands and habits through `ai`, `just`, OpenCode and future specialist interfaces.                  |
 | Gateway layer           | Provides a common model access point, routing, aliases and provider abstraction.                                        |
 | Policy and config layer | Defines profiles, routes, providers, capabilities, model aliases and privacy rules.                                     |
 | Provider layer          | Connects to local runtimes and frontier or approved AI providers.                                                       |
@@ -496,7 +496,7 @@ flowchart TD
 | `ai-bootstrap-check` | Gateway and direct health checks         |                      Yes | Rebuild validation needs direct checks.                             |
 | `ai-model-review`    | Direct/runtime-specific or gateway-based |                      Yes | Model assessment may need direct runtime access.                    |
 | LibreChat            | Gateway                                  |             No initially | Avoid creating a separate UI model path.                            |
-| Aider / OpenCode     | Gateway where practical                  |         Yes, if required | Direct access must be documented per tool.                          |
+| OpenCode             | Gateway                                  |                       No | Uses LiteLLM `local-code`; direct providers are not permitted.      |
 | Goose / agents       | Gateway                                  |             No initially | Agents need stronger controls.                                      |
 | RAG / project memory | Gateway                                  |             No initially | Retrieval may be local, but generation should route through policy. |
 
@@ -699,7 +699,7 @@ Examples:
 | Local runtime — Windows | Ollama                             |
 | Local runtime — macOS   | oMLX / MLX, Ollama fallback        |
 | Chat UI                 | LibreChat                          |
-| CLI coding assistant    | Aider / OpenCode                   |
+| CLI coding assistant    | OpenCode                            |
 | Agent runner            | Goose                              |
 | Model fitness           | llmfit                             |
 | Secrets management      | Bitwarden                          |

@@ -398,7 +398,7 @@ Host or user-space tools may still be better for:
 - oMLX / MLX runtime
 - Bitwarden CLI
 - llmfit
-- Aider / OpenCode
+- OpenCode
 - Goose
 - small CLI wrappers
 

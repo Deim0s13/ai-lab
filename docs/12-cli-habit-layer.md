@@ -153,6 +153,17 @@ The current proof backend for local-fast is an Ollama model behind LiteLLM.
 
 The stable interface is the model group, not the specific local model. The local model can be replaced later without changing the daily command.
 
+## Repository-Aware Coding
+
+Use `ai code` for a direct coding prompt. Use the selected OpenCode frontend when the task needs repository inspection, supervised edits or test execution:
+
+```bash
+just workstation-up
+just opencode /path/to/project
+```
+
+OpenCode is an existing tool above the habit layer, not another custom command framework. It uses LiteLLM's stable `local-code` route and keeps `bin/ai` focused on thin prompt and routing workflows. See `docs/end-user-experience/development-workflow.md` for the approval and verification process.
+
 ## Frontier Escalation Acknowledgement
 
 The CLI includes a safe acknowledgement stub for future frontier routing.

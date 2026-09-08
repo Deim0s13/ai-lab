@@ -28,7 +28,7 @@ Examples include:
 | Local runtime                | Ollama, oMLX / MLX-compatible runtime                   |
 | Frontier / approved provider | Gemini, Cursor, OpenAI, Anthropic                       |
 | Chat UI                      | LibreChat                                               |
-| CLI coding assistant         | Aider, OpenCode                                         |
+| CLI coding assistant         | OpenCode                                                |
 | Agent runner                 | Goose                                                   |
 | Model fitness tool           | llmfit                                                  |
 | Secrets tool                 | Bitwarden CLI / Secrets Manager CLI                     |
@@ -123,7 +123,7 @@ Examples:
 | --------- | --------------------------------------------------------------------- |
 | LiteLLM   | Can CLI and LibreChat route through a common gateway?                 |
 | LibreChat | Can the chat UI use the same gateway as the CLI without bypassing it? |
-| Aider     | Can it support local-first coding workflows?                          |
+| OpenCode  | Can it support supervised local-first coding workflows safely?       |
 | llmfit    | Can it produce useful model shortlists per device?                    |
 | Goose     | Can it run constrained agent workflows safely?                        |
 

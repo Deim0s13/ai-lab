@@ -167,12 +167,12 @@ Current:
 - validation
 - model fitness
 - chat UI
+- supervised CLI coding assistant through OpenCode and LiteLLM
 
 Later:
 
 - architecture assistant
 - writing assistant
-- limited coding assistant
 - limited research assistant
 
 Restricted or future:

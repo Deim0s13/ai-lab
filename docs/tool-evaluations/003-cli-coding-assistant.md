@@ -683,12 +683,13 @@ The selected configuration must remain tool-native, profile-aware, gateway-first
 - OpenCode uses the stable `local-code` route while `local-code-mlx` remains available for implementation diagnostics.
 - No additional OpenCode-specific logic is added to `bin/ai`.
 - The ignored local credential file remains a temporary fallback pending issue 64.
+- Final configured-workflow validation is recorded in `docs/proofs/002-opencode-supervised-development-workflow.md`.
 
 ## Follow-up Issues
 
-- #59 promotes the proven coding model to the stable `local-code` route.
-- #60 adds reproducible configuration for the selected workflow.
-- #61 validates and documents the resulting development workflow.
+- #59 promoted the proven coding model to the stable `local-code` route.
+- #60 added reproducible configuration for the selected workflow.
+- #61 validated and documented the resulting supervised development workflow.
 
 ## Review Trigger
 

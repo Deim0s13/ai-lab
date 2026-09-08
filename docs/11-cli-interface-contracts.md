@@ -24,7 +24,7 @@ This document covers the initial CLI commands planned for the early milestones:
 | `ai-bootstrap-check` | Validate a rebuild or initial setup.              | Milestone 1       |
 | `ai-model-review`    | Review model fitness and alias suitability.       | Milestone 3       |
 
-Future commands such as `dev-ai`, `architect-ai`, `write-ai`, `research-ai` and `agent-ai` should follow the same conventions when they are introduced.
+Future commands such as `architect-ai`, `write-ai`, `research-ai` and `agent-ai` should follow the same conventions when they are introduced. Repository-aware coding is provided by OpenCode through `just opencode`; a separate `dev-ai` wrapper is not planned.
 
 ---
 
@@ -790,7 +790,6 @@ Expected future commands:
 
 | Command        | Purpose                                                      |
 | -------------- | ------------------------------------------------------------ |
-| `dev-ai`       | Coding and repo-aware development workflow.                  |
 | `architect-ai` | Architecture reasoning, option analysis and decision review. |
 | `write-ai`     | Writing, rewriting and tone refinement.                      |
 | `research-ai`  | Research, synthesis and comparison workflows.                |

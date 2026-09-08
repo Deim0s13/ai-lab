@@ -122,7 +122,7 @@ Each capability is described using the following fields.
 | Validation                    | `ai-status`, `ai-bootstrap-check`       |             Planned |          High |
 | Model Fitness                 | llmfit                                  | Candidate / Planned |          High |
 | Chat UI                       | LibreChat                               |             Adopted |        Medium |
-| CLI Coding Assistant          | Aider / OpenCode                        |           Candidate |        Medium |
+| CLI Coding Assistant          | OpenCode                                | Preferred (supervised) |        Medium |
 | Architecture Assistant        | `architect-ai`                          |             Planned |        Medium |
 | Writing Assistant             | `write-ai`                              |             Planned |        Medium |
 | Research Assistant            | `research-ai`                           |             Planned |        Medium |
@@ -279,11 +279,11 @@ Each capability is described using the following fields.
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Intent                             | Support terminal-native coding, code explanation, code generation, code editing and test-fix workflows.                                                                        |
 | Contract                           | Must support repo-aware coding, safe file modification, local and frontier models, CLI usage, repeatable installation and gateway compatibility where practical.               |
-| Current candidate / implementation | Aider and OpenCode.                                                                                                                                                            |
-| Profile considerations             | `windows-personal` can be more experimental. `macos-work` should stay more conservative and aligned to approved work posture.                                                  |
+| Current candidate / implementation | OpenCode through LiteLLM using the stable `local-code` route.                                                                                                                 |
+| Profile considerations             | OpenCode is currently approved for supervised interactive use on `macos-work`; broader profile adoption requires separate validation.                                        |
 | Selection criteria                 | CLI experience, repo awareness, local model support, frontier provider support, safety, gateway compatibility, install repeatability and fit with existing Claude Code habits. |
 | Replacement trigger                | Tool does not fit the CLI workflow, file editing feels unsafe, local model support is poor, or a better coding assistant emerges.                                              |
-| Current status                     | Candidate.                                                                                                                                                                     |
+| Current status                     | Preferred for supervised interactive repository work.                                                                                                                         |
 
 ---
 
