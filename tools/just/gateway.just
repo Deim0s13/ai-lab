@@ -69,13 +69,13 @@ gateway-logs:
 
 gateway-routes:
     @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
-    @curl -fsS "{{ gateway_url }}/v1/models" \
+    @curl --max-time 3 -fsS "{{ gateway_url }}/v1/models" \
       -H "Authorization: Bearer {{ gateway_key }}" \
       | jq -r '.data[].id'
 
 gateway-models:
     @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
-    @curl -fsS "{{ gateway_url }}/v1/models" \
+    @curl --max-time 3 -fsS "{{ gateway_url }}/v1/models" \
       -H "Authorization: Bearer {{ gateway_key }}" \
       | jq -e \
           '([.data[].id] | index("local-fast")) != null and ([.data[].id] | index("local-code")) != null' \
@@ -84,17 +84,26 @@ gateway-models:
 
 gateway-mlx-models:
     @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
-    @curl -fsS "{{ gateway_url }}/v1/models" -H "Authorization: Bearer {{ gateway_key }}" | jq -e '.data[] | select(.id == "local-fast-mlx")' >/dev/null
-    @curl -fsS "{{ gateway_url }}/v1/models" -H "Authorization: Bearer {{ gateway_key }}" | jq -e '.data[] | select(.id == "local-capable-mlx")' >/dev/null
-    @curl -fsS "{{ gateway_url }}/v1/models" -H "Authorization: Bearer {{ gateway_key }}" | jq -e '.data[] | select(.id == "local-code-mlx")' >/dev/null
+    @curl --max-time 3 -fsS "{{ gateway_url }}/v1/models" \
+      -H "Authorization: Bearer {{ gateway_key }}" \
+      | jq -e '([.data[].id] | index("local-fast-mlx")) != null and ([.data[].id] | index("local-capable-mlx")) != null and ([.data[].id] | index("local-code-mlx")) != null' \
+      >/dev/null
     @echo "OK MLX candidate routes listed by LiteLLM"
 
 gateway-health:
-    @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
-    @curl -fsS "{{ gateway_url }}/health" \
-      -H "Authorization: Bearer {{ gateway_key }}" \
-      | jq -e '.healthy_count >= 1 and .unhealthy_count == 0' >/dev/null
-    @echo "OK LiteLLM health reports healthy local endpoint"
+    @test -n "{{ gateway_key }}" \
+      || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
+    @if ! health="$(curl --max-time 20 -fsS "{{ gateway_url }}/health" \
+        -H "Authorization: Bearer {{ gateway_key }}")"; then \
+      echo "FAIL LiteLLM aggregate provider health is unavailable or exceeded 20 seconds"; \
+      exit 8; \
+    fi; \
+    if ! jq -e '.healthy_count >= 1 and .unhealthy_count == 0' \
+        <<<"$health" >/dev/null; then \
+      echo "FAIL one or more configured LiteLLM endpoints are unhealthy"; \
+      exit 8; \
+    fi
+    @echo "OK all configured LiteLLM endpoints are healthy"
 
 # ------------------------------------------------------------------------------
 # Daily gateway commands
@@ -109,7 +118,7 @@ ai-check: bootstrap-check
 ai-down: gateway-stop
     @echo "OK AI workstation gateway is down"
 
-bootstrap-check: check-yaml gateway-models gateway-health
+bootstrap-check: check-yaml gateway-ready gateway-models
     @echo "OK bootstrap check passed"
 
 # ------------------------------------------------------------------------------

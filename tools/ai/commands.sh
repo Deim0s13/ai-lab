@@ -17,7 +17,7 @@ Usage:
   ai history                                  Show recent local AI usage history
   ai feedback good|bad [note]                 Mark the most recent prompt response
   ai profile                                  Show active profile and routing posture
-  ai down                                     Stop local gateway and MLX servers
+  ai down                                     Stop repo-managed workstation services
 
 Ask options:
   --mode fast|capable|code                    Select a mode explicitly
@@ -373,50 +373,16 @@ command_routes() {
 }
 
 command_status() {
-  local fast_ready="not ready"
-  local capable_ready="not ready"
-  local code_ready="not ready"
-
   check_dependencies
 
-  echo "AI Dev Workstation Status"
+  AI_LAB_PROFILE="$(active_profile)" just workstation-status
+
   echo
-
-  echo "Profile:    $(active_profile)"
-  echo "Posture:    $(profile_posture)"
-
-  if curl -fsS "${GATEWAY_URL}/v1/models" \
-    -H "Authorization: Bearer ${LITELLM_MASTER_KEY}" >/dev/null 2>&1; then
-    echo "Gateway:    running"
-  else
-    echo "Gateway:    not reachable"
-    echo "            Try: just ai-up"
-  fi
-
-  if lsof -nP -iTCP:8080 -sTCP:LISTEN >/dev/null 2>&1; then
-    fast_ready="ready"
-  fi
-
-  if lsof -nP -iTCP:8081 -sTCP:LISTEN >/dev/null 2>&1; then
-    capable_ready="ready"
-  fi
-
-  if lsof -nP -iTCP:8082 -sTCP:LISTEN >/dev/null 2>&1; then
-    code_ready="ready"
-  fi
-
-  echo "Local:      fast (${fast_ready}), capable (${capable_ready}), code (${code_ready})"
-
-  if [[ "$fast_ready" != "ready" ||
-    "$capable_ready" != "ready" ||
-    "$code_ready" != "ready" ]]; then
-    echo "            Try: just mlx-up"
-  fi
-
-  echo "Frontier:   not configured"
-  echo "Routes:     local-fast, local-capable-mlx, local-code"
+  echo "Posture:     $(profile_posture)"
+  echo "Frontier:    not configured"
+  echo "Routes:      local-fast, local-capable-mlx, local-code"
   echo "MLX aliases: local-fast-mlx, local-capable-mlx, local-code-mlx"
-  echo "Last route: $(last_route_summary)"
+  echo "Last route:  $(last_route_summary)"
 }
 
 command_history() {
@@ -433,8 +399,7 @@ command_profile() {
 }
 
 command_down() {
-  just ai-down
-  just mlx-down
+  AI_LAB_PROFILE="$(active_profile)" just workstation-down
 }
 
 unknown_command() {

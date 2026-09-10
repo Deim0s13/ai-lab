@@ -10,33 +10,29 @@ The purpose of this layer is to make the workstation easy to use from a terminal
 
 The normal workflow should be:
 
-- start the gateway
+- start or recover the workstation
 - check the workstation
 - ask the local model
 - inspect routing when needed
-- stop the gateway
+- stop repo-managed workstation services when intended
 
 ## Daily Workflow
 
-Set the local LiteLLM key for the current terminal session:
+Start or recover the complete local workstation:
 
-    export LITELLM_MASTER_KEY=sk-local-dev
+    ai
 
-Start the local AI gateway:
+Check its authoritative status:
 
-    just ai-up
-
-Run the workstation checks:
-
-    just ai-check
+    ai status
 
 Ask the local gateway a question:
 
-    just ask "Say hello from the AI workstation in one short sentence."
+    ai ask "Say hello from the AI workstation in one short sentence."
 
-Stop the local AI gateway:
+Stop repo-managed workstation services:
 
-    just ai-down
+    ai down
 
 ## Asking the Local Gateway
 
@@ -56,15 +52,16 @@ Current request path:
 
 The command prints the assistant response in the terminal.
 
-## Gateway Lifecycle
+## Workstation and Gateway Lifecycle
 
-The daily lifecycle commands are:
+Use the unified workstation recipes for normal lifecycle operations:
 
-    just ai-up
-    just ai-check
-    just ai-down
+    just workstation-up
+    just workstation-status
+    just workstation-logs
+    just workstation-down
 
-Lower-level gateway commands are also available:
+Lower-level gateway commands remain available for focused diagnostics:
 
     just gateway-start
     just gateway-wait
@@ -88,10 +85,12 @@ or:
 
 The bootstrap check validates that:
 
-- config and profile YAML can be parsed
-- LiteLLM lists the local-fast model group
-- LiteLLM reports a healthy local endpoint
-- the gateway key is set without printing the value
+- configuration and profile YAML can be parsed
+- LiteLLM readiness responds successfully
+- LiteLLM exposes the required stable model groups
+- the gateway key is set without printing its value
+
+Use `just gateway-health` when an explicit, bounded aggregate check of every configured backend is required.
 
 ## Routing Inspection
 

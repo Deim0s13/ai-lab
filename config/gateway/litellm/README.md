@@ -14,8 +14,8 @@ route class -> gateway model group -> LiteLLM -> local runtime
 
 ## Files
 
-| File | Purpose |
-|---|---|
+| File              | Purpose                                                     |
+| ----------------- | ----------------------------------------------------------- |
 | config.local.yaml | Minimal local-only LiteLLM config for initial gateway proof |
 
 ## Route Class Mapping
@@ -26,14 +26,14 @@ config/routing/routes.yaml
 
 Route classes currently map to gateway model groups like this:
 
-| Route class | Route type | Gateway model group | Status |
-|---|---|---|---|
-| local_fast | local | local-fast | configured |
-| local_capable | local | local-capable | configured |
-| local_code | local | local-code | configured |
-| approved_work | approved_work | work-approved-reasoning | placeholder |
-| frontier_reasoning | frontier | frontier-reasoning | placeholder |
-| frontier_code | frontier | frontier-code | placeholder |
+| Route class        | Route type    | Gateway model group     | Status      |
+| ------------------ | ------------- | ----------------------- | ----------- |
+| local_fast         | local         | local-fast              | configured  |
+| local_capable      | local         | local-capable           | configured  |
+| local_code         | local         | local-code              | configured  |
+| approved_work      | approved_work | work-approved-reasoning | placeholder |
+| frontier_reasoning | frontier      | frontier-reasoning      | placeholder |
+| frontier_code      | frontier      | frontier-code           | placeholder |
 
 Only the local model groups are configured in config.local.yaml.
 
@@ -102,10 +102,12 @@ just bootstrap-check
 
 The check validates:
 
-- config and profile YAML can be parsed
-- LiteLLM `/v1/models` lists `local-fast`
-- LiteLLM `/health` reports at least one healthy endpoint
-- `LITELLM_MASTER_KEY` is set locally without printing the value
+- configuration and profile YAML can be parsed
+- LiteLLM `/health/readiness` responds successfully
+- LiteLLM `/v1/models` exposes the required stable model groups
+- `LITELLM_MASTER_KEY` is set locally without printing its value
+
+The aggregate `/health` check remains available through `just gateway-health` as a bounded, on-demand diagnostic. It is not part of routine bootstrap validation because probing every configured backend can be slow or intermittent.
 
 This keeps bootstrap validation tool-based and avoids building a custom health-check framework.
 

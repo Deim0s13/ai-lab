@@ -2,7 +2,7 @@
 
 The `ai` command is the user-facing entrypoint for the AI Dev Workstation.
 
-It provides a simple way to use the local AI workstation without needing to remember lower-level `just` commands for starting MLX servers, starting the LiteLLM gateway, or checking routes.
+It provides a simple way to use the local AI workstation without needing to remember lower-level `just` commands for workstation lifecycle, gateway recovery or route inspection.
 
 The intended experience is simple: use `ai` for daily AI work, and use `just` for operator and maintenance tasks.
 
@@ -13,9 +13,9 @@ The project has two command layers:
 | Layer  | Purpose                                                                                       |
 | ------ | --------------------------------------------------------------------------------------------- |
 | `ai`   | User-facing entrypoint for daily AI use                                                       |
-| `just` | Operator/foundation layer for gateway lifecycle, MLX lifecycle, diagnostics and model fitness |
+| `just` | Operator/foundation layer for workstation lifecycle, runtime diagnostics and model fitness    |
 
-The `ai` command delegates foundation tasks to existing `just` recipes. It should not reimplement the gateway or MLX lifecycle logic.
+The `ai` command delegates foundation tasks to existing `just` recipes. It does not reimplement workstation or runtime lifecycle logic.
 
 ## Basic Usage
 
@@ -47,7 +47,7 @@ Show the active profile:
 
     ai profile
 
-Stop the local gateway and MLX servers:
+Stop the repo-managed workstation services:
 
     ai down
 
@@ -136,18 +136,24 @@ Run:
 
     ai status
 
-Example output:
+The command delegates operational status to `just workstation-status`, then adds the user-facing routing posture and recent route summary. Example output:
 
-    AI Dev Workstation Status
+    AI Workstation Status
 
-    Profile:    macos-work
-    Posture:    local-first
-    Gateway:    running
-    Local:      fast (ready), capable (ready), code (ready)
-    Frontier:   not configured
-    Routes:     local-fast, local-capable-mlx, local-code
+    Profile:        macos-work
+    Podman machine: running
+    Podman API:     ready
+    Compose API:    ready
+    Ollama:         ready (fallback)
+    oMLX:           ready (preferred)
+    LiteLLM:        ready
+    LibreChat:      ready at http://127.0.0.1:3080
+
+    Posture:     local-first
+    Frontier:    not configured
+    Routes:      local-fast, local-capable-mlx, local-code
     MLX aliases: local-fast-mlx, local-capable-mlx, local-code-mlx
-    Last route: not recorded yet
+    Last route:  not recorded yet
 
 ## Usage History
 
@@ -207,7 +213,7 @@ Example output:
 
 The history command reads local JSONL history. It does not send anything to a model.
 
-The history file is local and private. It should not be committed to the repository.The purpose of `ai status` is to give confidence that the local workstation is ready before starting work.
+The history file is local and private. It should not be committed to the repository. The purpose of `ai status` is to give confidence that the local workstation is ready before starting work.
 
 ## Profile Visibility
 
@@ -288,13 +294,9 @@ It should tell the user:
 
 Examples:
 
-    LiteLLM gateway is not reachable.
-    Try: just ai-up
-    Logs: podman logs ai-lab-litellm
-
-    MLX local model servers are not ready.
-    Try: just mlx-up
-    Logs: just mlx-logs
+    AI workstation is not ready.
+    Try: just workstation-up
+    Logs: just workstation-logs
 
     Python runtime not found: .venv/bin/python
     Try: python -m venv .venv && .venv/bin/pip install -r requirements.txt
@@ -307,11 +309,12 @@ Use `just` for operator and maintenance workflows.
 
 Examples:
 
-    just ai-up
-    just ai-down
-    just mlx-up
-    just mlx-check
-    just mlx-logs
+    just workstation-up
+    just workstation-status
+    just workstation-logs
+    just workstation-down
+    just omlx-check
+    just gateway-health
     just model-fitness-review
 
 The `ai` command is for daily use. `just` remains the foundation layer.
@@ -323,8 +326,8 @@ The `ai` command should make the common path simple.
 It should:
 
 - set a local development default for `LITELLM_MASTER_KEY` if one is not already set
-- start or check MLX servers by calling existing `just` recipes
-- start or check the LiteLLM gateway by calling existing `just` recipes
+- start, recover or check the workstation by calling existing `just` recipes
+- treat oMLX as the preferred Apple Silicon runtime and Ollama as fallback
 - send prompts through LiteLLM
 - keep model route selection explicit and understandable
 - show the active profile and routing posture

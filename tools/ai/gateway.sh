@@ -2,7 +2,7 @@
 set -euo pipefail
 
 gateway_ready() {
-  curl -fsS "${GATEWAY_URL}/v1/models" \
+  curl --max-time 3 -fsS "${GATEWAY_URL}/v1/models" \
     -H "Authorization: Bearer ${LITELLM_MASTER_KEY}" >/dev/null 2>&1
 }
 

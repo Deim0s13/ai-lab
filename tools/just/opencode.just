@@ -14,6 +14,11 @@ opencode-config-check:
       || (echo "FAIL missing {{ opencode_config }}" && exit 8)
     @test -f "config/opencode/.env.example" \
       || (echo "FAIL missing config/opencode/.env.example" && exit 8)
+    @example_key="$(awk '$0 ~ /^LITELLM_MASTER_KEY=/ { sub(/^LITELLM_MASTER_KEY=/, ""); sub(/\r$/, ""); print; exit }' "config/opencode/.env.example")"; \
+      if [[ "$example_key" != "replace-me" ]]; then \
+        echo "FAIL config/opencode/.env.example must contain the replace-me placeholder"; \
+        exit 8; \
+      fi
     @bash -n "{{ opencode_manifest }}" \
       || (echo "FAIL invalid OpenCode package manifest" && exit 8)
     @source "{{ opencode_manifest }}"; \
