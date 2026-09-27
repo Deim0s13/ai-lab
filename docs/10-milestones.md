@@ -90,6 +90,7 @@ The project direction is:
 - keep local-first as the default operating posture
 - treat frontier providers as explicit, visible and logged escalation paths
 - add observability through `ai status`, `ai routes`, `ai history` and `ai feedback`
+- complete the minimum security gate before expanding sensitive work-persona workflows, and finish security hardening before controlled agents
 - define context boundaries before private RAG or agents
 - introduce controlled agents only after routing, context and access boundaries are clear
 
@@ -806,6 +807,7 @@ The most important dependencies are:
 - validation before rebuild confidence
 - model fitness before stable model aliases
 - profile boundaries before RAG or agents
+- risk-based control levels before broader work personas, with isolated execution required before unattended agents
 
 ---
 

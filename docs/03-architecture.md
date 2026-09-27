@@ -186,6 +186,18 @@ flowchart TD
 
 ---
 
+### 7.1 Security and control model
+
+The workstation uses risk-based control levels rather than applying the same restrictions to every workflow:
+
+- advisory use does not approve file or command changes;
+- supervised editing uses explicit scope, application permissions and operator review;
+- isolated execution adds a disposable workspace and process, credential, network and lifecycle controls.
+
+Application permissions are guardrails, not an operating-system sandbox. Stronger isolation is required before unattended agents and when supervision cannot reasonably contain the likely harm.
+
+The complete posture, accepted residual risks and escalation triggers are defined in `docs/security-and-controls.md` and ADR-0019.
+
 ## 8. Profile architecture
 
 Profiles define the workstation’s behaviour by device and use case.

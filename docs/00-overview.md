@@ -189,6 +189,7 @@ docs/09-tool-selection.md
 docs/10-milestones.md
 docs/11-cli-interface-contracts.md
 docs/12-cli-habit-layer.md
+docs/security-and-controls.md
 docs/end-user-experience/development-workflow.md
 docs/proofs/
 docs/adr/
@@ -199,6 +200,7 @@ Start with:
 - `00-overview.md` for orientation
 - `01-vision.md` for the north star
 - `02-principles.md` for design rules
+- `security-and-controls.md` for the practical security posture and control levels
 - `10-milestones.md` for delivery sequence
 
 ---
