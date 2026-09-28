@@ -17,14 +17,14 @@ gateway-start:
       podman run -d \
         --name {{ litellm_container }} \
         --platform linux/arm64 \
-        -p 4000:4000 \
+        -p {{ gateway_bind_host }}:{{ gateway_port }}:{{ gateway_port }} \
         -e LITELLM_MASTER_KEY="{{ gateway_key }}" \
         -e OMLX_API_KEY="${omlx_key}" \
         -v "$PWD/config/gateway/litellm/config.local.yaml:/app/config.yaml:ro" \
         {{ litellm_image }} \
         --config /app/config.yaml \
         --host 0.0.0.0 \
-        --port 4000 >/dev/null
+        --port {{ gateway_port }} >/dev/null
     @echo "OK LiteLLM gateway started as {{ litellm_container }}"
     @just gateway-wait
 
@@ -46,9 +46,22 @@ gateway-stop:
     @podman rm -f {{ litellm_container }} >/dev/null 2>&1 || true
     @echo "OK LiteLLM gateway stopped"
 
+gateway-binding-check:
+    @binding="$(podman port {{ litellm_container }} {{ gateway_port }}/tcp 2>/dev/null \
+        | tail -n 1)"; \
+      expected="{{ gateway_bind_host }}:{{ gateway_port }}"; \
+      if [[ "$binding" != "$expected" ]]; then \
+        echo "FAIL LiteLLM has unexpected runtime binding: ${binding:-unavailable}"; \
+        echo "Expected: $expected"; \
+        echo "Try: just workstation-up"; \
+        exit 8; \
+      fi; \
+      echo "OK LiteLLM runtime is bound to $expected"
+
 gateway-ready:
     @test -n "{{ gateway_key }}" \
       || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
+    @just gateway-binding-check
     @curl --max-time 3 \
       -fsS \
       "{{ gateway_url }}/health/readiness" \

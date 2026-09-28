@@ -55,6 +55,9 @@ docs/tool-evaluations/001-litellm-gateway.md
 - Do not make ai-route execute provider/model routing.
 - Keep route policy in project config.
 - Let LiteLLM handle gateway/provider execution.
+- Publish the gateway only on `127.0.0.1:4000`.
+- Treat the internal container listener and the host-published address as separate boundaries.
+- Remote gateway access requires a separate security decision.
 
 ## Local Runtime Assumption
 

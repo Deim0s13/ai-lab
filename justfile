@@ -6,6 +6,8 @@ set shell := ["bash", "-uc"]
 
 gateway_url := env_var_or_default("AI_LAB_GATEWAY_URL", "http://localhost:4000")
 gateway_key := env_var_or_default("LITELLM_MASTER_KEY", "")
+gateway_bind_host := "127.0.0.1"
+gateway_port := "4000"
 
 litellm_image := "docker.io/litellm/litellm:1.90.0-rc.1"
 litellm_container := "ai-lab-litellm"
@@ -17,6 +19,7 @@ mlx_code_model := "lmstudio-community/Qwen3-Coder-30B-A3B-Instruct-MLX-5bit"
 mlx_fast_port := "8080"
 mlx_capable_port := "8081"
 mlx_code_port := "8082"
+mlx_bind_host := "127.0.0.1"
 
 promptfoo_timeout_ms := "1200000"
 

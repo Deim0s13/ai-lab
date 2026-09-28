@@ -137,17 +137,17 @@ mlx-up:
     @mkdir -p tmp
     @nohup .venv/bin/python -m mlx_lm server \
       --model {{ mlx_fast_model }} \
-      --host 0.0.0.0 \
+      --host {{ mlx_bind_host }} \
       --port {{ mlx_fast_port }} \
       > tmp/mlx-fast-server.log 2>&1 &
     @nohup .venv/bin/python -m mlx_lm server \
       --model {{ mlx_capable_model }} \
-      --host 0.0.0.0 \
+      --host {{ mlx_bind_host }} \
       --port {{ mlx_capable_port }} \
       > tmp/mlx-capable-server.log 2>&1 &
     @nohup .venv/bin/python -m mlx_lm server \
       --model {{ mlx_code_model }} \
-      --host 0.0.0.0 \
+      --host {{ mlx_bind_host }} \
       --port {{ mlx_code_port }} \
       > tmp/mlx-code-server.log 2>&1 &
     @echo "OK MLX servers starting"

@@ -63,11 +63,15 @@ just workstation-preflight
 just workstation-status
 just ollama-check
 just omlx-check
+just local-exposure-check
 just ui-check
 just opencode-check
 ```
 
 Expected result: every command exits `0` and reports the required `macos-work` components ready.
+
+Local workstation services must listen only on loopback interfaces. MongoDB
+must remain available only inside the LibreChat Compose network.
 
 For repeat use, run:
 
