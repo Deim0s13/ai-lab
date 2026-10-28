@@ -133,7 +133,8 @@ This decision aligns with the open-source-first, local-first, config-over-code, 
 
 - Pin and test every LibreChat and MongoDB upgrade; the evaluated LibreChat release is marked as a prerelease.
 - Monitor project health because maintenance remains somewhat founder-centred despite broad contribution.
-- Replace the local LiteLLM master key with an inference-scoped key when the gateway supports the required credential workflow.
+- Retain the implemented Bitwarden-backed, inference-scoped LibreChat key and
+  validate its stable-model-only access after credential or gateway changes.
 - Treat the missing-RAG startup warning as expected unless it obscures actionable errors.
 - Re-evaluate optional RAG, search, agent and administration services in their own milestones.
 

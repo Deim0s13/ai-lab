@@ -1,9 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ensure_cli_gateway_key() {
+  if ! secret_is_placeholder "${LITELLM_CLI_KEY:-}"; then
+    return 0
+  fi
+
+  if ! LITELLM_CLI_KEY="$(
+    resolve_profile_secret \
+      "${profile}" \
+      LITELLM_CLI_KEY \
+      "${secret_fallback_file}"
+  )"; then
+    return 8
+  fi
+
+  export LITELLM_CLI_KEY
+}
+
 gateway_ready() {
+  ensure_cli_gateway_key >/dev/null 2>&1 || return 1
+
   curl --max-time 3 -fsS "${GATEWAY_URL}/v1/models" \
-    -H "Authorization: Bearer ${LITELLM_MASTER_KEY}" >/dev/null 2>&1
+    -H "Authorization: Bearer ${LITELLM_CLI_KEY}" \
+    >/dev/null 2>&1
 }
 
 ask_model() {
@@ -12,6 +32,7 @@ ask_model() {
   local payload=""
 
   check_python_runtime
+  ensure_cli_gateway_key
 
   payload="$(
     .venv/bin/python -c '
@@ -31,7 +52,7 @@ print(json.dumps({
   )"
 
   curl -fsS "${GATEWAY_URL}/v1/chat/completions" \
-    -H "Authorization: Bearer ${LITELLM_MASTER_KEY}" \
+    -H "Authorization: Bearer ${LITELLM_CLI_KEY}" \
     -H "Content-Type: application/json" \
     -d "$payload" \
     | jq -r '.choices[0].message.content'

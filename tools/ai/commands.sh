@@ -356,7 +356,9 @@ command_routes() {
       check_dependencies
       check_python_runtime
       ensure_gateway_ready
-      just gateway-routes
+      ensure_cli_gateway_key
+      LITELLM_API_KEY="${LITELLM_CLI_KEY}" \
+        just gateway-routes
       ;;
     test)
       shift

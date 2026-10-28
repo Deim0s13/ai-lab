@@ -4,10 +4,18 @@ This directory contains reproducible service definitions used by the workstation
 
 ## Implemented services
 
-LibreChat provides the selected browser chat UI. It runs with MongoDB and uses LiteLLM as its only model endpoint.
+LiteLLM provides the gateway and uses PostgreSQL for persistent virtual-key
+state. PostgreSQL is internal to the Compose network and is not exposed on a
+host port.
+
+LibreChat provides the selected browser chat UI. It runs with MongoDB and uses
+LiteLLM as its only model endpoint.
 
 ```text
 containers/
+├── litellm/
+│   ├── compose.yaml
+│   └── .env.example
 └── librechat/
     ├── compose.yaml
     ├── librechat.yaml

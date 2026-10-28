@@ -14,11 +14,16 @@ workstation-preflight:
     @command -v ollama >/dev/null 2>&1 || (echo "FAIL required command not found: ollama" && exit 8)
     @test -x .venv/bin/python || (echo "FAIL Python runtime not found: .venv/bin/python" && exit 8)
     @test -f "{{ workstation_env_file }}" || (echo "FAIL missing {{ workstation_env_file }}; copy {{ ui_directory }}/.env.example and populate it" && exit 8)
-    @key="$(awk '$0 ~ /^LITELLM_MASTER_KEY=/ { sub(/^LITELLM_MASTER_KEY=/, ""); sub(/\r$/, ""); print; exit }' "{{ workstation_env_file }}")"; \
-      if [[ -z "$key" || "$key" == "replace-me" ]]; then \
-        echo "FAIL LITELLM_MASTER_KEY is missing from {{ workstation_env_file }}"; \
+    @if ! client_key="$( \
+        source tools/ai/secrets.sh; \
+        resolve_profile_secret \
+          "{{ workstation_profile }}" \
+          LITELLM_CLI_KEY \
+          "{{ client_secret_fallback_file }}" \
+      )"; then \
         exit 8; \
-      fi
+      fi; \
+      unset client_key
     @podman machine inspect "{{ podman_machine }}" >/dev/null 2>&1 || (echo "FAIL Podman machine {{ podman_machine }} does not exist" && echo "Try: podman machine init {{ podman_machine }}" && exit 8)
     @echo "OK workstation preflight passed for {{ workstation_profile }}"
 
@@ -34,13 +39,23 @@ workstation-up:
       || { echo "FAIL workstation startup stopped at oMLX"; exit 8; }
     @just ollama-up \
       || { echo "FAIL workstation startup stopped at Ollama fallback"; exit 8; }
-    @key="$(awk '$0 ~ /^LITELLM_MASTER_KEY=/ { sub(/^LITELLM_MASTER_KEY=/, ""); sub(/\r$/, ""); print; exit }' "{{ workstation_env_file }}")"; \
-      if LITELLM_MASTER_KEY="$key" just gateway-ready >/dev/null 2>&1; then \
+    @if ! client_key="$( \
+        source tools/ai/secrets.sh; \
+        resolve_profile_secret \
+          "{{ workstation_profile }}" \
+          LITELLM_CLI_KEY \
+          "{{ client_secret_fallback_file }}" \
+      )"; then \
+        exit 8; \
+      fi; \
+      if LITELLM_API_KEY="$client_key" \
+          just gateway-ready >/dev/null 2>&1; then \
         echo "OK LiteLLM gateway is already ready"; \
       else \
-        LITELLM_MASTER_KEY="$key" just gateway-start \
+        just gateway-start \
           || { echo "FAIL workstation startup stopped at LiteLLM"; exit 8; }; \
-      fi
+      fi; \
+      unset client_key
     @if just ui-status >/dev/null 2>&1; then \
       echo "OK LibreChat is already ready"; \
     else \
@@ -52,7 +67,7 @@ workstation-up:
 
 workstation-status:
     @status_code=0; \
-      key=""; \
+      client_key=""; \
       echo "AI Workstation Status"; \
       echo; \
       echo "Profile:        {{ workstation_profile }}"; \
@@ -90,19 +105,27 @@ workstation-status:
         echo "                Try: just omlx-up"; \
         status_code=8; \
       fi; \
-      if [[ -f "{{ workstation_env_file }}" ]]; then \
-        key="$(awk '$0 ~ /^LITELLM_MASTER_KEY=/ { sub(/^LITELLM_MASTER_KEY=/, ""); sub(/\r$/, ""); print; exit }' "{{ workstation_env_file }}")"; \
-      fi; \
-      if [[ -z "$key" || "$key" == "replace-me" ]]; then \
-        echo "LiteLLM:        cannot check; profile key unavailable"; \
+      client_key="$( \
+        source tools/ai/secrets.sh; \
+        resolve_profile_secret \
+          "{{ workstation_profile }}" \
+          LITELLM_CLI_KEY \
+          "{{ client_secret_fallback_file }}" \
+          2>/dev/null \
+        || true \
+      )"; \
+      if [[ -z "$client_key" || "$client_key" == "replace-me" ]]; then \
+        echo "LiteLLM:        cannot check; scoped CLI key unavailable"; \
         status_code=8; \
-      elif LITELLM_MASTER_KEY="$key" just gateway-ready >/dev/null 2>&1; then \
+      elif LITELLM_API_KEY="$client_key" \
+          just gateway-ready >/dev/null 2>&1; then \
         echo "LiteLLM:        ready"; \
       else \
         echo "LiteLLM:        not ready"; \
         echo "                Try: just workstation-up"; \
         status_code=8; \
       fi; \
+      unset client_key; \
       if curl --max-time 2 -fsS "{{ ui_url }}" >/dev/null 2>&1; then \
         echo "LibreChat:      ready at {{ ui_url }}"; \
       else \
@@ -120,7 +143,7 @@ workstation-logs:
     @just omlx-logs
     @echo
     @echo "== LiteLLM gateway =="
-    @podman logs --tail 100 {{ litellm_container }} 2>&1 \
+    @just gateway-log-tail 2>&1 \
       || echo "INFO LiteLLM logs are unavailable"
     @echo
     @echo "== LibreChat =="

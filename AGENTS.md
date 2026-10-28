@@ -22,6 +22,7 @@ Start with:
 - `docs/10-milestones.md` — delivery sequence and current milestone intent
 - `docs/11-cli-interface-contracts.md` — CLI behaviour contracts
 - `docs/12-cli-habit-layer.md` — thin CLI habit-layer boundary
+- `docs/secrets-and-credentials.md` — credential naming, scope, rotation and recovery
 - `docs/adr/README.md` — ADR purpose and when to create one
 - `docs/adr/0011-secrets-management-strategy.md` — Bitwarden-first secrets strategy
 - `docs/adr/0016-use-existing-tools-for-routing-and-validation-where-practical.md` — key guardrail against custom-code creep

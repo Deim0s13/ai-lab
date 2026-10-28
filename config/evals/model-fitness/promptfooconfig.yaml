@@ -8,19 +8,19 @@ providers:
     label: candidate-llama32-3b
     config:
       apiBaseUrl: http://localhost:4000
-      apiKeyEnvar: LITELLM_MASTER_KEY
+      apiKeyEnvar: LITELLM_EVAL_KEY
 
   - id: litellm:chat:candidate-llama31-8b
     label: candidate-llama31-8b
     config:
       apiBaseUrl: http://localhost:4000
-      apiKeyEnvar: LITELLM_MASTER_KEY
+      apiKeyEnvar: LITELLM_EVAL_KEY
 
 #  - id: litellm:chat:candidate-qwen35
 #    label: candidate-qwen35
 #    config:
 #      apiBaseUrl: http://localhost:4000
-#      apiKeyEnvar: LITELLM_MASTER_KEY
+#      apiKeyEnvar: LITELLM_EVAL_KEY
 
 tests:
   - description: quick general assistance

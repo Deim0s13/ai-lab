@@ -8,8 +8,9 @@ verification while keeping model access behind LiteLLM.
 
 - `opencode.json` defines the gateway-only provider, stable `local-code`
   model, conservative permissions and disabled integrations.
-- `.env.example` documents required variables using placeholders only.
-- `.env.macos-work.local` is an ignored temporary local credential file.
+- `../secrets/.env.example` documents scoped client variables using
+  placeholders only.
+- `../secrets/.env.macos-work.local` is the ignored recovery fallback.
 - `../../packages/macos-work/opencode.env` pins the tested OpenCode release,
   platform archive and checksum.
 
@@ -77,8 +78,11 @@ OpenCode may also store local session, cache, configuration and state under
 `~/.local/state/opencode`. Removing those directories deletes local OpenCode
 state and should only be done when a clean rebuild is intended.
 
-Credential migration to Bitwarden-backed scoped gateway credentials is
-tracked separately in issue 64.
+OpenCode resolves `LITELLM_OPENCODE_KEY` from Bitwarden and can access only the
+stable `local-code` model group. It never receives the LiteLLM master key.
+
+See `../../docs/secrets-and-credentials.md` for rotation, revocation and
+rebuild procedures.
 
 ## Related Documentation
 

@@ -10,28 +10,55 @@ check-yaml:
 # ------------------------------------------------------------------------------
 
 eval-model-fitness:
-    @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
-    @mkdir -p tmp
-    @PROMPTFOO_EVAL_TIMEOUT_MS={{ promptfoo_timeout_ms }} promptfoo eval \
-      -c config/evals/model-fitness/promptfooconfig.yaml \
-      --max-concurrency 1 \
-      --no-cache \
-      -o tmp/model-fitness-results.json
+    @if ! key="$( \
+        source tools/ai/secrets.sh; \
+        resolve_profile_secret \
+          "{{ workstation_profile }}" \
+          LITELLM_EVAL_KEY \
+          "{{ client_secret_fallback_file }}" \
+      )"; then \
+        exit 8; \
+      fi; \
+      mkdir -p tmp; \
+      status_code=0; \
+      LITELLM_EVAL_KEY="$key" \
+      PROMPTFOO_EVAL_TIMEOUT_MS={{ promptfoo_timeout_ms }} \
+        promptfoo eval \
+          -c config/evals/model-fitness/promptfooconfig.yaml \
+          --max-concurrency 1 \
+          --no-cache \
+          -o tmp/model-fitness-results.json \
+        || status_code=$?; \
+      unset key; \
+      exit "$status_code"
 
 eval-model-fitness-mlx:
     @mkdir -p tmp
     @.venv/bin/python tools/evals/run_mlx_model_fitness.py
 
+eval-gateway-models:
+    @if ! key="$( \
+        source tools/ai/secrets.sh; \
+        resolve_profile_secret \
+          "{{ workstation_profile }}" \
+          LITELLM_EVAL_KEY \
+          "{{ client_secret_fallback_file }}" \
+      )"; then \
+        exit 8; \
+      fi; \
+      LITELLM_API_KEY="$key" just gateway-models || exit $?; \
+      LITELLM_API_KEY="$key" just gateway-mlx-models || exit $?; \
+      echo "== Evaluation-visible gateway routes =="; \
+      LITELLM_API_KEY="$key" just gateway-routes || exit $?; \
+      unset key
+
 model-fitness-review:
-    @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
     @echo "== Checking MLX servers =="
     @just mlx-check
     @echo "== Checking YAML config =="
     @just check-yaml
-    @echo "== Checking LiteLLM gateway routes =="
-    @just gateway-models
-    @just gateway-mlx-models
-    @just gateway-routes
+    @echo "== Checking LiteLLM gateway routes with scoped evaluation access =="
+    @just eval-gateway-models
     @echo "== Running Ollama/LiteLLM model fitness eval =="
     @just eval-model-fitness
     @echo "== Running direct MLX model fitness eval =="

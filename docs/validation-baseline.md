@@ -81,34 +81,22 @@ Lifecycle commands such as `workstation-down`, `ui-down` and `omlx-down` are not
 
 ## Tier 3 — Synthetic Behaviour
 
-Load the local gateway key without printing it:
-
-```bash
-key="$(
-  awk '$0 ~ /^LITELLM_MASTER_KEY=/ {
-    sub(/^LITELLM_MASTER_KEY=/, "")
-    sub(/\r$/, "")
-    print
-    exit
-  }' config/opencode/.env.macos-work.local
-)"
-```
+Unlock Bitwarden and export `BW_SESSION` for the active terminal. Daily CLI
+commands resolve `LITELLM_CLI_KEY` without printing it. Direct `just`
+completion checks resolve the same item into a temporary shell variable.
 
 Confirm explicit route selection:
 
 ```bash
 AI_LAB_PROFILE=macos-work \
-LITELLM_MASTER_KEY="${key}" \
   bin/ai routes test --mode fast \
   "Return only: VALIDATION_FAST_ROUTE"
 
 AI_LAB_PROFILE=macos-work \
-LITELLM_MASTER_KEY="${key}" \
   bin/ai routes test --mode capable \
   "Return only: VALIDATION_CAPABLE_ROUTE"
 
 AI_LAB_PROFILE=macos-work \
-LITELLM_MASTER_KEY="${key}" \
   bin/ai routes test --mode code \
   "Return only: VALIDATION_CODE_ROUTE"
 ```
@@ -124,11 +112,13 @@ Expected routes:
 Confirm the two stable daily-use completion paths:
 
 ```bash
-LITELLM_MASTER_KEY="${key}" \
+key="$(bw get password ai-lab/macos-work/LITELLM_CLI_KEY)"
+
+LITELLM_API_KEY="${key}" \
   just ask-model local-fast \
   "Return only: VALIDATION_FAST_OK"
 
-LITELLM_MASTER_KEY="${key}" \
+LITELLM_API_KEY="${key}" \
   just ask-model local-code \
   "Return only: VALIDATION_CODE_OK"
 

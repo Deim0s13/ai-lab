@@ -6,16 +6,14 @@
   "autoupdate": false,
   "share": "disabled",
   "snapshot": true,
-  "enabled_providers": [
-    "ai-lab"
-  ],
+  "enabled_providers": ["ai-lab"],
   "provider": {
     "ai-lab": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "AI Lab LiteLLM",
       "options": {
         "baseURL": "http://127.0.0.1:4000/v1",
-        "apiKey": "{env:LITELLM_MASTER_KEY}"
+        "apiKey": "{env:LITELLM_OPENCODE_KEY}"
       },
       "models": {
         "local-code": {
@@ -62,13 +60,6 @@
   "mcp": {},
   "plugin": [],
   "watcher": {
-    "ignore": [
-      ".git/**",
-      "**/.env",
-      "**/.env.*",
-      "**/.secrets/**",
-      "**/*.key",
-      "**/*.pem"
-    ]
+    "ignore": [".git/**", "**/.env", "**/.env.*", "**/.secrets/**", "**/*.key", "**/*.pem"]
   }
 }

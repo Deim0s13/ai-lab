@@ -25,7 +25,7 @@ services:
       MONGO_URI: mongodb://mongodb:27017/LibreChat
 
       ENDPOINTS: custom
-      LITELLM_API_KEY: "${LITELLM_MASTER_KEY:?LITELLM_MASTER_KEY must be set}"
+      LITELLM_API_KEY: "${LITELLM_LIBRECHAT_KEY:?LITELLM_LIBRECHAT_KEY must be set}"
 
       ALLOW_EMAIL_LOGIN: "true"
       ALLOW_REGISTRATION: "${LIBRECHAT_ALLOW_REGISTRATION:-false}"

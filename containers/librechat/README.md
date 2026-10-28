@@ -43,16 +43,21 @@ cp containers/librechat/.env.example \
 chmod 600 containers/librechat/.env.macos-work.local
 ```
 
-Populate `LITELLM_API_KEY` with the same value used by `LITELLM_MASTER_KEY`. Generate independent LibreChat secrets with:
+Leave `LITELLM_LIBRECHAT_KEY=replace-me`. Lifecycle recipes resolve the scoped
+LibreChat virtual key from Bitwarden and materialize it only for the Compose
+operation. Generate the independent LibreChat application secrets with:
 
 ```bash
 openssl rand -hex 32
 openssl rand -hex 16
 ```
 
-Use 64-character values for `JWT_SECRET`, `JWT_REFRESH_SECRET`, `CREDS_KEY` and `SESSION_SECRET`. Use the 32-character value for `CREDS_IV`.
+Use 64-character values for `JWT_SECRET`, `JWT_REFRESH_SECRET` and `CREDS_KEY`.
+Use the 32-character value for `CREDS_IV`.
 
-Profile-local `.env.<profile>.local` files are ignored by Git and must never be committed.
+Profile-local `.env.<profile>.local` files are ignored by Git and must never be
+committed. See `../../docs/secrets-and-credentials.md` for credential naming,
+fallback, rotation and recovery.
 
 ## First run
 
@@ -100,12 +105,12 @@ just gateway-ready
 
 ## Gateway and model access
 
-LibreChat discovers model aliases through LiteLLM. Required aliases include:
+LibreChat discovers model aliases through LiteLLM. Its scoped credential
+exposes only these stable aliases:
 
 - `local-fast`
-- `local-fast-mlx`
 - `local-capable-mlx`
-- `local-code-mlx`
+- `local-code`
 
 Run the focused configuration and runtime check with:
 

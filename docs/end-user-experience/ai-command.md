@@ -325,7 +325,7 @@ The `ai` command should make the common path simple.
 
 It should:
 
-- set a local development default for `LITELLM_MASTER_KEY` if one is not already set
+- resolve the profile-scoped `LITELLM_CLI_KEY` without exposing or duplicating the gateway master key
 - start, recover or check the workstation by calling existing `just` recipes
 - treat oMLX as the preferred Apple Silicon runtime and Ollama as fallback
 - send prompts through LiteLLM

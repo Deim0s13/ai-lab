@@ -3,35 +3,37 @@
 # ------------------------------------------------------------------------------
 
 gateway-start:
-    @test -n "{{ gateway_key }}" \
-      || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
-    @podman rm -f {{ litellm_container }} >/dev/null 2>&1 || true
-    @omlx_key="${OMLX_API_KEY:-}"; \
-      if [[ -z "${omlx_key}" && -f "{{ omlx_settings }}" ]]; then \
-        omlx_key="$(jq -r '.auth.api_key // empty' "{{ omlx_settings }}")"; \
-      fi; \
-      if [[ -z "${omlx_key}" ]]; then \
-        echo "FAIL oMLX API key is unavailable"; \
+    @if ! environment_file="$(source tools/ai/secrets.sh; materialize_litellm_env "{{ workstation_profile }}")"; then \
         exit 8; \
       fi; \
-      podman run -d \
-        --name {{ litellm_container }} \
-        --platform linux/arm64 \
-        -p {{ gateway_bind_host }}:{{ gateway_port }}:{{ gateway_port }} \
-        -e LITELLM_MASTER_KEY="{{ gateway_key }}" \
-        -e OMLX_API_KEY="${omlx_key}" \
-        -v "$PWD/config/gateway/litellm/config.local.yaml:/app/config.yaml:ro" \
-        {{ litellm_image }} \
-        --config /app/config.yaml \
-        --host 0.0.0.0 \
-        --port {{ gateway_port }} >/dev/null
-    @echo "OK LiteLLM gateway started as {{ litellm_container }}"
-    @just gateway-wait
+        trap 'rm -f "$environment_file"' EXIT; \
+        master_key="$(awk -F= '$1 == "LITELLM_MASTER_KEY" { print $2; exit }' "$environment_file")"; \
+        salt_key="$(awk -F= '$1 == "LITELLM_SALT_KEY" { print $2; exit }' "$environment_file")"; \
+        database_password="$(awk -F= '$1 == "LITELLM_DATABASE_PASSWORD" { print $2; exit }' "$environment_file")"; \
+        omlx_key="${OMLX_API_KEY:-}"; \
+        if [[ -z "$omlx_key" && -f "{{ omlx_settings }}" ]]; then \
+          omlx_key="$(jq -r '.auth.api_key // empty' "{{ omlx_settings }}")"; \
+        fi; \
+        if [[ -z "$omlx_key" ]]; then \
+          echo "FAIL oMLX API key is unavailable"; \
+          exit 8; \
+        fi; \
+        LITELLM_MASTER_KEY="$master_key" \
+        LITELLM_SALT_KEY="$salt_key" \
+        LITELLM_DATABASE_PASSWORD="$database_password" \
+        OMLX_API_KEY="$omlx_key" \
+          podman compose \
+            --env-file "$environment_file" \
+            --project-name "{{ gateway_project }}" \
+            --file "{{ gateway_compose_file }}" \
+            up -d --remove-orphans; \
+        LITELLM_MASTER_KEY="$master_key" just gateway-wait
+    @echo "OK LiteLLM gateway and persistent key database started"
 
 gateway-wait:
     @test -n "{{ gateway_key }}" \
       || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
-    @for attempt in {1..60}; do \
+    @for attempt in {1..120}; do \
       if just gateway-ready >/dev/null 2>&1; then \
         echo "OK LiteLLM gateway is ready"; \
         exit 0; \
@@ -39,15 +41,25 @@ gateway-wait:
       sleep 1; \
     done; \
     echo "FAIL LiteLLM gateway did not become ready"; \
-    podman logs --tail 50 {{ litellm_container }}; \
+    just gateway-log-tail; \
     exit 8
 
 gateway-stop:
-    @podman rm -f {{ litellm_container }} >/dev/null 2>&1 || true
-    @echo "OK LiteLLM gateway stopped"
+    @OMLX_API_KEY=replace-me \
+      podman compose \
+        --env-file "{{ gateway_example_env_file }}" \
+        --project-name "{{ gateway_project }}" \
+        --file "{{ gateway_compose_file }}" \
+        down --remove-orphans
+    @echo "OK LiteLLM gateway stopped; persistent key data retained"
 
 gateway-binding-check:
-    @binding="$(podman port {{ litellm_container }} {{ gateway_port }}/tcp 2>/dev/null \
+    @binding="$(OMLX_API_KEY=replace-me \
+        podman compose \
+          --env-file "{{ gateway_example_env_file }}" \
+          --project-name "{{ gateway_project }}" \
+          --file "{{ gateway_compose_file }}" \
+          port "{{ gateway_service }}" "{{ gateway_port }}" 2>/dev/null \
         | tail -n 1)"; \
       expected="{{ gateway_bind_host }}:{{ gateway_port }}"; \
       if [[ "$binding" != "$expected" ]]; then \
@@ -59,46 +71,67 @@ gateway-binding-check:
       echo "OK LiteLLM runtime is bound to $expected"
 
 gateway-ready:
-    @test -n "{{ gateway_key }}" \
-      || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
+    @test -n "{{ gateway_auth_key }}" \
+      || (echo "FAIL LITELLM_API_KEY or LITELLM_MASTER_KEY is not set" && exit 8)
     @just gateway-binding-check
     @curl --max-time 3 \
       -fsS \
       "{{ gateway_url }}/health/readiness" \
-      -H "Authorization: Bearer {{ gateway_key }}" \
+      -H "Authorization: Bearer {{ gateway_auth_key }}" \
       >/dev/null
     @curl --max-time 3 \
       -fsS \
       "{{ gateway_url }}/v1/models" \
-      -H "Authorization: Bearer {{ gateway_key }}" \
+      -H "Authorization: Bearer {{ gateway_auth_key }}" \
       | jq -e '.data | length > 0' >/dev/null
     @echo "OK LiteLLM gateway is ready"
 
 gateway-status:
-    @podman ps --filter name={{ litellm_container }}
+    @OMLX_API_KEY=replace-me \
+      podman compose \
+        --env-file "{{ gateway_example_env_file }}" \
+        --project-name "{{ gateway_project }}" \
+        --file "{{ gateway_compose_file }}" \
+        ps
+
+gateway-log-tail:
+    @OMLX_API_KEY=replace-me \
+      podman compose \
+        --env-file "{{ gateway_example_env_file }}" \
+        --project-name "{{ gateway_project }}" \
+        --file "{{ gateway_compose_file }}" \
+        logs --tail 100 "{{ gateway_service }}"
 
 gateway-logs:
-    @podman logs -f {{ litellm_container }}
+    @OMLX_API_KEY=replace-me \
+      podman compose \
+        --env-file "{{ gateway_example_env_file }}" \
+        --project-name "{{ gateway_project }}" \
+        --file "{{ gateway_compose_file }}" \
+        logs -f "{{ gateway_service }}"
 
 gateway-routes:
-    @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
+    @test -n "{{ gateway_client_key }}" \
+      || (echo "FAIL LITELLM_API_KEY is not set" && exit 8)
     @curl --max-time 3 -fsS "{{ gateway_url }}/v1/models" \
-      -H "Authorization: Bearer {{ gateway_key }}" \
+      -H "Authorization: Bearer {{ gateway_client_key }}" \
       | jq -r '.data[].id'
 
 gateway-models:
-    @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
+    @test -n "{{ gateway_auth_key }}" \
+      || (echo "FAIL LITELLM_API_KEY or LITELLM_MASTER_KEY is not set" && exit 8)
     @curl --max-time 3 -fsS "{{ gateway_url }}/v1/models" \
-      -H "Authorization: Bearer {{ gateway_key }}" \
+      -H "Authorization: Bearer {{ gateway_auth_key }}" \
       | jq -e \
           '([.data[].id] | index("local-fast")) != null and ([.data[].id] | index("local-code")) != null' \
           >/dev/null
     @echo "OK required stable model groups listed by LiteLLM"
 
 gateway-mlx-models:
-    @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
+    @test -n "{{ gateway_auth_key }}" \
+      || (echo "FAIL LITELLM_API_KEY or LITELLM_MASTER_KEY is not set" && exit 8)
     @curl --max-time 3 -fsS "{{ gateway_url }}/v1/models" \
-      -H "Authorization: Bearer {{ gateway_key }}" \
+      -H "Authorization: Bearer {{ gateway_auth_key }}" \
       | jq -e '([.data[].id] | index("local-fast-mlx")) != null and ([.data[].id] | index("local-capable-mlx")) != null and ([.data[].id] | index("local-code-mlx")) != null' \
       >/dev/null
     @echo "OK MLX candidate routes listed by LiteLLM"
@@ -139,17 +172,19 @@ bootstrap-check: check-yaml gateway-ready gateway-models
 # ------------------------------------------------------------------------------
 
 ask prompt:
-    @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
+    @test -n "{{ gateway_client_key }}" \
+      || (echo "FAIL LITELLM_API_KEY is not set" && exit 8)
     @curl -fsS "{{ gateway_url }}/v1/chat/completions" \
-      -H "Authorization: Bearer {{ gateway_key }}" \
+      -H "Authorization: Bearer {{ gateway_client_key }}" \
       -H "Content-Type: application/json" \
       -d "$(.venv/bin/python -c 'import json, sys; print(json.dumps({"model": "local-fast", "messages": [{"role": "user", "content": sys.argv[1]}]}))' '{{ prompt }}')" \
       | jq -r '.choices[0].message.content'
 
 ask-model model prompt:
-    @test -n "{{ gateway_key }}" || (echo "FAIL LITELLM_MASTER_KEY is not set" && exit 8)
+    @test -n "{{ gateway_client_key }}" \
+      || (echo "FAIL LITELLM_API_KEY is not set" && exit 8)
     @curl -fsS "{{ gateway_url }}/v1/chat/completions" \
-      -H "Authorization: Bearer {{ gateway_key }}" \
+      -H "Authorization: Bearer {{ gateway_client_key }}" \
       -H "Content-Type: application/json" \
       -d "$(.venv/bin/python -c 'import json, sys; print(json.dumps({"model": sys.argv[1], "messages": [{"role": "user", "content": sys.argv[2]}]}))' '{{ model }}' '{{ prompt }}')" \
       | jq -r '.choices[0].message.content'

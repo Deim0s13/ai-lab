@@ -130,9 +130,12 @@ Examples:
 
 ## Environment Variables
 
-Required for local gateway use:
+Gateway credentials are resolved by profile from Bitwarden. `bin/ai` uses
+`LITELLM_CLI_KEY`; it must not receive `LITELLM_MASTER_KEY`. An explicit
+environment value may override Bitwarden for a single invocation, while
+`config/secrets/.env.<profile>.local` remains an ignored recovery fallback.
 
-    export LITELLM_MASTER_KEY=sk-local-dev
+See `docs/secrets-and-credentials.md` for item names and recovery procedures.
 
 Optional override:
 
@@ -189,7 +192,7 @@ The CLI habit layer currently does not include:
 - streaming output
 - prompt templates
 - background startup
-- automatic secret loading
+- additional provider-secret automation beyond the implemented local gateway credentials
 - configured frontier provider execution
 - automatic frontier escalation
 - provider fallback

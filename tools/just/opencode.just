@@ -4,7 +4,7 @@
 
 opencode_manifest := "packages/macos-work/opencode.env"
 opencode_config := "config/opencode/opencode.json"
-opencode_env_file := "config/opencode/.env." + workstation_profile + ".local"
+opencode_env_file := client_secret_fallback_file
 opencode_binary := env_var("HOME") + "/.opencode/bin/opencode"
 
 opencode-config-check:
@@ -12,11 +12,11 @@ opencode-config-check:
       || (echo "FAIL missing {{ opencode_manifest }}" && exit 8)
     @test -f "{{ opencode_config }}" \
       || (echo "FAIL missing {{ opencode_config }}" && exit 8)
-    @test -f "config/opencode/.env.example" \
-      || (echo "FAIL missing config/opencode/.env.example" && exit 8)
-    @example_key="$(awk '$0 ~ /^LITELLM_MASTER_KEY=/ { sub(/^LITELLM_MASTER_KEY=/, ""); sub(/\r$/, ""); print; exit }' "config/opencode/.env.example")"; \
+    @test -f "config/secrets/.env.example" \
+      || (echo "FAIL missing config/secrets/.env.example" && exit 8)
+    @example_key="$(awk '$0 ~ /^LITELLM_OPENCODE_KEY=/ { sub(/^LITELLM_OPENCODE_KEY=/, ""); sub(/\r$/, ""); print; exit }' "config/secrets/.env.example")"; \
       if [[ "$example_key" != "replace-me" ]]; then \
-        echo "FAIL config/opencode/.env.example must contain the replace-me placeholder"; \
+        echo "FAIL config/secrets/.env.example must contain the OpenCode placeholder"; \
         exit 8; \
       fi
     @bash -n "{{ opencode_manifest }}" \
@@ -48,7 +48,7 @@ opencode-config-check:
        and (.provider | keys) == ["ai-lab"] \
        and .provider["ai-lab"].npm == "@ai-sdk/openai-compatible" \
        and .provider["ai-lab"].options.baseURL == "http://127.0.0.1:4000/v1" \
-       and .provider["ai-lab"].options.apiKey == "{env:LITELLM_MASTER_KEY}" \
+       and .provider["ai-lab"].options.apiKey == "{env:LITELLM_OPENCODE_KEY}" \
        and (.provider["ai-lab"].models | keys) == ["local-code"] \
        and .permission["*"] == "ask" \
        and .permission.edit == "ask" \
@@ -64,8 +64,8 @@ opencode-config-check:
       || (echo "FAIL OpenCode configuration violates the macos-work policy" && exit 8)
     @git check-ignore -q "{{ opencode_env_file }}" \
       || (echo "FAIL {{ opencode_env_file }} is not ignored by Git" && exit 8)
-    @if git check-ignore -q "config/opencode/.env.example"; then \
-      echo "FAIL config/opencode/.env.example is ignored by Git"; \
+    @if git check-ignore -q "config/secrets/.env.example"; then \
+      echo "FAIL config/secrets/.env.example is ignored by Git"; \
       exit 8; \
     fi
     @echo "OK OpenCode committed configuration is gateway-only and conservative"
@@ -125,22 +125,25 @@ opencode-check: opencode-config-check
         exit 8; \
       fi; \
       echo "OK OpenCode ${installed_version} is installed"
-    @test -f "{{ opencode_env_file }}" \
-      || (echo "FAIL missing {{ opencode_env_file }}; copy config/opencode/.env.example and populate it" && exit 8)
     @git check-ignore -q "{{ opencode_env_file }}" \
       || (echo "FAIL {{ opencode_env_file }} is not ignored by Git" && exit 8)
-    @key="$(awk '$0 ~ /^LITELLM_MASTER_KEY=/ { sub(/^LITELLM_MASTER_KEY=/, ""); sub(/\r$/, ""); print; exit }' "{{ opencode_env_file }}")"; \
-      if [[ -z "$key" || "$key" == "replace-me" ]]; then \
-        echo "FAIL LITELLM_MASTER_KEY is unavailable"; \
+    @if ! key="$( \
+        source tools/ai/secrets.sh; \
+        resolve_profile_secret \
+          "{{ workstation_profile }}" \
+          LITELLM_OPENCODE_KEY \
+          "{{ opencode_env_file }}" \
+      )"; then \
         exit 8; \
       fi; \
-      if ! LITELLM_MASTER_KEY="$key" just gateway-ready >/dev/null 2>&1; then \
+      if ! LITELLM_API_KEY="$key" \
+          just gateway-ready >/dev/null 2>&1; then \
         echo "FAIL LiteLLM gateway is unavailable; try: just workstation-up"; \
         exit 8; \
       fi; \
       config_content="$(jq -c . "{{ opencode_config }}")"; \
       if ! models="$( \
-          LITELLM_MASTER_KEY="$key" \
+          LITELLM_OPENCODE_KEY="$key" \
           OPENCODE_DISABLE_AUTOUPDATE=true \
           OPENCODE_CONFIG_CONTENT="$config_content" \
           OPENCODE_DISABLE_DEFAULT_PLUGINS=true \
@@ -156,25 +159,29 @@ opencode-check: opencode-config-check
         echo "FAIL OpenCode does not list ai-lab/local-code"; \
         exit 8; \
       fi; \
+      unset key; \
       echo "OK OpenCode can select ai-lab/local-code through LiteLLM"
 
 opencode-models:
-    @test -f "{{ opencode_env_file }}" \
-      || (echo "FAIL missing {{ opencode_env_file }}" && exit 8)
-    @key="$(awk '$0 ~ /^LITELLM_MASTER_KEY=/ { sub(/^LITELLM_MASTER_KEY=/, ""); sub(/\r$/, ""); print; exit }' "{{ opencode_env_file }}")"; \
-      if [[ -z "$key" || "$key" == "replace-me" ]]; then \
-        echo "FAIL LITELLM_MASTER_KEY is unavailable"; \
+    @if ! key="$( \
+        source tools/ai/secrets.sh; \
+        resolve_profile_secret \
+          "{{ workstation_profile }}" \
+          LITELLM_OPENCODE_KEY \
+          "{{ opencode_env_file }}" \
+      )"; then \
         exit 8; \
       fi; \
       config_content="$(jq -c . "{{ opencode_config }}")"; \
-      LITELLM_MASTER_KEY="$key" \
+      LITELLM_OPENCODE_KEY="$key" \
       OPENCODE_CONFIG_CONTENT="$config_content" \
       OPENCODE_DISABLE_DEFAULT_PLUGINS=true \
       OPENCODE_DISABLE_CLAUDE_CODE=true \
       OPENCODE_DISABLE_LSP_DOWNLOAD=true \
       OPENCODE_DISABLE_MODELS_FETCH=true \
       OPENCODE_DISABLE_AUTOUPDATE=true \
-      "{{ opencode_binary }}" --pure models ai-lab
+      "{{ opencode_binary }}" --pure models ai-lab || exit $?; \
+      unset key
 
 # ------------------------------------------------------------------------------
 # OpenCode supervised workflow
@@ -184,10 +191,18 @@ opencode project=invocation_directory():
     @test -d "{{ project }}" \
       || (echo "FAIL OpenCode project directory does not exist: {{ project }}" && exit 8)
     @just opencode-check
-    @key="$(awk '$0 ~ /^LITELLM_MASTER_KEY=/ { sub(/^LITELLM_MASTER_KEY=/, ""); sub(/\r$/, ""); print; exit }' "{{ opencode_env_file }}")"; \
+    @if ! key="$( \
+        source tools/ai/secrets.sh; \
+        resolve_profile_secret \
+          "{{ workstation_profile }}" \
+          LITELLM_OPENCODE_KEY \
+          "{{ opencode_env_file }}" \
+      )"; then \
+        exit 8; \
+      fi; \
       config_content="$(jq -c . "{{ opencode_config }}")"; \
       cd "{{ project }}"; \
-      export LITELLM_MASTER_KEY="$key"; \
+      export LITELLM_OPENCODE_KEY="$key"; \
       export OPENCODE_CONFIG_CONTENT="$config_content"; \
       export OPENCODE_DISABLE_DEFAULT_PLUGINS=true; \
       export OPENCODE_DISABLE_CLAUDE_CODE=true; \

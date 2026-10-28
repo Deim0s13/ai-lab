@@ -682,7 +682,8 @@ The selected configuration must remain tool-native, profile-aware, gateway-first
 - `profiles/macos-work/profile.yaml` enables OpenCode as the supervised CLI coding assistant.
 - OpenCode uses the stable `local-code` route while `local-code-mlx` remains available for implementation diagnostics.
 - No additional OpenCode-specific logic is added to `bin/ai`.
-- The ignored local credential file remains a temporary fallback pending issue 64.
+- Bitwarden-backed `LITELLM_OPENCODE_KEY` is the normal credential source;
+  the ignored centralized profile file is recovery fallback only.
 - Final configured-workflow validation is recorded in `docs/proofs/002-opencode-supervised-development-workflow.md`.
 
 ## Follow-up Issues

@@ -4,6 +4,11 @@
 
 Completed
 
+> Historical proof only. The commands below record the original disposable
+> Milestone 1 setup and its predictable test credential. Do not reuse them for
+> the current workstation. Current credential handling is documented in
+> `docs/secrets-and-credentials.md`.
+
 ## Date
 
 2026-06-26

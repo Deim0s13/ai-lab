@@ -159,7 +159,8 @@ These risks are accepted to preserve a useful workstation. They must not be used
 ## Implementation map
 
 - Issue #71 restricts and validates local network exposure.
-- Issue #64 introduces Bitwarden-backed scoped gateway credentials.
+- Issue #64 implements Bitwarden-backed scoped gateway credentials and
+  reserves the LiteLLM master key for administration.
 - Issue #72 evaluates and implements practical OpenCode containment.
 - Issue #65 establishes controlled component updates and rollback.
 - Issue #73 creates the security regression baseline and recovery drill.
@@ -168,4 +169,3 @@ These risks are accepted to preserve a useful workstation. They must not be used
 ## Review triggers
 
 Review this posture when unattended agents, remote gateway access, private RAG, broad work context, new external integrations or a materially different coding frontend is introduced. Also review it after a security incident or when a control repeatedly obstructs legitimate daily work.
-

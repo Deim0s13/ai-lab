@@ -369,8 +369,7 @@ Use this minimum prompt set for first-pass testing.
 
 Start the local gateway for Ollama-backed testing:
 
-    export LITELLM_MASTER_KEY=sk-local-dev
-    just ai-up
+    just workstation-up
     just ai-check
 
 Run Ollama/LiteLLM candidates with promptfoo:
@@ -383,7 +382,6 @@ Run direct MLX candidates with the project MLX eval script:
 
 Run gateway-routed MLX candidates by starting the MLX servers and LiteLLM gateway:
 
-    export LITELLM_MASTER_KEY=sk-local-dev
     just mlx-up
     just mlx-check
     just ai-up
@@ -534,8 +532,6 @@ The monthly review should check:
 
 Recommended monthly workflow:
 
-    export LITELLM_MASTER_KEY=sk-local-dev
-
     just mlx-down
     just mlx-up
     just mlx-check
@@ -546,6 +542,10 @@ Recommended monthly workflow:
 
     just eval-model-fitness
     just eval-model-fitness-mlx
+
+The evaluation recipes resolve `LITELLM_EVAL_KEY` from Bitwarden. The scoped
+key can access configured stable, diagnostic and candidate model groups but
+cannot access LiteLLM administration. See `docs/secrets-and-credentials.md`.
 
 Review the outputs and update this document if any model decisions change.
 

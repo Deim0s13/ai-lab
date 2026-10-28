@@ -4,13 +4,19 @@ set shell := ["bash", "-uc"]
 # Shared settings
 # ------------------------------------------------------------------------------
 
+workstation_profile := env_var_or_default("AI_LAB_PROFILE", "macos-work")
+
 gateway_url := env_var_or_default("AI_LAB_GATEWAY_URL", "http://localhost:4000")
 gateway_key := env_var_or_default("LITELLM_MASTER_KEY", "")
+gateway_client_key := env_var_or_default("LITELLM_API_KEY", "")
+gateway_auth_key := env_var_or_default("LITELLM_API_KEY", gateway_key)
 gateway_bind_host := "127.0.0.1"
 gateway_port := "4000"
-
-litellm_image := "docker.io/litellm/litellm:1.90.0-rc.1"
-litellm_container := "ai-lab-litellm"
+gateway_directory := "containers/litellm"
+gateway_compose_file := gateway_directory + "/compose.yaml"
+gateway_example_env_file := gateway_directory + "/.env.example"
+gateway_project := "ai-lab-litellm-" + workstation_profile
+gateway_service := "gateway"
 
 mlx_fast_model := "mlx-community/Llama-3.2-3B-Instruct-4bit"
 mlx_capable_model := "lmstudio-community/Qwen3-30B-A3B-Instruct-2507-MLX-4bit"
@@ -23,10 +29,10 @@ mlx_bind_host := "127.0.0.1"
 
 promptfoo_timeout_ms := "1200000"
 
-workstation_profile := env_var_or_default("AI_LAB_PROFILE", "macos-work")
 podman_machine := env_var_or_default("AI_LAB_PODMAN_MACHINE", "podman-machine-default")
 omlx_log := env_var("HOME") + "/.omlx/logs/server.log"
 workstation_env_file := "containers/librechat/.env." + workstation_profile + ".local"
+client_secret_fallback_file := "config/secrets/.env." + workstation_profile + ".local"
 
 omlx_command := env_var_or_default("AI_LAB_OMLX_COMMAND", env_var("HOME") + "/.omlx/bin/omlx")
 omlx_settings := env_var("HOME") + "/.omlx/settings.json"

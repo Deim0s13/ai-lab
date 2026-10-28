@@ -6,9 +6,11 @@ The purpose of this config is to map project route classes to gateway model grou
 
 ## Current Status
 
-This is a Milestone 1 local-only starting point.
+LiteLLM is the persistent, local gateway for the workstation. It runs through
+the profile-aware Compose deployment in `containers/litellm/`, with PostgreSQL
+retaining virtual-key state.
 
-It is intended to support the next proof step:
+The active path is:
 
 route class -> gateway model group -> LiteLLM -> local runtime
 
@@ -71,44 +73,35 @@ If running LiteLLM directly on the host, this may need to become:
 
 http://localhost:11434
 
-## Required Environment Variables
+## Required Secrets
 
-The config references:
+Gateway startup resolves the high-entropy master key, persistent salt key and
+PostgreSQL password from Bitwarden. The master key is reserved for gateway
+administration. Normal clients use separate LiteLLM virtual keys with scoped
+model and route access.
 
-LITELLM_MASTER_KEY
-
-This should be set locally and never committed.
-
-Example local-only value:
-
-LITELLM_MASTER_KEY=sk-local-dev
-
-## Next Step
-
-The next issue should prove one local model path through the gateway.
-
-That proof should confirm:
-
-- Ollama is running
-- the selected local model exists
-- LiteLLM can start with this config
-- a simple prompt can be sent through the LiteLLM gateway
-- no external provider or secret is required
+See `docs/secrets-and-credentials.md` for item names, fallback locations,
+rotation, revocation and rebuild procedures. Never use a predictable local
+development master key or copy the master key into client configuration.
 
 ## Bootstrap Check
 
 The gateway-aware bootstrap check is implemented as a `just` recipe rather than custom Python.
 
-Run:
+Resolve an authorized credential without printing it, then run:
 
-just bootstrap-check
+```bash
+key="$(bw get password ai-lab/macos-work/LITELLM_MASTER_KEY)"
+LITELLM_MASTER_KEY="${key}" just bootstrap-check
+unset key
+```
 
 The check validates:
 
 - configuration and profile YAML can be parsed
 - LiteLLM `/health/readiness` responds successfully
 - LiteLLM `/v1/models` exposes the required stable model groups
-- `LITELLM_MASTER_KEY` is set locally without printing its value
+- an authorized gateway credential is available without printing its value
 
 The aggregate `/health` check remains available through `just gateway-health` as a bounded, on-demand diagnostic. It is not part of routine bootstrap validation because probing every configured backend can be slow or intermittent.
 
@@ -118,11 +111,17 @@ This keeps bootstrap validation tool-based and avoids building a custom health-c
 
 The first CLI habit workflow uses a `just` recipe rather than a custom wrapper.
 
-Run:
+Run with the scoped CLI key:
 
-just ask "Say hello"
+```bash
+key="$(bw get password ai-lab/macos-work/LITELLM_CLI_KEY)"
+LITELLM_API_KEY="${key}" just ask "Say hello"
+unset key
+```
 
-This sends the prompt to the LiteLLM gateway using the `local-fast` model group and prints the assistant response.
+This sends the prompt to the LiteLLM gateway using the `local-fast` model group
+and the caller's scoped inference credential, then prints the assistant
+response.
 
 The recipe uses:
 

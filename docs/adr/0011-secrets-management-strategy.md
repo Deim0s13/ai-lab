@@ -59,7 +59,9 @@ Bitwarden
 = ignored local fallback only
 ```
 
-A future `ai-secrets` helper should centralise secret retrieval if scripts or commands need to resolve secrets consistently.
+The sourceable `tools/ai/secrets.sh` helper centralises profile-aware secret
+retrieval for commands and lifecycle recipes. It remains thin resolution glue,
+not a custom secrets platform.
 
 The project will not use HashiCorp Vault, 1Password CLI, `pass`, `sops` / `age`, OS keychains, or other secret systems unless a clear trigger makes them a better fit.
 
@@ -296,6 +298,19 @@ secrets:
 - Bootstrap needs to handle unauthenticated or locked vault states.
 - Profile-specific secret requirements must be clear.
 - Some early implementation may still use `.env.local`.
+
+## Implemented Credential Model
+
+Issue #64 implemented the Bitwarden-first strategy for the local gateway.
+LiteLLM uses PostgreSQL for persistent virtual-key state. Its high-entropy
+master key is reserved for gateway administration, while `bin/ai`, LibreChat,
+OpenCode and model evaluation use separate inference-scoped virtual keys.
+
+Resolution order is explicit environment, profile-specific Bitwarden item,
+then ignored local fallback. Temporary service environment files are created
+with mode `600` and removed after use. Operational naming, rotation,
+revocation, recovery and rebuild procedures are documented in
+`docs/secrets-and-credentials.md`.
 
 ### Risks or Follow-ups
 

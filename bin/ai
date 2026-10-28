@@ -6,6 +6,7 @@ AI_LAB_ROOT="$(
   pwd
 )"
 
+source "${AI_LAB_ROOT}/tools/ai/secrets.sh"
 source "${AI_LAB_ROOT}/tools/ai/env.sh"
 source "${AI_LAB_ROOT}/tools/ai/runtime.sh"
 source "${AI_LAB_ROOT}/tools/ai/prompt.sh"
